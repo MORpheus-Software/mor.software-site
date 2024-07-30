@@ -1,0 +1,59 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String?
+  image          String?
+  emailVerified  DateTime?
+  githubAccount  String?  @unique
+  accounts       Account[]
+  wallets        Wallet[]
+  stakings       Stake[]
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  provider          String
+  providerAccountId String
+  type              String
+  access_token      String?
+  token_type        String?
+  scope             String?
+  user              User     @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
+}
+
+
+model Wallet {
+  id          String   @id @default(cuid())
+  address     String   @unique
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  stakings    Stake[]
+  name        String?
+  createdAt   DateTime @default(now()) 
+}
+
+
+model Stake {
+  id            String   @id @default(cuid())
+  duration      Int
+  stakedDate    DateTime @default(now())
+  lockEndDate   DateTime
+  walletId      String
+  wallet        Wallet   @relation(fields: [walletId], references: [id])
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+}
