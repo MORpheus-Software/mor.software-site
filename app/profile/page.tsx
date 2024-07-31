@@ -142,25 +142,27 @@ const ProfilePage = () => {
                           new Date(b.createdAt).getTime()
                       )
                       .map((wallet: Wallet) => (
-                        <li
-                          key={wallet.id}
-                          className="flex items-center sm:flex-row flex-col"
-                        >
+                        <li key={wallet.id} className="flex items-center">
                           {editingWallet?.id === wallet.id ? (
                             <>
-                              <input
-                                type="text"
-                                value={walletName}
-                                placeholder="Name your wallet"
-                                onChange={handleNameChange}
-                                className="mr-2 p-3	mb-0"
-                              />
-                              <button onClick={saveWalletName} className="mr-2">
-                                Save
-                              </button>
-                              <button onClick={() => setEditingWallet(null)}>
-                                Cancel
-                              </button>
+                              <div className="flex flex-col sm:flex-row">
+                                <input
+                                  type="text"
+                                  value={walletName}
+                                  placeholder="Name your wallet"
+                                  onChange={handleNameChange}
+                                  className="mr-2 p-3	mb-0"
+                                />
+                                <button
+                                  onClick={saveWalletName}
+                                  className="mr-2"
+                                >
+                                  Save
+                                </button>
+                                <button onClick={() => setEditingWallet(null)}>
+                                  Cancel
+                                </button>
+                              </div>
                             </>
                           ) : (
                             <>
