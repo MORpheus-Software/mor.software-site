@@ -145,7 +145,7 @@ const ProfilePage = () => {
                         <li key={wallet.id} className="flex items-center">
                           {editingWallet?.id === wallet.id ? (
                             <>
-                              <div className="flex flex-col gap-4 sm:flex-row">
+                              <div className="flex flex-col gap-4 sm:flex-row flex-grow">
                                 <input
                                   type="text"
                                   value={walletName}
@@ -153,12 +153,7 @@ const ProfilePage = () => {
                                   onChange={handleNameChange}
                                   className="mr-2 p-3	mb-0"
                                 />
-                                <button
-                                  onClick={saveWalletName}
-                                  className="mr-2"
-                                >
-                                  Save
-                                </button>
+                                <button onClick={saveWalletName}>Save</button>
                                 <button onClick={() => setEditingWallet(null)}>
                                   Cancel
                                 </button>
