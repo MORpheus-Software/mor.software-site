@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import { Modal } from "antd";
 import { EditOutlined, LockOutlined } from "@ant-design/icons";
-
+import { conciseAddress } from "@/utils/trunc";
 // Fetcher function to be used by SWR
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -36,6 +36,14 @@ const ProfilePage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingWallet, setEditingWallet] = useState<Wallet | null>(null);
   const [walletName, setWalletName] = useState<string>("");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Initial check
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const {
     data: user,
@@ -155,10 +163,17 @@ const ProfilePage = () => {
                             <>
                               {wallet.name ? (
                                 <>
-                                  {wallet.address} {wallet.name}
+                                  {isMobile
+                                    ? conciseAddress(wallet.address)
+                                    : wallet.address}{" "}
+                                  {wallet.name}
                                 </>
                               ) : (
-                                <>{wallet.address} </>
+                                <>
+                                  {isMobile
+                                    ? conciseAddress(wallet.address)
+                                    : wallet.address}{" "}
+                                </>
                               )}
                               <EditOutlined
                                 onClick={() => handleEditClick(wallet)}
