@@ -119,14 +119,13 @@ const ProfilePage = () => {
                   <div>
                     <strong>Email:</strong> {user.email}
                   </div>
-                  {user?.wallets.length === 0 && (
-                    <div>Your stats will appear here</div>
-                  )}
 
                   <div className="text-xl mt-[1.5rem] mb-[0.5rem] font-bold">
                     Wallets
                   </div>
-
+                  {user?.wallets.length === 0 && (
+                    <div>Your stats will appear here</div>
+                  )}
                   <ul>
                     {user.wallets
                       .sort(
@@ -141,6 +140,7 @@ const ProfilePage = () => {
                               <input
                                 type="text"
                                 value={walletName}
+                                placeholder="Name your wallet"
                                 onChange={handleNameChange}
                                 className="mr-2 p-3	mb-0"
                               />

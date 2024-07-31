@@ -65,7 +65,9 @@
   button:disabled,
   input:disabled,
   textarea:disabled {
-    opacity: 0.1;
+    opacity: 1;
+    background: #000;
+    color: #16a261;
   }
 
   a:not(.button) {
