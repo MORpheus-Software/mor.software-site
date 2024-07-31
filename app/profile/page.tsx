@@ -145,7 +145,7 @@ const ProfilePage = () => {
                         <li key={wallet.id} className="flex items-center">
                           {editingWallet?.id === wallet.id ? (
                             <>
-                              <div className="flex flex-col sm:flex-row">
+                              <div className="flex flex-col gap-4 sm:flex-row">
                                 <input
                                   type="text"
                                   value={walletName}
