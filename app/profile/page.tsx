@@ -142,7 +142,10 @@ const ProfilePage = () => {
                           new Date(b.createdAt).getTime()
                       )
                       .map((wallet: Wallet) => (
-                        <li key={wallet.id} className="flex items-center">
+                        <li
+                          key={wallet.id}
+                          className="flex items-center sm:flex-row flex-col"
+                        >
                           {editingWallet?.id === wallet.id ? (
                             <>
                               <input
