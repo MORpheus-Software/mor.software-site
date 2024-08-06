@@ -6,7 +6,6 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-  
 }
 
 model User {
@@ -19,6 +18,7 @@ model User {
   accounts       Account[]
   wallets        Wallet[]
   stakings       Stake[]
+  contributions  Contribution[]
 }
 
 model Account {
@@ -35,7 +35,6 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-
 model Wallet {
   id          String   @id @default(cuid())
   address     String   @unique
@@ -46,7 +45,6 @@ model Wallet {
   createdAt   DateTime @default(now()) 
 }
 
-
 model Stake {
   id            String   @id @default(cuid())
   duration      Int
@@ -56,4 +54,19 @@ model Stake {
   wallet        Wallet   @relation(fields: [walletId], references: [id])
   userId        String
   user          User     @relation(fields: [userId], references: [id])
+}
+
+model Contribution {
+  id                  String   @id @default(cuid())
+  githubUsername      String
+  email               String
+  mriNumber           String
+  description         String
+  deliverables        String
+  weightsRequested    String
+  walletAddress       String
+  minimumWeightsTime  String
+  createdAt           DateTime @default(now())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id])
 }
