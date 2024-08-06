@@ -1,1 +1,1 @@
-export const sepoliaExplorerURL = "https://sepolia.etherscan.io/";
+export const sepoliaExplorerURL = "https://etherscan.io/";

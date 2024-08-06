@@ -2,7 +2,7 @@
 // ========================================================
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 import { cookieStorage, createStorage } from "wagmi";
-import { sepolia } from "wagmi/chains";
+import { sepolia, mainnet } from "wagmi/chains";
 
 // Constants
 // ========================================================
@@ -11,7 +11,7 @@ export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 
 const metadata = {
   name: "Morpheus Web3Modal",
-  description: "Morpheus Web3Modal Example",
+  description: "Morpheus Web3Modal",
   url: "https://example.com", // origin must match your domain & subdomain
   icons: ["https://example.com"],
 };
@@ -21,7 +21,7 @@ if (!projectId) throw new Error("Project ID is not defined");
 // Config
 // ========================================================
 export const config = defaultWagmiConfig({
-  chains: [sepolia], // required
+  chains: [mainnet], // required
   projectId, // required
   metadata, // required
   ssr: true,
