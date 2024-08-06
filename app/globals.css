@@ -59,7 +59,7 @@
 
   button,
   button[type="submit"] {
-    @apply bg-morGreen-700 text-white h-12 px-12 rounded-sm hover:bg-morGreen-600 transition-colors ease-in-out;
+    @apply bg-morGreen-700 text-white h-12 px-12 rounded-sm hover:opacity-90 transition-colors ease-in-out;
   }
 
   button:disabled,
@@ -99,4 +99,10 @@
 
 .ant-form-item .ant-form-item-label > label {
   color: #fff;
+}
+
+.ant-btn-primary:disabled {
+  background: #000;
+  color: #16a261;
+  border: 0;
 }
