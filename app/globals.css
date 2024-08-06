@@ -96,3 +96,7 @@
 .ant-drawer-content {
   background: #000 !important;
 }
+
+.ant-form-item .ant-form-item-label > label {
+  color: #fff;
+}
