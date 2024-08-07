@@ -19,6 +19,7 @@ model User {
   wallets        Wallet[]
   stakings       Stake[]
   contributions  Contribution[]
+  proofContributions ProofContribution[]
 }
 
 model Account {
@@ -42,7 +43,7 @@ model Wallet {
   user        User     @relation(fields: [userId], references: [id])
   stakings    Stake[]
   name        String?
-  createdAt   DateTime @default(now()) 
+  createdAt   DateTime @default(now())
 }
 
 model Stake {
@@ -67,6 +68,20 @@ model Contribution {
   walletAddress       String
   minimumWeightsTime  String
   createdAt           DateTime @default(now())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id])
+}
+
+model ProofContribution {
+  id                 String   @id @default(cuid())
+  githubUsername     String
+  walletAddress      String
+  email              String
+  mriNumber          String
+  linksToProof       String
+  weightsAgreed      String
+  description        String
+  createdAt          DateTime @default(now())
   userId              String
   user                User     @relation(fields: [userId], references: [id])
 }
