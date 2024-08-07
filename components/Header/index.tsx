@@ -47,7 +47,7 @@ const Header = () => {
         <Link href="/staking">Weights Staking</Link>
       </Menu.Item>
 
-      <Menu.Item key="bidform">
+    <Menu.Item key="bidform">
         <Link href="/bidform">Bid Form</Link>
       </Menu.Item>
 
@@ -90,10 +90,9 @@ const Header = () => {
                 <Link href="/staking" className="">
                   Weights Staking
                 </Link>
-
-                <Link href="/bidform" className="">
+                {/* <Link href="/bidform" className="">
                   Bid Form
-                </Link>
+                </Link> */}
 
                 <Link href="/profile" className="">
                   Profile
