@@ -2,9 +2,8 @@
 # MOR.software
 
 
-MOR.Software is the portal for MOR Developers.  Sign in, read up, and contribute.
+MOR.Software is the portal for MOR Developers.  Sign in, read up, bid on weights, and contribute.
 
-The following outlines steps to run this site locally to test.
 
 ## Table of Contents
 
