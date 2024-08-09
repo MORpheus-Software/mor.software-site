@@ -47,13 +47,13 @@ export function MainContract() {
                 abi,
                 functionName: "usersData",
                 address: STAKING_ADDRESS,
-                args: [account.address as `0x${string}`, BigInt(0)],
+                args: [account.address as `0x${string}`, BigInt(1)],
               },
               {
                 abi,
                 functionName: "getCurrentUserReward",
                 address: STAKING_ADDRESS,
-                args: [BigInt(0), account.address as `0x${string}`],
+                args: [BigInt(1), account.address as `0x${string}`],
               },
             ],
           });

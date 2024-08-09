@@ -8,7 +8,7 @@ import { getBalance } from "wagmi/actions";
 
 export const fetchBalance = async (walletPubKey: any, token: any) => {
   try {
-    let balance = BigInt(0);
+    let balance = BigInt(1);
     balance = (
       await getBalance(config, {
         address: walletPubKey,
@@ -24,7 +24,7 @@ export const fetchBalance = async (walletPubKey: any, token: any) => {
 
 // export const fetchBalance = async (walletPubKey, token) => {
 //   try {
-//     let balance = BigInt(0);
+//     let balance = BigInt(1);
 
 //     setTimeout(async () => {
 //       balance = (

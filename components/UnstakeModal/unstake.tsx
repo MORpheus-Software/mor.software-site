@@ -69,7 +69,7 @@ const UnstakeModal: React.FC<UnstakeModalProps> = ({
   }, [error, isConfirmed, isConfirming]);
 
   async function submit() {
-    const poolId = BigInt(0); // Convert to BigInt
+    const poolId = BigInt(1); // Convert to BigInt
 
     writeContract({
       address: STAKING_ADDRESS,
