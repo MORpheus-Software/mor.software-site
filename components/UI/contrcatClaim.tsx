@@ -240,7 +240,7 @@ const ContractClaimLockComponent = ({
                   </div> */}
                     {Number(userStakingInfo.deposited) !== 0 && (
                       <>
-                        <div className="grid justify-center px-1 grid-cols-2">
+                        {/* <div className="grid justify-center px-1 grid-cols-2">
                           <div className="text-gray-400">Unlock date</div>
                           <div className="text-right text-white w-max flex justify-self-end	">
                             <p
@@ -266,8 +266,8 @@ const ContractClaimLockComponent = ({
                                 : "Unstake"}
                             </p>
                           </div>
-                        </div>
-                        <div className="grid justify-center px-1 grid-cols-2">
+                        </div> */}
+                        {/* <div className="grid justify-center px-1 grid-cols-2">
                           <div className="text-gray-400">Claimable</div>
                           <div className="flex flex-row gap-1 justify-end">
                             <div className="text-right text-white w-max flex justify-self-end	">
@@ -281,7 +281,7 @@ const ContractClaimLockComponent = ({
                               tokenAmount={formatUnits(claimable).toFixed(2)}
                             />
                           </div>
-                        </div>
+                        </div> */}
                       </>
                     )}
                   </div>
