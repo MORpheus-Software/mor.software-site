@@ -13,9 +13,11 @@ import { store, useSelector } from "@/Store/index";
 import { UserInfoType, ProgramUserInfo } from "@/Store/Reducers/session";
 // import LockStakeComponent from "../UI";
 import ClaimLockComponent from "../UI/indexClaim";
+import ContractClaimLockComponent from "../UI/contrcatClaim";
 import { multicall } from "wagmi/actions";
 import { config } from "@/utils/config";
 
+//todo remove extra
 export function ClaimLock() {
   const { userStakingInfo, stethmBalance, successTxCount, claimableAmount } =
     useSelector((state) => state.session);
@@ -130,6 +132,127 @@ export function ClaimLock() {
 
   return (
     <ClaimLockComponent
+      userStakingInfo={userStakingInfo.pools[0]}
+      stethmBalance={stethmBalance}
+      claimable={claimableAmount}
+    />
+  );
+}
+
+export function ClaimLockContract() {
+  const { userStakingInfo, stethmBalance, successTxCount, claimableAmount } =
+    useSelector((state) => state.session);
+
+  const account = useAccount();
+
+  useEffect(() => {
+    const fetchUserBalance = async () => {
+      if (account?.address) {
+        try {
+          await fetchBalance(account?.address, STAKING_TOKEN_ADDRESS);
+        } catch (error) {
+          console.error("Error fetching balance:", error);
+        }
+      } else {
+        store.dispatch(setStEthmBalance("0"));
+      }
+    };
+
+    fetchUserBalance();
+  }, [account?.address, successTxCount]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (account?.address) {
+        try {
+          const contractResult = await multicall(config, {
+            contracts: [
+              {
+                abi,
+                functionName: "usersData",
+                address: STAKING_ADDRESS,
+                args: [account.address as `0x${string}`, BigInt(1)],
+              },
+              {
+                abi,
+                functionName: "getCurrentUserReward",
+                address: STAKING_ADDRESS,
+                args: [BigInt(1), account.address as `0x${string}`],
+              },
+            ],
+          });
+
+          if (contractResult[0].result) {
+            const [
+              lastStake,
+              deposited,
+              rate,
+              pendingRewards,
+              claimLockStart,
+              claimLockEnd,
+              virtualDeposited,
+            ] = contractResult[0].result;
+
+            const programUserInfo: ProgramUserInfo = {
+              lastStake: lastStake.toString(),
+              deposited: deposited.toString(),
+              rate: rate.toString(),
+              pendingRewards: pendingRewards.toString(),
+              claimLockStart: claimLockStart.toString(),
+              claimLockEnd: claimLockEnd.toString(),
+              virtualDeposited: virtualDeposited.toString(),
+            };
+
+            const userInfo: UserInfoType = {
+              user: account?.address,
+              pools: [programUserInfo],
+            };
+
+            store.dispatch(setUserStakingInfo(userInfo));
+          } else {
+            store.dispatch(setUserStakingInfo(emptyUserInfo()));
+          }
+          if (contractResult[1].result) {
+            const claimable = contractResult[1].result;
+
+            store.dispatch(setClaimableAmount(claimable.toString()));
+          } else {
+            store.dispatch(setClaimableAmount(""));
+          }
+        } catch (error) {
+          console.error("Error fetching contract data:", error);
+          store.dispatch(setUserStakingInfo(emptyUserInfo()));
+        }
+      } else {
+        store.dispatch(setUserStakingInfo(emptyUserInfo()));
+      }
+    };
+
+    // Fetch data immediately on mount
+    fetchData();
+
+    const intervalId = setInterval(fetchData, 1500);
+
+    return () => clearInterval(intervalId);
+  }, [account?.address, successTxCount]);
+
+  const emptyUserInfo = (): UserInfoType => ({
+    user: "",
+    pools: [
+      {
+        lastStake: "",
+        deposited: "",
+        rate: "",
+        pendingRewards: "",
+        claimLockStart: "",
+        claimLockEnd: "",
+        virtualDeposited: "",
+      },
+    ],
+  });
+
+  return (
+    <ContractClaimLockComponent
       userStakingInfo={userStakingInfo.pools[0]}
       stethmBalance={stethmBalance}
       claimable={claimableAmount}

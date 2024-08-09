@@ -15,7 +15,7 @@ import LockStakeComponent from "../UI";
 import { multicall } from "wagmi/actions";
 import { config } from "@/utils/config";
 
-export function Main() {
+export function MainContract() {
   const { userStakingInfo, stethmBalance, successTxCount, claimableAmount } =
     useSelector((state) => state.session);
 

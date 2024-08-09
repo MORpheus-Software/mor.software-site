@@ -21,7 +21,7 @@ if (!projectId) throw new Error("Project ID is not defined");
 // Config
 // ========================================================
 export const config = defaultWagmiConfig({
-  chains: [mainnet], // required
+  chains: [mainnet, sepolia], // required
   projectId, // required
   metadata, // required
   ssr: true,
