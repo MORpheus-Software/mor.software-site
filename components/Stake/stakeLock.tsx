@@ -37,9 +37,10 @@ import { config } from "@/config";
 interface StakeProps {
   tokenAmount: any;
   lockDuration: any;
+  web3?: boolean;
 }
 
-export function StakeLock({ tokenAmount, lockDuration }: StakeProps) {
+export function StakeLock({ tokenAmount, lockDuration, web3 }: StakeProps) {
   const { data: hash, error, isPending, writeContract } = useWriteContract();
   const { address: accountAddress } = useAccount();
   const { data: session } = useSession();
@@ -147,7 +148,7 @@ export function StakeLock({ tokenAmount, lockDuration }: StakeProps) {
           Connect Wallet
         </button>
       ) : (
-        <div className="mb-0" onClick={handleSubmitWeb2}>
+        <div className="mb-0" onClick={web3 ? submit : handleSubmitWeb2}>
           <button
             className="w-full"
             disabled={

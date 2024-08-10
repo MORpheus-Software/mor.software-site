@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../lib/prisma"; // Adjust the path as needed
+import { appendToSheet } from "@/utils/googlesheets";
 
 export async function POST(request: NextRequest) {
   try {
@@ -58,6 +59,23 @@ export async function POST(request: NextRequest) {
         user: { connect: { id: userId } },
       },
     });
+
+    const timestamp = new Date().toISOString();
+
+    // Map the data to the rowData array
+    const rowDataForm = [
+      timestamp,
+      githubUsername,
+      email,
+      mriNumber,
+      description,
+      weightsRequested,
+      walletAddress,
+      deliverables,
+      minimumWeightsTime,
+    ];
+
+    await appendToSheet(rowDataForm);
 
     return NextResponse.json(
       { message: "Form submitted successfully", contribution },

@@ -47,9 +47,9 @@ const Header = () => {
         <Link href="/staking">Weights Staking</Link>
       </Menu.Item>
 
-    <Menu.Item key="bidform">
+      {/* <Menu.Item key="bidform">
         <Link href="/bidform">Bid Form</Link>
-      </Menu.Item>
+      </Menu.Item> */}
 
       <Menu.Item key="profile">
         <Link href="/profile">Profile</Link>

@@ -15,7 +15,7 @@ import LockStakeComponent from "../UI";
 import { multicall } from "wagmi/actions";
 import { config } from "@/utils/config";
 
-export function Main() {
+export function MainContract() {
   const { userStakingInfo, stethmBalance, successTxCount, claimableAmount } =
     useSelector((state) => state.session);
 
@@ -47,13 +47,13 @@ export function Main() {
                 abi,
                 functionName: "usersData",
                 address: STAKING_ADDRESS,
-                args: [account.address as `0x${string}`, BigInt(0)],
+                args: [account.address as `0x${string}`, BigInt(1)],
               },
               {
                 abi,
                 functionName: "getCurrentUserReward",
                 address: STAKING_ADDRESS,
-                args: [BigInt(0), account.address as `0x${string}`],
+                args: [BigInt(1), account.address as `0x${string}`],
               },
             ],
           });

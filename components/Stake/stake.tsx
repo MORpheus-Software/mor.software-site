@@ -90,7 +90,7 @@ export function Stake({ tokenAmount, lockDuration }: StakeProps) {
   const allowance = allowanceData as bigint | undefined;
 
   async function submit() {
-    const poolId = BigInt(0); // Convert to BigInt
+    const poolId = BigInt(1); // Convert to BigInt
 
     await refetchAllowance();
 
