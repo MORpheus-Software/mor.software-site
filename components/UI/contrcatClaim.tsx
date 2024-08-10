@@ -117,7 +117,9 @@ const ContractClaimLockComponent = ({
                         Choose an amount of time to stake the weights associated
                         with this address.
                         <br /> To calculate your power factor please consult
-                        this Power Factor Guide.
+                        the Power Factor guides listed below.  
+                        <br /> <br /> Note: If you already have unclaimed MOR in this address when you stake your MOR Rewards, it will lock those already earned MOR in addition to the future MOR rewards, all for the total amount of time. In short, every unclaimed MOR gets locked, present and future until the end of the stake.
+                        <br /> <br />For how long woiuld you like to stake your MOR Rewards?
                       </div>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-4 sm:gap:0">
