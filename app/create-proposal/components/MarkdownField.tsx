@@ -1,0 +1,55 @@
+"use client";
+
+import React, { useRef } from "react";
+import dynamic from "next/dynamic";
+import "easymde/dist/easymde.min.css";
+import "@/app/styles/custom-mde.css";
+
+const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
+  ssr: false,
+});
+
+export default function MarkdownField({
+  id,
+  title,
+  desc,
+}: {
+  id: string;
+  title: string;
+  desc: string;
+}) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleEditorChange = (value: string) => {
+    if (textareaRef.current) {
+      textareaRef.current.value = value;
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-4 mt-5">
+      
+      <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor="mri">
+      {title}
+            <p className="text-sm text-gray-400">{desc}</p>
+
+          </label>
+
+   
+      <SimpleMDE
+        onChange={handleEditorChange}
+        options={{
+          placeholder: "Content",
+          spellChecker: false,
+          hideIcons: ["fullscreen", "side-by-side"],
+        }}
+      />
+      <textarea
+        ref={textareaRef}
+        name={id}
+        id={id}
+        className="hidden"
+      ></textarea>
+    </div>
+  );
+}

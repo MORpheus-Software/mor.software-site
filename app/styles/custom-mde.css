@@ -1,0 +1,54 @@
+/* styles/custom-mde.css */
+.editor-toolbar {
+  background-color: #000;
+  border: 1px solid #262626;
+  color: #404040;
+}
+
+.editor-toolbar i.separator {
+  border-left: 1px solid #404040;
+  border-right: 1px solid #404040;
+}
+
+/* Preview area */
+.editor-preview {
+  background-color: #1a1a1a; /* Darker background */
+  border: 1px solid #262626;
+  padding: 10px;
+}
+
+/* CodeMirror editor */
+.CodeMirror {
+  background-color: #000;
+  color: #fff;
+  height: 200px;
+}
+
+.CodeMirror-scroll {
+  min-height: 100px !important;
+}
+
+/* Status bar at the bottom */
+.editor-statusbar {
+  display: block;
+  background-color: #03160d;
+  color: #fff;
+}
+
+.CodeMirror-cursor {
+  border-left: 2px solid #fff; /* Adjust color and size as needed */
+}
+
+.EasyMDEContainer .CodeMirror {
+  border: 1px solid #262626;
+}
+
+.EasyMDEContainer .CodeMirror-placeholder {
+  opacity: 0.5;
+}
+
+.editor-toolbar button.active,
+.editor-toolbar button:hover {
+  background: #fcfcfc93;
+  border-color: #95a5a6;
+}
