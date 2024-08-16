@@ -37,6 +37,8 @@ const ProfilePage = () => {
   const [editingWallet, setEditingWallet] = useState<Wallet | null>(null);
   const [walletName, setWalletName] = useState<string>("");
   const [isMobile, setIsMobile] = useState(false);
+  const [bidForms, setBidForms] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -45,6 +47,24 @@ const ProfilePage = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+
+
+  useEffect(() => {
+    if (session.user.id) {
+      fetch(`/api/bidForm?uid=${session.user.id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setBidForms(data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('Error fetching bid forms:', error);
+          setLoading(false);
+        });
+    }
+  }, [session.user.id]);
+
+  
   const {
     data: user,
     error,
@@ -228,10 +248,42 @@ const ProfilePage = () => {
                   </Modal>
                 </>
               )}
+
+
+
+
             </div>
           </div>
         </div>
       </div>
+
+{  bidForms && (
+
+  
+  <ul className="">
+          <h1 className="my-4">Your BidForms</h1>
+
+  {bidForms?.map((form) => (
+    <li className="border border-neutral-600 p-5 flex flex-col my-3 gap-1 hover:bg-neutral-900 rounded bg-black" key={form.id}>
+      <h2>{form.githubUsername}</h2>
+      <p>{form.description}</p>
+      <p>Deliverables:</p>
+      {Array.isArray(form.deliverableDescriptions) ? (
+        <ul>
+          {form.deliverableDescriptions.map((deliverable, index) => (
+            <li key={index}>{deliverable.description || deliverable}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>{form.deliverableDescriptions}</p>
+      )}
+    </li>
+  ))}
+</ul>
+   
+)}
+   
+
     </div>
   );
 };
