@@ -48,9 +48,8 @@ const ProfilePage = () => {
   }, []);
 
 
-
   useEffect(() => {
-    if (session.user.id) {
+    if (session?.user?.id) {
       fetch(`/api/bidForm?uid=${session.user.id}`)
         .then((response) => response.json())
         .then((data) => {
@@ -62,7 +61,7 @@ const ProfilePage = () => {
           setLoading(false);
         });
     }
-  }, [session.user.id]);
+  }, [session?.user?.id]);
 
   
   const {
@@ -270,7 +269,7 @@ const ProfilePage = () => {
       <p>Deliverables:</p>
       {Array.isArray(form.deliverableDescriptions) ? (
         <ul>
-          {form.deliverableDescriptions.map((deliverable, index) => (
+{form.deliverableDescriptions.map((deliverable: { description: any }, index: number) => (
             <li key={index}>{deliverable.description || deliverable}</li>
           ))}
         </ul>

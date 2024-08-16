@@ -59,7 +59,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
               type="text"
               id="githubUsername"
               name="githubUsername"
-              defaultValue={session?.user?.name}
+              defaultValue={session?.user?.name || ""}
               readOnly
               required
               className="cursor-not-allowed bg-black text-white border border-neutral-800 p-3 rounded"
@@ -74,7 +74,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
               type="email"
               id="email"
               name="email"
-              defaultValue={session?.user?.email}
+              defaultValue={session?.user?.name || ""}
               readOnly
               required
               className="cursor-not-allowed bg-black text-white border border-neutral-800 p-3 rounded"
@@ -86,14 +86,14 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
           id="description"
           title="Description of Contribution"
           desc="Please describe your contribution in detail."
-          required
+          // required
         />
 
         <MarkdownField
           id="deliverables"
           title="End of Month Deliverables"
           desc="Please state your deliverables."
-          required
+          // required
         />
 
         <div className="flex flex-col gap-4 mt-5">
@@ -143,7 +143,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
             id={`deliverable-${deliverable.id}`}
             title={`Deliverable: ${deliverable.description}`}
             desc="Describe your contribution to this deliverable."
-            required
+            // required
           />
         ))}
 

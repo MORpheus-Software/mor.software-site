@@ -3,9 +3,9 @@ import prisma from "@/lib/prisma"; // Adjust the path based on your structure
 import { auth } from "@/auth";
 
 export async function POST(req: Request) {
-  let session = await auth();
+  const session = await auth();
 
-  if (!session) {
+  if (!session || !session.user || !session.user.id) {
     return new Response("Unauthorized", { status: 401 });
   }
 
@@ -22,40 +22,30 @@ export async function POST(req: Request) {
     ...deliverableDescriptions
   } = await req.json();
 
-
   const filteredDeliverables = Object.keys(deliverableDescriptions)
-  .filter((key) => key.startsWith("deliverable-"))
-  .map((key) => ({
-    id: parseInt(key.split("-")[1], 10), // Extract the deliverable ID
-    description: deliverableDescriptions[key] // Extract the corresponding description
-  }));
-
+    .filter((key) => key.startsWith("deliverable-"))
+    .map((key) => ({
+      id: parseInt(key.split("-")[1], 10), // Extract the deliverable ID
+      description: deliverableDescriptions[key], // Extract the corresponding description
+    }));
 
   // Create the BidForm first
   const bidForm = await prisma.bidForm.create({
     data: {
       githubUsername,
       email,
-      mriNumber:'null',
+      mriNumber: 'null',
       description,
       deliverables,
       deliverableDescriptions: filteredDeliverables,
       weightsRequested,
       walletAddress,
       minimumWeightsTime,
-      user: { connect: { id: session?.user.id } },
-    //   userId: session?.user.id,
+      user: { connect: { id: session.user.id } }, // Ensure the user ID is available
     },
   });
 
-  // Create or update deliverables related to this BidForm
-  for (const key in deliverableDescriptions) {
-    if (key.startsWith("deliverable-")) {
-      const deliverableId = parseInt(key.split("-")[1]);
-      const deliverableDescription = deliverableDescriptions[key];
-
-      // Check if the deliverable already exists
-      }  }
+  // Here you can add additional logic if needed, such as updating deliverables
 
   return new Response("Bid submitted successfully", { status: 200 });
 }
