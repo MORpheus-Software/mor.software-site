@@ -35,7 +35,7 @@ export async function POST(req: Request) {
 
   // Create the deliverables linked to the BidForm
   await Promise.all(
-    deliverables.map((deliverable) =>
+    deliverables.map((deliverable:any) =>
       prisma.bidFormDeliverable.create({
         data: {
           bidFormId: bidForm.id,

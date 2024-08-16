@@ -111,7 +111,7 @@ const ProfilePage = () => {
   const saveWalletName = async () => {
     if (editingWallet) {
       await fetch(
-        `/api/namedWallet?userId=${session?.user.id}&walletId=${editingWallet.id}`,
+        `/api/namedWallet?userId=${session?.user?.id}&walletId=${editingWallet.id}`,
         {
           method: "PATCH",
           headers: {
@@ -120,18 +120,22 @@ const ProfilePage = () => {
           body: JSON.stringify({ name: walletName }),
         }
       );
-
-      const updatedWallets = user?.wallets.map((wallet) =>
-        wallet.id === editingWallet.id
-          ? { ...wallet, name: walletName === "" ? null : walletName }
-          : wallet
-      );
-      mutate({ ...user, wallets: updatedWallets }, false);
-
+  
+      if (user?.wallets) {
+        const updatedWallets = user.wallets.map((wallet) =>
+          wallet.id === editingWallet.id
+            ? { ...wallet, name: walletName === "" ? null : walletName }
+            : wallet
+        );
+  
+        mutate({ ...user, wallets: updatedWallets }, false);
+      }
+  
       setEditingWallet(null);
       setWalletName("");
     }
   };
+  
 
   return (
     <div className="col-span-12 md:col-span-9 p-4 mx sm:mx-auto sm:p-6 shadow bg-morBg rounded-2xl max-w-3xl border border-borderTr">
@@ -272,12 +276,14 @@ const ProfilePage = () => {
               <p>Deliverables:</p>
               {form.deliverables.length > 0 ? (
                 <ul>
-                  {form.deliverables.map((deliverable: BidFormDeliverable, index: number) => (
-                    <li key={index}>
-                      <p>Description: {deliverable.deliverableDescription}</p>
-                      <p>Weight Requested: {deliverable.weightsRequested}</p>
-                    </li>
-                  ))}
+                  {form.deliverables.map(
+                    (deliverable: BidFormDeliverable, index: number) => (
+                      <li key={index}>
+                        <p>Description: {deliverable.deliverableDescription}</p>
+                        <p>Weight Requested: {deliverable.weightsRequested}</p>
+                      </li>
+                    )
+                  )}
                 </ul>
               ) : (
                 <p>No deliverables available</p>
