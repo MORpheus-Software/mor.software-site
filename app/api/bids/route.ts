@@ -15,37 +15,37 @@ export async function POST(req: Request) {
     email,
     mriNumber,
     description,
-    deliverables,
-    weightsRequested,
     walletAddress,
     minimumWeightsTime,
-    ...deliverableDescriptions
+    deliverables, // Directly destructure deliverables from the body
   } = await req.json();
-
-  const filteredDeliverables = Object.keys(deliverableDescriptions)
-    .filter((key) => key.startsWith("deliverable-"))
-    .map((key) => ({
-      id: parseInt(key.split("-")[1], 10), // Extract the deliverable ID
-      description: deliverableDescriptions[key], // Extract the corresponding description
-    }));
 
   // Create the BidForm first
   const bidForm = await prisma.bidForm.create({
     data: {
       githubUsername,
       email,
-      mriNumber: 'null',
+      mriNumber: mriNumber ?? 'null', // Use null if MRI number is not provided
       description,
-      deliverables,
-      deliverableDescriptions: filteredDeliverables,
-      weightsRequested,
       walletAddress,
       minimumWeightsTime,
-      user: { connect: { id: session.user.id } }, // Ensure the user ID is available
+      user: { connect: { id: session.user.id } },
     },
   });
 
-  // Here you can add additional logic if needed, such as updating deliverables
+  // Create the deliverables linked to the BidForm
+  await Promise.all(
+    deliverables.map((deliverable) =>
+      prisma.bidFormDeliverable.create({
+        data: {
+          bidFormId: bidForm.id,
+          deliverableId: deliverable.id,
+          weightsRequested: deliverable.weightRequested,
+          deliverableDescription: deliverable.description,
+        },
+      })
+    )
+  );
 
   return new Response("Bid submitted successfully", { status: 200 });
 }

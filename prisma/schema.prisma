@@ -6,9 +6,7 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-}
-
-model User {
+}model User {
   id             String   @id @default(cuid())
   email          String   @unique
   name           String?
@@ -18,7 +16,7 @@ model User {
   accounts       Account[]
   wallets        Wallet[]
   stakings       Stake[]
-  bidform  BidForm[]
+  bidform        BidForm[]
   proofContributions ProofContribution[]
 }
 
@@ -63,14 +61,23 @@ model BidForm {
   email               String
   mriNumber           String
   description         String
-  deliverables        String
-  deliverableDescriptions        Json
-  weightsRequested    String
+  deliverables        BidFormDeliverable[]
   walletAddress       String
   minimumWeightsTime  String
   createdAt           DateTime @default(now())
   userId              String
   user                User     @relation(fields: [userId], references: [id])
+}
+
+model BidFormDeliverable {
+  id                  String   @id @default(cuid())
+  bidFormId           String
+  bidForm             BidForm  @relation(fields: [bidFormId], references: [id])
+  deliverableId       Int
+  deliverable         Deliverable @relation(fields: [deliverableId], references: [id])
+  weightsRequested    String
+  deliverableDescription String 
+
 }
 
 model ProofContribution {
@@ -83,10 +90,9 @@ model ProofContribution {
   weightsAgreed      String
   description        String
   createdAt          DateTime @default(now())
-  userId              String
-  user                User     @relation(fields: [userId], references: [id])
+  userId             String
+  user               User     @relation(fields: [userId], references: [id])
 }
-
 
 model Proposal {
   id          Int          @id @default(autoincrement())
@@ -94,13 +100,14 @@ model Proposal {
   description String
   mri         String
   deliverables Deliverable[]
-  status      String        @default("open") // Add status field
+  status      String        @default("open")
   createdAt   DateTime     @default(now())
 }
 
 model Deliverable {
-  id          Int       @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   description String
   proposalId  Int
-  proposal    Proposal  @relation(fields: [proposalId], references: [id])
+  proposal    Proposal      @relation(fields: [proposalId], references: [id])
+  bidFormDeliverables BidFormDeliverable[]
 }

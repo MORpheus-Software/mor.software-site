@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { notification } from "antd";
 import { useSession } from "next-auth/react";
-import { MarkdownField ,SubmitButton, Deliverables} from "@/app/create-proposal/components";
+import { MarkdownField, SubmitButton } from "@/app/create-proposal/components";
 
 export default function BidForm({ proposalId, deliverables }: { proposalId: number, deliverables: Array<{ id: number, description: string }> }) {
   const { data: session } = useSession();
@@ -16,15 +16,14 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
     setLoading(true);
   
     const formData = new FormData(event.currentTarget);
-    const deliverableDescriptions: any = {};
-  
-    deliverables.forEach((deliverable) => {
-      const key = `deliverable-${deliverable.id}`;
-      deliverableDescriptions[key] = formData.get(key);
-    });
+    const deliverablesData = deliverables.map((deliverable) => ({
+      id: deliverable.id,
+      description: formData.get(`deliverable-${deliverable.id}`),
+      weightRequested: formData.get(`weight-${deliverable.id}`),
+    }));
   
     try {
-      const res = await fetch(`/api/bids`, {
+      const res = await fetch("/api/bids", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,19 +32,16 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
           githubUsername: formData.get("githubUsername"),
           email: formData.get("email"),
           description: formData.get("description"),
-          deliverables: formData.get("deliverables"),
-          weightsRequested: formData.get("weightsRequested"),
           walletAddress: formData.get("walletAddress"),
           minimumWeightsTime: formData.get("minimumWeightsTime"),
           proposalId,
-          userId: session?.user?.id,
-          ...deliverableDescriptions, // Include the deliverable descriptions
+          deliverables: deliverablesData,
         }),
       });
   
       if (res.ok) {
         notification.success({ message: "Bid submitted successfully!" });
-        router.push(`/proposals`);
+        router.push("/proposals");
       } else {
         notification.error({ message: "Failed to submit bid" });
       }
@@ -82,7 +78,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
               type="email"
               id="email"
               name="email"
-              defaultValue={session?.user?.name || ""}
+              defaultValue={session?.user?.email || ""}
               readOnly
               required
               className="cursor-not-allowed bg-black text-white border border-neutral-800 p-3 rounded"
@@ -94,29 +90,28 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
           id="description"
           title="Description of Contribution"
           desc="Please describe your contribution in detail."
-          // required
         />
 
-        <MarkdownField
-          id="deliverables"
-          title="End of Month Deliverables"
-          desc="Please state your deliverables."
-          // required
-        />
-
-        <div className="flex flex-col gap-4 mt-5">
-          <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor="weightsRequested">
-            Weights Requested
-            <input
-              type="number"
-              id="weightsRequested"
-              name="weightsRequested"
-              min={1}
-              required
-              className="bg-black text-white border border-neutral-800 p-3 rounded"
+        {deliverables.map((deliverable) => (
+          <div key={deliverable.id} className="flex flex-col gap-4 mt-5">
+            <MarkdownField
+              id={`deliverable-${deliverable.id}`}
+              title={`Deliverable: ${deliverable.description}`}
+              desc="Describe your contribution to this deliverable."
             />
-          </label>
-        </div>
+            <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor={`weight-${deliverable.id}`}>
+              Weights Requested for this Deliverable
+              <input
+                type="number"
+                id={`weight-${deliverable.id}`}
+                name={`weight-${deliverable.id}`}
+                min={1}
+                required
+                className="bg-black text-white border border-neutral-800 p-3 rounded"
+              />
+            </label>
+          </div>
+        ))}
 
         <div className="flex flex-col gap-4 mt-5">
           <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor="walletAddress">
@@ -144,16 +139,6 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
             />
           </label>
         </div>
-
-        {deliverables.map((deliverable) => (
-          <MarkdownField
-            key={deliverable.id}
-            id={`deliverable-${deliverable.id}`}
-            title={`Deliverable: ${deliverable.description}`}
-            desc="Describe your contribution to this deliverable."
-            // required
-          />
-        ))}
 
         <button
           type="submit"

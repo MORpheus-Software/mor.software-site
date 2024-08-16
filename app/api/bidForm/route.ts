@@ -14,13 +14,18 @@ export async function GET(req: NextRequest) {
       where: {
         userId: uid,
       },
+      include: {
+        deliverables: true, // Include related deliverables
+      },
     });
 
     return NextResponse.json(bidForms);
   } catch (error) {
+    console.error("Error fetching bid forms:", error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+
 
 
 // import { NextRequest, NextResponse } from "next/server";

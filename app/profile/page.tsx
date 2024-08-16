@@ -6,7 +6,7 @@ import useSWR from "swr";
 import { Modal } from "antd";
 import { EditOutlined, LockOutlined } from "@ant-design/icons";
 import { conciseAddress } from "@/utils/trunc";
-// Fetcher function to be used by SWR
+
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 interface Staking {
@@ -23,6 +23,19 @@ interface Wallet {
   createdAt: string; // Ensure this field is included
 }
 
+interface BidFormDeliverable {
+  id: string;
+  deliverableDescription: string;
+  weightsRequested: string;
+}
+
+interface BidForm {
+  id: string;
+  githubUsername: string;
+  description: string;
+  deliverables: BidFormDeliverable[];
+}
+
 interface User {
   id: string;
   email: string;
@@ -37,7 +50,7 @@ const ProfilePage = () => {
   const [editingWallet, setEditingWallet] = useState<Wallet | null>(null);
   const [walletName, setWalletName] = useState<string>("");
   const [isMobile, setIsMobile] = useState(false);
-  const [bidForms, setBidForms] = useState<any[]>([]);
+  const [bidForms, setBidForms] = useState<BidForm[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -46,7 +59,6 @@ const ProfilePage = () => {
     handleResize(); // Initial check
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
 
   useEffect(() => {
     if (session?.user?.id) {
@@ -57,13 +69,12 @@ const ProfilePage = () => {
           setLoading(false);
         })
         .catch((error) => {
-          console.error('Error fetching bid forms:', error);
+          console.error("Error fetching bid forms:", error);
           setLoading(false);
         });
     }
   }, [session?.user?.id]);
 
-  
   const {
     data: user,
     error,
@@ -100,7 +111,6 @@ const ProfilePage = () => {
   const saveWalletName = async () => {
     if (editingWallet) {
       await fetch(
-        //@ts-ignore
         `/api/namedWallet?userId=${session?.user.id}&walletId=${editingWallet.id}`,
         {
           method: "PATCH",
@@ -111,13 +121,11 @@ const ProfilePage = () => {
         }
       );
 
-      // Optimistically update the local state
       const updatedWallets = user?.wallets.map((wallet) =>
         wallet.id === editingWallet.id
           ? { ...wallet, name: walletName === "" ? null : walletName }
           : wallet
       );
-      //@ts-ignore
       mutate({ ...user, wallets: updatedWallets }, false);
 
       setEditingWallet(null);
@@ -247,41 +255,37 @@ const ProfilePage = () => {
                   </Modal>
                 </>
               )}
-
-
-
-
             </div>
           </div>
         </div>
       </div>
 
-{  bidForms && (
-
-  
-  <ul className="">
-
-  {bidForms?.map((form) => (
-    <li className="border border-neutral-600 p-5 flex flex-col my-3 gap-1 hover:bg-neutral-900 rounded bg-black" key={form.id}>
-      <h2>{form.githubUsername}</h2>
-      <p>{form.description}</p>
-      <p>Deliverables:</p>
-      {Array.isArray(form.deliverableDescriptions) ? (
-        <ul>
-{form.deliverableDescriptions.map((deliverable: { description: any }, index: number) => (
-            <li key={index}>{deliverable.description || deliverable}</li>
+      {bidForms && (
+        <ul className="">
+          {bidForms.map((form) => (
+            <li
+              className="border border-neutral-600 p-5 flex flex-col my-3 gap-1 hover:bg-neutral-900 rounded bg-black"
+              key={form.id}
+            >
+              <h2>{form.githubUsername}</h2>
+              <p>{form.description}</p>
+              <p>Deliverables:</p>
+              {form.deliverables.length > 0 ? (
+                <ul>
+                  {form.deliverables.map((deliverable: BidFormDeliverable, index: number) => (
+                    <li key={index}>
+                      <p>Description: {deliverable.deliverableDescription}</p>
+                      <p>Weight Requested: {deliverable.weightsRequested}</p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No deliverables available</p>
+              )}
+            </li>
           ))}
         </ul>
-      ) : (
-        <p>{form.deliverableDescriptions}</p>
       )}
-    </li>
-  ))}
-</ul>
-   
-)}
-   
-
     </div>
   );
 };
