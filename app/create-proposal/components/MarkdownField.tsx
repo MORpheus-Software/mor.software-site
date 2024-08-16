@@ -28,14 +28,10 @@ export default function MarkdownField({
 
   return (
     <div className="flex flex-col gap-4 mt-5">
-      
-      <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor="mri">
-      {title}
-            <p className="text-sm text-gray-400">{desc}</p>
-
-          </label>
-
-   
+      <label className="flex flex-col text-white text-xl gap-2 mb-0" htmlFor={id}>
+        {title}
+        <p className="text-sm text-gray-400">{desc}</p>
+      </label>
       <SimpleMDE
         onChange={handleEditorChange}
         options={{

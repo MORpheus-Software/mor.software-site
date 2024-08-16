@@ -260,7 +260,6 @@ const ProfilePage = () => {
 
   
   <ul className="">
-          <h1 className="my-4">Your BidForms</h1>
 
   {bidForms?.map((form) => (
     <li className="border border-neutral-600 p-5 flex flex-col my-3 gap-1 hover:bg-neutral-900 rounded bg-black" key={form.id}>

@@ -14,9 +14,15 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
-
+  
     const formData = new FormData(event.currentTarget);
-
+    const deliverableDescriptions: any = {};
+  
+    deliverables.forEach((deliverable) => {
+      const key = `deliverable-${deliverable.id}`;
+      deliverableDescriptions[key] = formData.get(key);
+    });
+  
     try {
       const res = await fetch(`/api/bids`, {
         method: "POST",
@@ -33,9 +39,10 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
           minimumWeightsTime: formData.get("minimumWeightsTime"),
           proposalId,
           userId: session?.user?.id,
+          ...deliverableDescriptions, // Include the deliverable descriptions
         }),
       });
-
+  
       if (res.ok) {
         notification.success({ message: "Bid submitted successfully!" });
         router.push(`/proposals`);
@@ -48,6 +55,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="col-span-12 p-4 mx sm:mx-auto sm:p-6 shadow bg-morBg rounded-2xl max-w-3xl border border-borderTr">
