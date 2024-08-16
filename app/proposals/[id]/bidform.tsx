@@ -6,7 +6,6 @@ import { notification } from "antd";
 import { useSession } from "next-auth/react";
 import { MarkdownField ,SubmitButton, Deliverables} from "@/app/create-proposal/components";
 
-
 export default function BidForm({ proposalId, deliverables }: { proposalId: number, deliverables: Array<{ id: number, description: string }> }) {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
@@ -62,6 +61,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
               name="githubUsername"
               defaultValue={session?.user?.name}
               readOnly
+              required
               className="cursor-not-allowed bg-black text-white border border-neutral-800 p-3 rounded"
             />
           </label>
@@ -76,6 +76,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
               name="email"
               defaultValue={session?.user?.email}
               readOnly
+              required
               className="cursor-not-allowed bg-black text-white border border-neutral-800 p-3 rounded"
             />
           </label>
@@ -85,12 +86,14 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
           id="description"
           title="Description of Contribution"
           desc="Please describe your contribution in detail."
+          required
         />
 
         <MarkdownField
           id="deliverables"
           title="End of Month Deliverables"
           desc="Please state your deliverables."
+          required
         />
 
         <div className="flex flex-col gap-4 mt-5">
@@ -101,6 +104,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
               id="weightsRequested"
               name="weightsRequested"
               min={1}
+              required
               className="bg-black text-white border border-neutral-800 p-3 rounded"
             />
           </label>
@@ -113,6 +117,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
               type="text"
               id="walletAddress"
               name="walletAddress"
+              required
               className="bg-black text-white border border-neutral-800 p-3 rounded"
             />
           </label>
@@ -126,6 +131,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
               id="minimumWeightsTime"
               name="minimumWeightsTime"
               min={1}
+              required
               className="bg-black text-white border border-neutral-800 p-3 rounded"
             />
           </label>
@@ -137,6 +143,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
             id={`deliverable-${deliverable.id}`}
             title={`Deliverable: ${deliverable.description}`}
             desc="Describe your contribution to this deliverable."
+            required
           />
         ))}
 

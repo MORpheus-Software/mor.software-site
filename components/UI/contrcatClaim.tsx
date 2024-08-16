@@ -208,7 +208,7 @@ const ContractClaimLockComponent = ({
                         )}
                       </div>
                     </div>
-                    <div className="grid justify-center px-1 grid-cols-2">
+                    {/* <div className="grid justify-center px-1 grid-cols-2">
                       <div className="text-gray-400">Locked Until</div>
                       <div className="text-right text-white">
                         {isStaked ? (
@@ -219,7 +219,7 @@ const ContractClaimLockComponent = ({
                           <>-</>
                         )}
                       </div>
-                    </div>
+                    </div> */}
                     <div className="grid justify-center px-1 grid-cols-2">
                       <div className="text-gray-400">Pending Rewards</div>
                       <div className="text-right text-white">
