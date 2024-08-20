@@ -20,7 +20,10 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
       id: deliverable.id,
       description: formData.get(`deliverable-${deliverable.id}`),
       weightRequested: formData.get(`weight-${deliverable.id}`),
+      minimumWeightsTime: formData.get(`minimumWeightsTime-${deliverable.id}`), // Capture minimumWeightsTime
+      deliverableDescription: formData.get(`description-${deliverable.id}`),     // Capture description
     }));
+    
   
     try {
       const res = await fetch("/api/bids", {
@@ -92,26 +95,49 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
           desc="Please describe your contribution in detail."
         />
 
-        {deliverables.map((deliverable) => (
-          <div key={deliverable.id} className="flex flex-col gap-4 mt-5">
-            <MarkdownField
-              id={`deliverable-${deliverable.id}`}
-              title={`Deliverable: ${deliverable.description}`}
-              desc="Describe your contribution to this deliverable."
-            />
-            <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor={`weight-${deliverable.id}`}>
-              Weights Requested for this Deliverable
-              <input
-                type="number"
-                id={`weight-${deliverable.id}`}
-                name={`weight-${deliverable.id}`}
-                min={1}
-                required
-                className="bg-black text-white border border-neutral-800 p-3 rounded"
-              />
-            </label>
-          </div>
-        ))}
+{deliverables.map((deliverable) => (
+  <div key={deliverable.id} className="flex flex-col gap-4 mt-5">
+    <MarkdownField
+      id={`deliverable-${deliverable.id}`}
+      title={`Deliverable: ${deliverable.description}`}
+      desc="Describe your contribution to this deliverable."
+    />
+    <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor={`weight-${deliverable.id}`}>
+      Weights Requested for this Deliverable
+      <input
+        type="number"
+        id={`weight-${deliverable.id}`}
+        name={`weight-${deliverable.id}`}
+        min={1}
+        required
+        className="bg-black text-white border border-neutral-800 p-3 rounded"
+      />
+    </label>
+
+    <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor={`minimumWeightsTime-${deliverable.id}`}>
+      Minimum Weights Time for this Deliverable
+      <input
+        type="number"
+        id={`minimumWeightsTime-${deliverable.id}`}
+        name={`minimumWeightsTime-${deliverable.id}`}
+        min={1}
+        required
+        className="bg-black text-white border border-neutral-800 p-3 rounded"
+      />
+    </label>
+
+    <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor={`description-${deliverable.id}`}>
+      Additional Description for this Deliverable
+      <input
+        type="text"
+        id={`description-${deliverable.id}`}
+        name={`description-${deliverable.id}`}
+        required
+        className="bg-black text-white border border-neutral-800 p-3 rounded"
+      />
+    </label>
+  </div>
+))}
 
         <div className="flex flex-col gap-4 mt-5">
           <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor="walletAddress">
@@ -125,7 +151,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
             />
           </label>
         </div>
-
+{/* 
         <div className="flex flex-col gap-4 mt-5">
           <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor="minimumWeightsTime">
             Minimum Weights Time
@@ -138,7 +164,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
               className="bg-black text-white border border-neutral-800 p-3 rounded"
             />
           </label>
-        </div>
+        </div> */}
 
         <button
           type="submit"

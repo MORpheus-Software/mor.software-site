@@ -28,24 +28,27 @@ export async function POST(req: Request) {
       mriNumber: mriNumber ?? 'null', // Use null if MRI number is not provided
       description,
       walletAddress,
-      minimumWeightsTime,
+      // minimumWeightsTime,
       user: { connect: { id: session.user.id } },
     },
   });
 
   // Create the deliverables linked to the BidForm
-  await Promise.all(
-    deliverables.map((deliverable:any) =>
-      prisma.bidFormDeliverable.create({
-        data: {
-          bidFormId: bidForm.id,
-          deliverableId: deliverable.id,
-          weightsRequested: deliverable.weightRequested,
-          deliverableDescription: deliverable.description,
-        },
-      })
-    )
-  );
+await Promise.all(
+  deliverables.map((deliverable:any) =>
+    prisma.bidFormDeliverable.create({
+      data: {
+        bidFormId: bidForm.id,
+        deliverableId: deliverable.id,
+        weightsRequested: deliverable.weightRequested,
+        deliverableDescription: deliverable.description,
+        minimumWeightsTime: deliverable.minimumWeightsTime, // New field
+        description: deliverable.deliverableDescription,      // New field
+      },
+    })
+  )
+);
+
 
   return new Response("Bid submitted successfully", { status: 200 });
 }

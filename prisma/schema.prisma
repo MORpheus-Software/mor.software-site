@@ -63,22 +63,23 @@ model BidForm {
   description         String
   deliverables        BidFormDeliverable[]
   walletAddress       String
-  minimumWeightsTime  String
   createdAt           DateTime @default(now())
   userId              String
   user                User     @relation(fields: [userId], references: [id])
 }
 
 model BidFormDeliverable {
-  id                  String   @id @default(cuid())
-  bidFormId           String
-  bidForm             BidForm  @relation(fields: [bidFormId], references: [id])
-  deliverableId       Int
-  deliverable         Deliverable @relation(fields: [deliverableId], references: [id])
-  weightsRequested    String
+  id                    String   @id @default(cuid())
+  bidFormId             String
+  bidForm               BidForm  @relation(fields: [bidFormId], references: [id])
+  deliverableId         Int
+  deliverable           Deliverable @relation(fields: [deliverableId], references: [id])
+  weightsRequested      String
   deliverableDescription String 
-
+  minimumWeightsTime    String    
+  description           String     
 }
+
 
 model ProofContribution {
   id                 String   @id @default(cuid())
