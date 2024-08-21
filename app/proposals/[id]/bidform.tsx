@@ -61,7 +61,7 @@ export default function BidForm({
   };
 
   return (
-    <div className="mx col-span-12 max-w-3xl rounded-2xl border border-borderTr bg-morBg p-4 shadow sm:mx-auto sm:p-6">
+    <div className="mx col-span-12 max-w-3xl bg-morBg shadow sm:mx-auto">
       <form onSubmit={handleSubmit} className="mt-4 space-y-4">
         <div className="mt-5 flex !hidden flex-col gap-4">
           <label className="texg-xl mb-0 flex flex-col gap-2 text-white" htmlFor="githubUsername">
@@ -100,12 +100,24 @@ export default function BidForm({
         /> */}
 
         {deliverables.map((deliverable) => (
-          <div key={deliverable.id} className="mt-5 flex flex-col gap-4">
+          <div
+            key={deliverable.id}
+            className="!mt-10 flex flex-col gap-4 rounded-2xl border border-borderTr p-4"
+          >
+            <h2 className="mb-0">Deliverable: {deliverable.description}</h2>
+
             <MarkdownField
               id={`deliverable-${deliverable.id}`}
-              title={`Deliverable: ${deliverable.description}`}
-              desc="Describe deliverable"
+              title={`Description of this bid for weights`}
+              desc="Describe this bid for weights"
             />
+
+            <MarkdownField
+              id={`description-${deliverable.id}`}
+              title={`End of month deliverables`}
+              desc="Describe end of month deliverables"
+            />
+
             <label
               className="texg-xl mb-0 flex flex-col gap-2 text-white"
               htmlFor={`weight-${deliverable.id}`}
@@ -136,7 +148,7 @@ export default function BidForm({
               />
             </label>
 
-            <label
+            {/* <label
               className="texg-xl mb-0 flex flex-col gap-2 text-white"
               htmlFor={`description-${deliverable.id}`}
             >
@@ -148,13 +160,13 @@ export default function BidForm({
                 required
                 className="rounded border border-neutral-800 bg-black p-3 text-white"
               />
-            </label>
+            </label> */}
           </div>
         ))}
 
         <div className="mt-5 flex flex-col gap-4">
           <label className="texg-xl mb-0 flex flex-col gap-2 text-white" htmlFor="walletAddress">
-            Wallet Address
+            Your Wallet Address
             <input
               type="text"
               id="walletAddress"
@@ -164,6 +176,7 @@ export default function BidForm({
             />
           </label>
         </div>
+
         {/* 
         <div className="flex flex-col gap-4 mt-5">
           <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor="minimumWeightsTime">

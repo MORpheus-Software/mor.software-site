@@ -23,7 +23,7 @@ export default async function BidFormsPage({ uid }: { uid: string }) {
         {bidForms.map((form) => (
           <li key={form.id}>
             <h2>{form.githubUsername}</h2>
-            <p>{form.description}</p>
+            {/* <p>{form.description}</p> */}
             <h3>Deliverables:</h3>
             <ul>
               {form.deliverables.map((deliverable) => (

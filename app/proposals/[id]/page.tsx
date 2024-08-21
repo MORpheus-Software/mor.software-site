@@ -4,6 +4,8 @@ import Link from 'next/link';
 import BidForm from './bidform';
 import Button from '@/components/button';
 import ReactMarkdown from 'react-markdown';
+import 'easymde/dist/easymde.min.css';
+import '@/app/styles/custom-mde.css';
 
 export default async function ProposalDetailPage({ params }: { params: { id: string } }) {
   const proposal = await prisma.proposal.findUnique({
@@ -44,20 +46,18 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
           </div>
 
           <div className="flex flex-col">
-            <h3 className="mt-4 text-xl font-semibold">Description:</h3>
-            <div className="text-sm text-gray-300">
-              <div>
-                <ReactMarkdown>{proposal.description}</ReactMarkdown>
-              </div>
+            <h3 className="mt-4 text-xl font-semibold text-white">Description:</h3>
+            <div className="markdown-body text-sm text-gray-300">
+              <ReactMarkdown>{proposal.description}</ReactMarkdown>
             </div>
           </div>
 
           <div className="flex flex-col">
-            <h3 className="mt-4 text-xl font-semibold">Deliverables:</h3>
-            <ul>
+            <h3 className="mt-4 text-xl font-semibold text-white">Deliverables:</h3>
+            <ul className="markdown-body">
               {proposal.deliverables.map((deliverable) => (
                 <li key={deliverable.id} className="mt-2">
-                  {deliverable.description}
+                  <ReactMarkdown>{deliverable.description}</ReactMarkdown>
                 </li>
               ))}
             </ul>
@@ -65,7 +65,7 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
         </div>
       </div>
 
-      <h3 className="my-6 mt-6 text-center text-2xl font-semibold text-white">Submit Your Bid</h3>
+      <h3 className="my-10 text-center text-2xl font-semibold text-white">Submit Your Bid</h3>
 
       {/* Pass the deliverables array to the BidForm component */}
       <BidForm proposalId={proposal.id} deliverables={proposal.deliverables} />
@@ -80,21 +80,25 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
               <h4 className="font-semibold">Bid by {bid.user.name || bid.githubUsername}</h4>
               <p>Email: {bid.email}</p>
               <h5 className="mt-2 font-semibold">Deliverables:</h5>
-              <ul>
+              <ul className="markdown-body">
                 {bid.deliverables.map((deliverable) => (
                   <li key={deliverable.id} className="mt-2">
-                    <p>
-                      <strong>Description:</strong> {deliverable.description}
-                    </p>
-                    <p>
-                      <strong>Deliverable Description:</strong> {deliverable.deliverableDescription}
-                    </p>
-                    <p>
-                      <strong>Weights Requested:</strong> {deliverable.weightsRequested}
-                    </p>
-                    <p>
-                      <strong>Minimum Weights Time:</strong> {deliverable.minimumWeightsTime}
-                    </p>
+                    <div className="flex flex-col">
+                      <strong>Bid for weights description:</strong>
+                      <ReactMarkdown>{deliverable.deliverableDescription}</ReactMarkdown>
+                    </div>
+                    <div className="mt-2 flex flex-col">
+                      <strong>End of month deliverables:</strong>
+                      <ReactMarkdown>{deliverable.description}</ReactMarkdown>
+                    </div>
+                    <div className="mt-2 flex flex-col">
+                      <strong>Weights Requested:</strong>
+                      <span>{deliverable.weightsRequested}</span>
+                    </div>
+                    <div className="mt-2 flex flex-col">
+                      <strong>Minimum Weights Time:</strong>
+                      <span>{deliverable.minimumWeightsTime}</span>
+                    </div>
                   </li>
                 ))}
               </ul>

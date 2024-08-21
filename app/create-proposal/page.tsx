@@ -6,7 +6,7 @@ import { MarkdownField, SubmitButton, Deliverables } from './components';
 import { notification } from 'antd';
 
 export default function CreateProposal() {
-  const handleFormSubmit = async (formData) => {
+  const handleFormSubmit = async (formData: FormData) => {
     const result = await submitProposal(formData);
 
     if (result.success) {
@@ -28,12 +28,13 @@ export default function CreateProposal() {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          const formData = new FormData(e.target);
+          const formElement = e.target as HTMLFormElement;
+          const formData = new FormData(formElement);
           await handleFormSubmit(formData);
         }}
       >
         <div className="mt-5 flex flex-col gap-4">
-          <label className="texg-xl mb-0 flex flex-col gap-2 text-white" htmlFor="title">
+          <label className="mb-0 flex flex-col gap-2 text-xl text-white" htmlFor="title">
             Title
             <p className="my-0.5 mb-2 text-sm text-gray-400">MRI Title</p>
           </label>
@@ -48,7 +49,7 @@ export default function CreateProposal() {
         </div>
 
         <div className="mt-5 flex flex-col">
-          <label className="texg-xl flex flex-col gap-2 text-white" htmlFor="mri">
+          <label className="flex flex-col gap-2 text-xl text-white" htmlFor="mri">
             MRI Number{' '}
             <p className="my-0.5 mb-2 text-sm text-gray-400">
               To which MRI does this contribution belong?
@@ -92,7 +93,7 @@ export default function CreateProposal() {
         />
 
         <Deliverables />
-        <SubmitButton submitAction={handleFormSubmit} />
+        <SubmitButton />
       </form>
     </div>
   );

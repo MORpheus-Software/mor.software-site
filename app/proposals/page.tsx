@@ -1,4 +1,5 @@
 // app/proposals/page.tsx
+import Button from '@/components/button';
 import prisma from '@/lib/prisma';
 import Link from 'next/link';
 
@@ -15,7 +16,12 @@ export default async function ProposalsPage() {
 
   return (
     <div className="mx col-span-12 max-w-3xl rounded-2xl border border-borderTr bg-morBg p-4 shadow sm:mx-auto sm:p-6">
-      <h1 className="text-2xl font-semibold">Open Proposals</h1>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="mb-0 text-2xl font-semibold">Open Proposals</h1>
+        <Link href="/create-proposal">
+          <Button text="+ NEW MRC" />
+        </Link>
+      </div>{' '}
       <ul>
         {openProposals.map((proposal) => (
           <li
