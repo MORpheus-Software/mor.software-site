@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { Menu, Dropdown, Button, Drawer } from "antd";
-import { DownOutlined, MenuOutlined } from "@ant-design/icons";
-import { useSession } from "next-auth/react"; // Use the correct hook
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Menu, Dropdown, Button, Drawer } from 'antd';
+import { DownOutlined, MenuOutlined } from '@ant-design/icons';
+import { useSession } from 'next-auth/react'; // Use the correct hook
 
-import SignIn from "./SignIn";
-import SignOut from "./SignOut";
+import SignIn from './SignIn';
+import SignOut from './SignOut';
 
 const Header = () => {
   const { data: session, status } = useSession(); // Fetch session data and status
@@ -18,9 +18,9 @@ const Header = () => {
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
     handleResize(); // Initial check
-    return () => window.removeEventListener("resize", handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const connectMenu = (
@@ -58,7 +58,7 @@ const Header = () => {
   );
 
   return (
-    <header className="w-full p-4 max-w-screen-2xl mx-auto sm:px-10 sm:py-6 text-white">
+    <header className="mx-auto w-full max-w-screen-2xl p-4 text-white sm:px-10 sm:py-6">
       <div className="flex items-center justify-between">
         {/* Left section: Logo and navigation */}
         <div className="flex items-center gap-4">
@@ -70,18 +70,14 @@ const Header = () => {
               height="32"
               decoding="async"
               className="h-8 w-auto"
-              style={{ color: "transparent" }}
+              style={{ color: 'transparent' }}
               src="/logo.svg"
             />
           </Link>
           {isMobile ? (
             <>
-              <Dropdown overlay={menu} trigger={["click"]}>
-                <Button
-                  className="bg-morGreen-700"
-                  type="text"
-                  icon={<MenuOutlined />}
-                />
+              <Dropdown overlay={menu} trigger={['click']}>
+                <Button className="bg-morGreen-700" type="text" icon={<MenuOutlined />} />
               </Dropdown>
             </>
           ) : (
@@ -105,11 +101,7 @@ const Header = () => {
         {/* Right section: Connect buttons */}
         <div className="flex items-center gap-4">
           {isMobile ? (
-            <Dropdown
-              className="bg-morGreen-600"
-              overlay={connectMenu}
-              trigger={["click"]}
-            >
+            <Dropdown className="bg-morGreen-600" overlay={connectMenu} trigger={['click']}>
               <Button type="text" icon={<DownOutlined />}>
                 Connect
               </Button>
@@ -122,7 +114,7 @@ const Header = () => {
           )}
         </div>
       </div>
-      <div className="w-full h-px bg-neutral-600 mt-5"></div>
+      <div className="mt-5 h-px w-full bg-neutral-600"></div>
     </header>
   );
 };

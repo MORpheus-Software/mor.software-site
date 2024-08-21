@@ -1,4 +1,4 @@
-import { signOut } from "next-auth/react"; // Use the correct import
+import { signOut } from 'next-auth/react'; // Use the correct import
 
 const SignOut = () => {
   const handleSignOut = async (event: any) => {
@@ -7,10 +7,7 @@ const SignOut = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSignOut}
-      className="w-auto mb-0 flex justify-end items-center"
-    >
+    <form onSubmit={handleSignOut} className="mb-0 flex w-auto items-center justify-end">
       <button type="submit" className="!h-[42px] rounded-none">
         Sign Out
       </button>

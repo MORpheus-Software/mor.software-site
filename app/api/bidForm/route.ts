@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../lib/prisma"; // Adjust the path as needed
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '../../../lib/prisma'; // Adjust the path as needed
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -21,12 +21,10 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(bidForms);
   } catch (error) {
-    console.error("Error fetching bid forms:", error);
+    console.error('Error fetching bid forms:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
-
-
 
 // import { NextRequest, NextResponse } from "next/server";
 // import prisma from "../../../lib/prisma"; // Adjust the path as needed

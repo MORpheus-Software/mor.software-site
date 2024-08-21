@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../lib/prisma"; // Adjust the path as needed
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '../../../lib/prisma'; // Adjust the path as needed
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,10 +26,7 @@ export async function POST(request: NextRequest) {
       !walletAddress ||
       !userId
     ) {
-      return NextResponse.json(
-        { error: "All fields are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
 
     // Check if the user exists
@@ -39,7 +36,7 @@ export async function POST(request: NextRequest) {
 
     // If the user does not exist, return an error response
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // Save the contribution data to the database
@@ -57,14 +54,11 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(
-      { message: "Form submitted successfully", contribution },
-      { status: 200 }
+      { message: 'Form submitted successfully', contribution },
+      { status: 200 },
     );
   } catch (error) {
-    console.error("Failed to submit the form:", error);
-    return NextResponse.json(
-      { error: "Failed to submit the form" },
-      { status: 500 }
-    );
+    console.error('Failed to submit the form:', error);
+    return NextResponse.json({ error: 'Failed to submit the form' }, { status: 500 });
   }
 }

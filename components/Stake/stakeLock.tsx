@@ -1,5 +1,5 @@
-"use client";
-import { STAKING_ADDRESS, STAKING_TOKEN_ADDRESS } from "@/constants/address";
+'use client';
+import { STAKING_ADDRESS, STAKING_TOKEN_ADDRESS } from '@/constants/address';
 import {
   type BaseError,
   useWaitForTransactionReceipt,
@@ -7,11 +7,11 @@ import {
   useReadContract,
   useAccount,
   useBlockNumber,
-} from "wagmi";
-import { abi, token_abi } from "@/constants/abi";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { store } from "@/Store";
-import CachedService from "@/classess/cachedservice";
+} from 'wagmi';
+import { abi, token_abi } from '@/constants/abi';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { store } from '@/Store';
+import CachedService from '@/classess/cachedservice';
 import {
   ApprovalToast,
   ErrorFormtoast,
@@ -19,20 +19,16 @@ import {
   StakeFormSucess,
   StakeSuccessToast,
   TxProgressToast,
-} from "../toasts";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import {
-  incrementSuccessTxCount,
-  setLockDuration,
-  setTokenAmount,
-} from "@/Store/Reducers/session";
-import { useSession } from "next-auth/react";
+} from '../toasts';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import { incrementSuccessTxCount, setLockDuration, setTokenAmount } from '@/Store/Reducers/session';
+import { useSession } from 'next-auth/react';
 
-import { formatTokenAmount } from "@/utils/format";
-import { conciseAddress } from "@/utils/trunc";
-import { signMessage } from "@wagmi/core";
-import { config } from "@/config";
+import { formatTokenAmount } from '@/utils/format';
+import { conciseAddress } from '@/utils/trunc';
+import { signMessage } from '@wagmi/core';
+import { config } from '@/config';
 
 interface StakeProps {
   tokenAmount: any;
@@ -60,17 +56,14 @@ export function StakeLock({ tokenAmount, lockDuration, web3 }: StakeProps) {
 
   const { open, close } = useWeb3Modal();
 
-  const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt({
-      hash,
-    });
+  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   useEffect(() => {
     if (error) {
       CachedService.errorToast(
-        <ErrorToast
-          message={(error as BaseError).shortMessage || error.message}
-        />
+        <ErrorToast message={(error as BaseError).shortMessage || error.message} />,
       );
     } else if (isConfirmed) {
       toast.dismiss();
@@ -79,7 +72,7 @@ export function StakeLock({ tokenAmount, lockDuration, web3 }: StakeProps) {
           lockDuration={lockDuration}
           amount={Number(formatTokenAmount(tokenAmount))}
           txId={hash as `0x${string}`}
-        />
+        />,
       );
       store.dispatch(incrementSuccessTxCount());
     } else if (isConfirming) {
@@ -94,7 +87,7 @@ export function StakeLock({ tokenAmount, lockDuration, web3 }: StakeProps) {
     writeContract({
       address: STAKING_ADDRESS,
       abi,
-      functionName: "lockClaim",
+      functionName: 'lockClaim',
       args: [poolId, BigInt(updatedTimestamp)],
     });
   }
@@ -103,7 +96,7 @@ export function StakeLock({ tokenAmount, lockDuration, web3 }: StakeProps) {
     event.preventDefault();
 
     if (!accountAddress) {
-      alert("Please connect your wallet.");
+      alert('Please connect your wallet.');
       return;
     }
 
@@ -114,10 +107,10 @@ export function StakeLock({ tokenAmount, lockDuration, web3 }: StakeProps) {
     });
 
     // Send the message and signature to your backend for verification
-    const response = await fetch("/api/stake", {
-      method: "POST",
+    const response = await fetch('/api/stake', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         duration: Number(lockDuration),
@@ -133,9 +126,7 @@ export function StakeLock({ tokenAmount, lockDuration, web3 }: StakeProps) {
     if (response.ok) {
       CachedService.successToast(<StakeFormSucess />);
     } else {
-      CachedService.errorToast(
-        <ErrorFormtoast message={data.error} address={accountAddress} />
-      );
+      CachedService.errorToast(<ErrorFormtoast message={data.error} address={accountAddress} />);
     }
   };
 
@@ -151,20 +142,18 @@ export function StakeLock({ tokenAmount, lockDuration, web3 }: StakeProps) {
         <div className="mb-0" onClick={web3 ? submit : handleSubmitWeb2}>
           <button
             className="w-full"
-            disabled={
-              isPending || isFormInvalid || isConfirming || !session?.user?.name
-            }
+            disabled={isPending || isFormInvalid || isConfirming || !session?.user?.name}
             type="submit"
           >
             {isPending || isConfirming
-              ? "Confirming..."
+              ? 'Confirming...'
               : !session?.user?.name
-              ? "Login via GitHub to Stake"
-              : isFormInvalid
-              ? "Enter Lock Duration"
-              : `Stake Weights associated with ${conciseAddress(
-                  accountAddress
-                )} for ${lockDuration} days`}
+                ? 'Login via GitHub to Stake'
+                : isFormInvalid
+                  ? 'Enter Lock Duration'
+                  : `Stake Weights associated with ${conciseAddress(
+                      accountAddress,
+                    )} for ${lockDuration} days`}
           </button>
         </div>
       )}

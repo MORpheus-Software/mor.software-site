@@ -1,25 +1,21 @@
-import React, { useEffect, useState } from "react";
-import Modal from "react-modal";
-import NumericalInput from "../numericalInput";
-import { formatTokenAmount, formatUnits } from "@/utils/format";
-import {
-  BaseError,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from "wagmi";
-import { STAKING_ADDRESS } from "@/constants/address";
-import { abi } from "@/constants/abi";
-import CachedService from "@/classess/cachedservice";
+import React, { useEffect, useState } from 'react';
+import Modal from 'react-modal';
+import NumericalInput from '../numericalInput';
+import { formatTokenAmount, formatUnits } from '@/utils/format';
+import { BaseError, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
+import { STAKING_ADDRESS } from '@/constants/address';
+import { abi } from '@/constants/abi';
+import CachedService from '@/classess/cachedservice';
 import {
   ApprovalToast,
   ErrorToast,
   StakeSuccessToast,
   TxProgressToast,
   UnstakeSuccessToast,
-} from "../toasts";
-import { store } from "@/Store";
-import { incrementSuccessTxCount } from "@/Store/Reducers/session";
-import { toast } from "react-toastify";
+} from '../toasts';
+import { store } from '@/Store';
+import { incrementSuccessTxCount } from '@/Store/Reducers/session';
+import { toast } from 'react-toastify';
 
 interface UnstakeModalProps {
   isOpen: boolean;
@@ -34,23 +30,19 @@ const UnstakeModal: React.FC<UnstakeModalProps> = ({
   onRequestClose,
   onUnstake,
 }) => {
-  const [amount, setAmount] = useState<string>("");
+  const [amount, setAmount] = useState<string>('');
   const { data: hash, error, isPending, writeContract } = useWriteContract();
 
-  const isFormInvalid =
-    BigInt(Number(amount) * 1e18) > available || Number(amount) <= 0;
+  const isFormInvalid = BigInt(Number(amount) * 1e18) > available || Number(amount) <= 0;
 
-  const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt({
-      hash,
-    });
+  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   useEffect(() => {
     if (error) {
       CachedService.errorToast(
-        <ErrorToast
-          message={(error as BaseError).shortMessage || error.message}
-        />
+        <ErrorToast message={(error as BaseError).shortMessage || error.message} />,
       );
     } else if (isConfirmed) {
       toast.dismiss();
@@ -58,10 +50,10 @@ const UnstakeModal: React.FC<UnstakeModalProps> = ({
         <UnstakeSuccessToast
           amount={formatTokenAmount(Number(amount))}
           txId={hash as `0x${string}`}
-        />
+        />,
       );
       store.dispatch(incrementSuccessTxCount());
-      setAmount("");
+      setAmount('');
       onRequestClose;
     } else if (isConfirming) {
       CachedService.TxProgressToast(<TxProgressToast />);
@@ -74,7 +66,7 @@ const UnstakeModal: React.FC<UnstakeModalProps> = ({
     writeContract({
       address: STAKING_ADDRESS,
       abi,
-      functionName: "withdraw",
+      functionName: 'withdraw',
       args: [poolId, BigInt(Number(amount) * 1e18)],
     });
   }
@@ -98,27 +90,21 @@ const UnstakeModal: React.FC<UnstakeModalProps> = ({
       overlayClassName="overlay"
     >
       <div style={overlayStyle} onClick={onRequestClose}>
-        <div
-          style={modalStyle}
-          className="drop-shadow-lg"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div style={modalStyle} className="drop-shadow-lg" onClick={(e) => e.stopPropagation()}>
           <h2> Unstake stEth Tokens</h2>
           <div
             className="modal-box bg-base-content max-w-lg rounded"
-            style={{ overflowY: "unset" }}
+            style={{ overflowY: 'unset' }}
           >
-            <div className="flex flex-col gap-4 justify-end">
+            <div className="flex flex-col justify-end gap-4">
               <div className="relative w-full">
                 <NumericalInput
-                  className="w-full px-4 py-4 rounded mb-0 text-2xl placeholder-gray-500 text-white bg-morBg pr-20"
+                  className="mb-0 w-full rounded bg-morBg px-4 py-4 pr-20 text-2xl text-white placeholder-gray-500"
                   value={amount}
                   onUserInput={setAmount}
                 />
-                <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">
-                  <span>
-                    Available to unstake: {formatUnits(available).toFixed(2)}
-                  </span>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 transform text-xs text-gray-500">
+                  <span>Available to unstake: {formatUnits(available).toFixed(2)}</span>
                 </div>
               </div>
               <div>
@@ -129,10 +115,10 @@ const UnstakeModal: React.FC<UnstakeModalProps> = ({
                     type="submit"
                   >
                     {isPending || isConfirming
-                      ? "Confirming..."
+                      ? 'Confirming...'
                       : isFormInvalid
-                      ? "Enter Token Amount"
-                      : `Unstake ${amount} stEth`}
+                        ? 'Enter Token Amount'
+                        : `Unstake ${amount} stEth`}
                   </button>
                 </div>
               </div>
@@ -145,27 +131,27 @@ const UnstakeModal: React.FC<UnstakeModalProps> = ({
 };
 
 const overlayStyle: React.CSSProperties = {
-  position: "fixed",
+  position: 'fixed',
   top: 0,
   left: 0,
   right: 0,
   bottom: 0,
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
-  display: "flex",
-  backdropFilter: "blur(0.1px)",
-  alignItems: "center",
-  justifyContent: "center",
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  display: 'flex',
+  backdropFilter: 'blur(0.1px)',
+  alignItems: 'center',
+  justifyContent: 'center',
   zIndex: 1,
 };
 
 const modalStyle: React.CSSProperties = {
-  backgroundColor: "#0d1f16",
-  color: "#fff",
-  border: "1px solid #ffffff1f",
-  padding: "20px",
-  borderRadius: "5px",
-  width: "500px",
-  zIndex: "100",
-  maxWidth: "100%",
+  backgroundColor: '#0d1f16',
+  color: '#fff',
+  border: '1px solid #ffffff1f',
+  padding: '20px',
+  borderRadius: '5px',
+  width: '500px',
+  zIndex: '100',
+  maxWidth: '100%',
 };
 export default UnstakeModal;

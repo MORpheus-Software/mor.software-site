@@ -1,4 +1,4 @@
-import { generateExplorerTxLink } from "@/utils/format";
+import { generateExplorerTxLink } from '@/utils/format';
 
 const BaseToast = ({
   heading,
@@ -15,10 +15,10 @@ const BaseToast = ({
     <div>
       <div role="alert" className="">
         <div>
-          <div className="flex gap-4 items-start">
+          <div className="flex items-start gap-4">
             <div className="flex flex-col gap-1 overflow-hidden">
-              <span className="font-semibold mb-1 text-sm justify-start text-slate-200">
-                {heading}{" "}
+              <span className="mb-1 justify-start text-sm font-semibold text-slate-200">
+                {heading}{' '}
               </span>
             </div>
           </div>
@@ -27,24 +27,21 @@ const BaseToast = ({
 
           {txId ? (
             <>
-              {" "}
-              <div className="grid-cols-auto grid gap-4 p-0 mt-4">
+              {' '}
+              <div className="grid-cols-auto mt-4 grid gap-4 p-0">
                 <button
                   onClick={() =>
-                    window.open(
-                      explorerLink ?? generateExplorerTxLink(txId),
-                      "_blank"
-                    )
+                    window.open(explorerLink ?? generateExplorerTxLink(txId), '_blank')
                   }
-                  className="cursor-pointer whitespace-nowrap inline-flex gap-2 items-center justify-center font-medium disabled:opacity-50 disabled:pointer-events-none ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-blue bg-secondary hover:bg-muted focus:bg-accent min-h-[36px] h-[36px] px-3 text-sm rounded-sm"
+                  className="ring-offset-background focus-visible:ring-ring ring-blue bg-secondary hover:bg-muted focus:bg-accent inline-flex h-[36px] min-h-[36px] cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-sm px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
                 >
                   View transaction
                 </button>
               </div>
             </>
           ) : (
-            <div className="grid-cols-auto grid gap-4 p-0 mt-4">
-              <button className="cursor-pointer whitespace-nowrap inline-flex gap-2 items-center justify-center font-medium disabled:opacity-50 disabled:pointer-events-none ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-blue bg-secondary hover:bg-muted focus:bg-accent min-h-[36px] h-[36px] px-3 text-sm rounded-sm">
+            <div className="grid-cols-auto mt-4 grid gap-4 p-0">
+              <button className="ring-offset-background focus-visible:ring-ring ring-blue bg-secondary hover:bg-muted focus:bg-accent inline-flex h-[36px] min-h-[36px] cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-sm px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
                 Dismiss
               </button>
             </div>
@@ -109,12 +106,7 @@ export const ClaimSuccessToast = ({
 };
 
 export const StakeFormSucess = ({ amount }: { amount?: string }) => {
-  return (
-    <BaseToast
-      heading="Success!"
-      subHeading={`Staking submitted successfully`}
-    />
-  );
+  return <BaseToast heading="Success!" subHeading={`Staking submitted successfully`} />;
 };
 
 export const ErrorToast = ({ message }: { message: string }) => {
@@ -123,26 +115,20 @@ export const ErrorToast = ({ message }: { message: string }) => {
       heading="Error"
       subHeading={
         <>
-          <span className="font-semibold mr-1">{message}</span>
+          <span className="mr-1 font-semibold">{message}</span>
         </>
       }
     />
   );
 };
 
-export const ErrorFormtoast = ({
-  message,
-  address,
-}: {
-  message: string;
-  address: String;
-}) => {
+export const ErrorFormtoast = ({ message, address }: { message: string; address: String }) => {
   return (
     <BaseToast
       heading="Error"
       subHeading={
         <>
-          <span className="font-semibold mr-1">
+          <span className="mr-1 font-semibold">
             {message} {address}
           </span>
         </>
@@ -151,12 +137,7 @@ export const ErrorFormtoast = ({
   );
 };
 export const TxProgressToast = () => {
-  return (
-    <BaseToast
-      heading="Processing Transaction"
-      subHeading="Transaction is processing..."
-    />
-  );
+  return <BaseToast heading="Processing Transaction" subHeading="Transaction is processing..." />;
 };
 
 export const ApprovalToast = () => {

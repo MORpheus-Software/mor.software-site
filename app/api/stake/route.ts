@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import Web3 from "web3";
-import prisma from "../../../lib/prisma"; // Adjust the path as needed
+import { NextRequest, NextResponse } from 'next/server';
+import Web3 from 'web3';
+import prisma from '../../../lib/prisma'; // Adjust the path as needed
 
 export async function POST(request: NextRequest) {
   const web3 = new Web3();
@@ -10,10 +10,7 @@ export async function POST(request: NextRequest) {
   try {
     const verifiedAddress = web3.eth.accounts.recover(message, signature);
     if (verifiedAddress.toLowerCase() !== address.toLowerCase()) {
-      return NextResponse.json(
-        { error: "Signature verification failed" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Signature verification failed' }, { status: 400 });
     }
 
     // Check if a stake already exists for the given address
@@ -23,8 +20,8 @@ export async function POST(request: NextRequest) {
 
     if (existingStake) {
       return NextResponse.json(
-        { error: "A stake already exists for this address - " },
-        { status: 400 }
+        { error: 'A stake already exists for this address - ' },
+        { status: 400 },
       );
     }
 
@@ -47,15 +44,9 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(
-      { message: "Staking submitted successfully", stake },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: 'Staking submitted successfully', stake }, { status: 200 });
   } catch (error) {
-    console.error("Failed to submit staking:", error);
-    return NextResponse.json(
-      { error: "Failed to submit staking" },
-      { status: 500 }
-    );
+    console.error('Failed to submit staking:', error);
+    return NextResponse.json({ error: 'Failed to submit staking' }, { status: 500 });
   }
 }

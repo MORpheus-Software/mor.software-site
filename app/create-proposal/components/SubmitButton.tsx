@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useFormStatus } from "react-dom";
-import { signIn, useSession } from "next-auth/react";
+import { useFormStatus } from 'react-dom';
+import { signIn, useSession } from 'next-auth/react';
 
 export default function SubmitButton() {
   const { pending } = useFormStatus();
@@ -10,18 +10,22 @@ export default function SubmitButton() {
   const handleSignInAndSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     if (!session) {
       event.preventDefault();
-      await signIn("github");
+      await signIn('github');
     }
   };
 
   return (
     <button
-      className="min-w-fit mt-2 px-5 py-2 bg-[#179c65] rounded font-semibold hover:bg-[#127d51]"
+      className="mt-2 min-w-fit rounded bg-[#179c65] px-5 py-2 font-semibold hover:bg-[#127d51]"
       type="submit"
       disabled={pending}
       onClick={handleSignInAndSubmit}
     >
-      {pending ? <span>Creating ...</span> : <span>{session ? "Create Proposal" : "Sign in with GitHub"}</span>}
+      {pending ? (
+        <span>Creating ...</span>
+      ) : (
+        <span>{session ? 'Create Proposal' : 'Sign in with GitHub'}</span>
+      )}
     </button>
   );
 }

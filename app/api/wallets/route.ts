@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../lib/prisma"; // Adjust the path as needed
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '../../../lib/prisma'; // Adjust the path as needed
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const userId = searchParams.get("userId");
+  const userId = searchParams.get('userId');
 
   if (!userId) {
-    return NextResponse.json({ error: "User ID is required" }, { status: 400 });
+    return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
   }
 
   try {
@@ -20,15 +20,12 @@ export async function GET(request: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
-    console.error("Failed to fetch user:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch user" },
-      { status: 500 }
-    );
+    console.error('Failed to fetch user:', error);
+    return NextResponse.json({ error: 'Failed to fetch user' }, { status: 500 });
   }
 }

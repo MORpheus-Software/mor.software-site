@@ -1,17 +1,17 @@
-import React, { useMemo, useState } from "react";
-import { formatTokenAmount, formatUnits } from "@/utils/format";
-import { NumericalInput } from "../numericalInput";
-import { Stake } from "../Stake/stake";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
-import Image from "next/image";
-import { useSelector } from "@/Store";
-import { setTokenAmount, setLockDuration } from "@/Store/Reducers/session";
-import { store } from "@/Store";
-import moment from "moment";
-import UnstakeModal from "../UnstakeModal/unstake";
-import { Claim } from "../Claim/claim";
-import { StakeLock } from "../Stake/stakeLock";
-import { SkeletonBox } from "@/utils/skeleton";
+import React, { useMemo, useState } from 'react';
+import { formatTokenAmount, formatUnits } from '@/utils/format';
+import { NumericalInput } from '../numericalInput';
+import { Stake } from '../Stake/stake';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
+import Image from 'next/image';
+import { useSelector } from '@/Store';
+import { setTokenAmount, setLockDuration } from '@/Store/Reducers/session';
+import { store } from '@/Store';
+import moment from 'moment';
+import UnstakeModal from '../UnstakeModal/unstake';
+import { Claim } from '../Claim/claim';
+import { StakeLock } from '../Stake/stakeLock';
+import { SkeletonBox } from '@/utils/skeleton';
 
 interface ClaimLockComponentProps {
   userStakingInfo: any; // Adjust type as needed
@@ -37,12 +37,12 @@ const ContractClaimLockComponent = ({
 
   const parsedBalance = Number(stethmBalance);
   const lockDurations = [
-    { label: "1 Year", value: "365" },
-    { label: "2 Years", value: "730" },
-    { label: "3 Years", value: "1095" },
-    { label: "4 Years", value: "1460" },
-    { label: "5 Years", value: "1825" },
-    { label: "6 Years", value: "2190" },
+    { label: '1 Year', value: '365' },
+    { label: '2 Years', value: '730' },
+    { label: '3 Years', value: '1095' },
+    { label: '4 Years', value: '1460' },
+    { label: '5 Years', value: '1825' },
+    { label: '6 Years', value: '2190' },
   ];
   const lastStake = userStakingInfo.claimLockStart; // Unix timestamp in seconds
   const claimLockEnd = userStakingInfo.claimLockEnd; // Number of days to lock
@@ -53,16 +53,14 @@ const ContractClaimLockComponent = ({
 
   // Check if the unlock date is in the future and format accordingly
   const formattedUnlockDate = claimLockEndMoment.isAfter(moment())
-    ? `Unlocks ${claimLockEndMoment.fromNow()} (${claimLockEndMoment.format(
-        "YYYY-MM-DD"
-      )})`
-    : "";
+    ? `Unlocks ${claimLockEndMoment.fromNow()} (${claimLockEndMoment.format('YYYY-MM-DD')})`
+    : '';
 
-  const unlockDate = lastStakeMoment.add(claimLockEnd, "days");
+  const unlockDate = lastStakeMoment.add(claimLockEnd, 'days');
 
   const isDisabled = useMemo(
     () => isTxInProgress || claimLockEnd > 0,
-    [isTxInProgress, claimLockEnd]
+    [isTxInProgress, claimLockEnd],
   );
 
   const isStaked = lastStake > 0;
@@ -100,36 +98,40 @@ const ContractClaimLockComponent = ({
         onUnstake={handleUnstake}
       /> */}
 
-      <div className="col-span-12 md:col-span-9 p-4 sm:p-6 shadow bg-morBg rounded-2xl max-w-6xl mx-auto border border-borderTr">
-        <div className="lg:grid lg:grid-cols-5 flex flex-col-reverse text-base lg:space-x-4 text-gray-200">
-          <div className="col-span-3 flex flex-col h-full">
+      <div className="col-span-12 mx-auto max-w-6xl rounded-2xl border border-borderTr bg-morBg p-4 shadow sm:p-6 md:col-span-9">
+        <div className="flex flex-col-reverse text-base text-gray-200 lg:grid lg:grid-cols-5 lg:space-x-4">
+          <div className="col-span-3 flex h-full flex-col">
             {/* <div className="p-2">Lock MORPHEUS tokens</div> */}
-            <div className="space-y-4 flex flex-col h-full">
-              <div className="p-5 rounded bg-morCard w-full flex-grow">
-                <div className="flex flex-col justify-between space-y-3 sm:space-y-0 sm:flex-row"></div>
-                <div className="flex flex-col justify-between space-y-3 sm:space-y-0 sm:flex-row">
-                  <div className="flex flex-col w-full gap-8">
+            <div className="flex h-full flex-col space-y-4">
+              <div className="w-full flex-grow rounded bg-morCard p-5">
+                <div className="flex flex-col justify-between space-y-3 sm:flex-row sm:space-y-0"></div>
+                <div className="flex flex-col justify-between space-y-3 sm:flex-row sm:space-y-0">
+                  <div className="flex w-full flex-col gap-8">
                     <div className="flex min-w-[14rem] text-lg font-semibold">
                       Stake your Weights
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-4 sm:gap:0">
+                    <div className="sm:gap:0 flex flex-col gap-4 sm:flex-row">
                       <div className="flex min-w-[14rem]">
-                        Choose an amount of time to stake the weights associated
-                        with this address.
-                        <br /> To calculate your power factor please consult
-                        the Power Factor guides listed below.  
-                        <br /> <br /> Note: If you already have unclaimed MOR in this address when you stake your MOR Rewards, it will lock those already earned MOR in addition to the future MOR rewards, all for the total amount of time. In short, every unclaimed MOR gets locked, present and future until the end of the stake.
-                        <br /> <br />For how long would you like to stake your MOR Rewards?
+                        Choose an amount of time to stake the weights associated with this address.
+                        <br /> To calculate your power factor please consult the Power Factor guides
+                        listed below.
+                        <br /> <br /> Note: If you already have unclaimed MOR in this address when
+                        you stake your MOR Rewards, it will lock those already earned MOR in
+                        addition to the future MOR rewards, all for the total amount of time. In
+                        short, every unclaimed MOR gets locked, present and future until the end of
+                        the stake.
+                        <br /> <br />
+                        For how long would you like to stake your MOR Rewards?
                       </div>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-4 sm:gap:0">
+                    <div className="sm:gap:0 flex flex-col gap-4 sm:flex-row">
                       <div className="relative w-full">
                         <NumericalInput
-                          className="w-full px-4 py-4 rounded mb-0 text-2xl placeholder-gray-500 text-white bg-morBg pr-20"
+                          className="mb-0 w-full rounded bg-morBg px-4 py-4 pr-20 text-2xl text-white placeholder-gray-500"
                           value={lockDuration}
                           onUserInput={handleLockDurationChange}
                         />
-                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 transform text-xs text-gray-500">
                           DAYS
                         </div>
                       </div>
@@ -143,34 +145,26 @@ const ContractClaimLockComponent = ({
                       {lockDurations.map((duration) => (
                         <div
                           key={duration.value}
-                          className={`flex flex-row items-center justify-start space-x-1 cursor-pointer ${
-                            lockDuration === duration.value
-                              ? "text-white"
-                              : "text-gray-400"
+                          className={`flex cursor-pointer flex-row items-center justify-start space-x-1 ${
+                            lockDuration === duration.value ? 'text-white' : 'text-gray-400'
                           }`}
                           role="radio"
                           aria-checked={lockDuration === duration.value}
                           tabIndex={0}
-                          onClick={() =>
-                            handleLockDurationChange(duration.value)
-                          }
+                          onClick={() => handleLockDurationChange(duration.value)}
                         >
                           <span
                             style={{
-                              display: "block",
-                              height: "0.5rem",
-                              width: "0.5rem",
-                              borderRadius: "9999px",
-                              marginLeft: "0.5rem",
+                              display: 'block',
+                              height: '0.5rem',
+                              width: '0.5rem',
+                              borderRadius: '9999px',
+                              marginLeft: '0.5rem',
                               border: `1px solid ${
-                                lockDuration === duration.value
-                                  ? "#24dc8e"
-                                  : "rgb(119, 119, 119)"
+                                lockDuration === duration.value ? '#24dc8e' : 'rgb(119, 119, 119)'
                               }`,
                               background:
-                                lockDuration === duration.value
-                                  ? "#24dc8e"
-                                  : "transparent",
+                                lockDuration === duration.value ? '#24dc8e' : 'transparent',
                             }}
                           ></span>
                           <span>{duration.label}</span>
@@ -181,28 +175,22 @@ const ContractClaimLockComponent = ({
                 </div>
               </div>
             </div>
-            <div className="w-full mt-5">
-              <StakeLock
-                web3
-                tokenAmount={tokenAmount}
-                lockDuration={lockDuration}
-              />
+            <div className="mt-5 w-full">
+              <StakeLock web3 tokenAmount={tokenAmount} lockDuration={lockDuration} />
             </div>
           </div>
           {true && (
-            <div className="col-span-2 flex flex-col mb-4 lg:mb-0 h-full">
+            <div className="col-span-2 mb-4 flex h-full flex-col lg:mb-0">
               {/* <div className="p-2">Your Stats</div> */}
               {/* <WalletsPage></WalletsPage> */}
-              <div className="space-y-4 flex flex-1 h-full">
-                <div className="flex flex-col flex-1 justify-between p-5 text-xs rounded bg-morCard w-full">
+              <div className="flex h-full flex-1 space-y-4">
+                <div className="flex w-full flex-1 flex-col justify-between rounded bg-morCard p-5 text-xs">
                   <div className="space-y-3.5">
-                    <div className="grid justify-center px-1 grid-cols-2">
+                    <div className="grid grid-cols-2 justify-center px-1">
                       <div className="text-gray-400">Staked at</div>
                       <div className="text-right text-white">
                         {isStaked ? (
-                          moment
-                            .unix(userStakingInfo.claimLockStart)
-                            .format("YYYY-MM-DD")
+                          moment.unix(userStakingInfo.claimLockStart).format('YYYY-MM-DD')
                         ) : (
                           <>-</>
                         )}
@@ -220,15 +208,15 @@ const ContractClaimLockComponent = ({
                         )}
                       </div>
                     </div> */}
-                    <div className="grid justify-center px-1 grid-cols-2">
+                    <div className="grid grid-cols-2 justify-center px-1">
                       <div className="text-gray-400">Pending Rewards</div>
                       <div className="text-right text-white">
                         {isStaked ? formatUnits(claimable).toFixed(2) : <>-</>}
                       </div>
-                    </div>{" "}
-                    <div className="grid justify-center px-1 grid-cols-2">
+                    </div>{' '}
+                    <div className="grid grid-cols-2 justify-center px-1">
                       <div className="text-gray-400">Unlocks</div>
-                      <div className="text-right w-max text-white justify-self-end">
+                      <div className="w-max justify-self-end text-right text-white">
                         {isStaked ? formattedUnlockDate : <>-</>}
                       </div>
                     </div>

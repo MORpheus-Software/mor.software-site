@@ -1,22 +1,17 @@
-import React from "react";
-import Image from "next/image";
+import React from 'react';
+import Image from 'next/image';
 
 const Footer = () => {
   return (
-    <footer className="w-full p-4 max-w-screen-2xl mx-auto sm:px-10 sm:py-6 text-white">
-      <div className="w-full bottom-6 left-0 right-0">
-        <div className="flex flex-wrap gap-2 items-center justify-evenly text-sm px-1 max-w-screen-2xl mx-auto sm:px-4">
+    <footer className="mx-auto w-full max-w-screen-2xl p-4 text-white sm:px-10 sm:py-6">
+      <div className="bottom-6 left-0 right-0 w-full">
+        <div className="mx-auto flex max-w-screen-2xl flex-wrap items-center justify-evenly gap-2 px-1 text-sm sm:px-4">
           <a
             href="https://github.com/MorpheusAIs/Docs"
             target="_blank"
             className="flex items-center gap-1"
           >
-            <Image
-              src="/github-logo.svg"
-              alt="github-logo"
-              width={48}
-              height={48}
-            />
+            <Image src="/github-logo.svg" alt="github-logo" width={48} height={48} />
             <p>Docs</p>
           </a>
 
@@ -25,12 +20,7 @@ const Footer = () => {
             target="_blank"
             className="flex items-center gap-1"
           >
-            <Image
-              src="/github-logo.svg"
-              alt="github-logo"
-              width={48}
-              height={48}
-            />
+            <Image src="/github-logo.svg" alt="github-logo" width={48} height={48} />
             <p>Lite Client</p>
           </a>
 
@@ -39,36 +29,17 @@ const Footer = () => {
             target="_blank"
             className="flex items-center gap-1"
           >
-            <Image
-              src="/discord-logo.svg"
-              alt="discord-logo"
-              width={36}
-              height={36}
-            />
+            <Image src="/discord-logo.svg" alt="discord-logo" width={36} height={36} />
             <p>Discord</p>
           </a>
 
-          <a
-            href="https://mor.org/"
-            target="_blank"
-            className="flex items-center gap-1"
-          >
+          <a href="https://mor.org/" target="_blank" className="flex items-center gap-1">
             <Image src="/mor-logo.svg" alt="mor-logo" width={48} height={48} />
             <p>MOR.org</p>
           </a>
 
-          <a
-            href="https://x.com/MorpheusAIs"
-            target="_blank"
-            className="flex items-center gap-1"
-          >
-            <Image
-              src="/x-logo.png"
-              alt="x-logo"
-              width={36}
-              height={36}
-              className="h-8 w-auto"
-            />
+          <a href="https://x.com/MorpheusAIs" target="_blank" className="flex items-center gap-1">
+            <Image src="/x-logo.png" alt="x-logo" width={36} height={36} className="h-8 w-auto" />
             <p>@MorpheusAIs</p>
           </a>
 
@@ -87,17 +58,8 @@ const Footer = () => {
             <p>Reddit</p>
           </a>
 
-          <a
-            href="https://t.me/MorpheusAI"
-            target="_blank"
-            className="flex items-center gap-1"
-          >
-            <Image
-              src="/telegram-logo.svg"
-              alt="telegram-logo"
-              width={36}
-              height={36}
-            />
+          <a href="https://t.me/MorpheusAI" target="_blank" className="flex items-center gap-1">
+            <Image src="/telegram-logo.svg" alt="telegram-logo" width={36} height={36} />
             <p>Telegram</p>
           </a>
         </div>

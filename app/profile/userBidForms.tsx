@@ -1,8 +1,7 @@
-import prisma from "@/lib/prisma";
+import prisma from '@/lib/prisma';
 
 export default async function BidFormsPage({ uid }: { uid: string }) {
-
-  console.log(uid,'uid');
+  console.log(uid, 'uid');
   if (!uid) {
     return <p>User ID is required to view this page.</p>;
   }

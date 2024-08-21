@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
 // Imports
 // ========================================================
-import { useAccount } from "wagmi";
+import { useAccount } from 'wagmi';
 
 // Main Page
 // ========================================================
@@ -12,7 +12,7 @@ export default function Account() {
 
   // Render
   return (
-    <section className="pb-6 mb-6 border-zinc-700 border-b">
+    <section className="mb-6 border-b border-zinc-700 pb-6">
       <>
         <h2>Account Connection</h2>
         {isConnected ? (

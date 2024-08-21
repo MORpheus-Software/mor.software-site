@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { Form, Input, Button, Select, Checkbox, notification } from "antd";
-import { useSession } from "next-auth/react";
-import axios from "axios";
+import React, { useState } from 'react';
+import { Form, Input, Button, Select, Checkbox, notification } from 'antd';
+import { useSession } from 'next-auth/react';
+import axios from 'axios';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -14,38 +14,31 @@ const FormComponent: React.FC = () => {
   const [checkboxErrors, setCheckboxErrors] = useState(false);
 
   const onFinish = async (values: any) => {
-    const { understand1, understand2, understand3, understand4, understand5 } =
-      values;
-    if (
-      !understand1 ||
-      !understand2 ||
-      !understand3 ||
-      !understand4 ||
-      !understand5
-    ) {
+    const { understand1, understand2, understand3, understand4, understand5 } = values;
+    if (!understand1 || !understand2 || !understand3 || !understand4 || !understand5) {
       setCheckboxErrors(true);
       return;
     }
 
     setLoading(true);
     try {
-      await axios.post("/api/bidForm", {
+      await axios.post('/api/bidForm', {
         ...values,
         userId: session?.user?.id,
       });
-      notification.success({ message: "Form submitted successfully!" });
+      notification.success({ message: 'Form submitted successfully!' });
     } catch (error) {
-      notification.error({ message: "Failed to submit the form!" });
+      notification.error({ message: 'Failed to submit the form!' });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="col-span-12 md:col-span-9 p-4 mx sm:mx-auto sm:p-6 shadow bg-morBg rounded-2xl max-w-3xl border border-borderTr">
-      <div className="lg:grid lg:grid-cols-1 flex flex-col-reverse text-base lg:space-x-4 text-gray-200">
-        <div className="col-span-3 flex flex-col h-full">
-          <div className="space-y-4 flex flex-col h-full">
+    <div className="mx col-span-12 max-w-3xl rounded-2xl border border-borderTr bg-morBg p-4 shadow sm:mx-auto sm:p-6 md:col-span-9">
+      <div className="flex flex-col-reverse text-base text-gray-200 lg:grid lg:grid-cols-1 lg:space-x-4">
+        <div className="col-span-3 flex h-full flex-col">
+          <div className="flex h-full flex-col space-y-4">
             <Form layout="vertical" onFinish={onFinish}>
               <Form.Item
                 label="GitHub Username"
@@ -54,7 +47,7 @@ const FormComponent: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please input your GitHub username!",
+                    message: 'Please input your GitHub username!',
                   },
                 ]}
               >
@@ -64,37 +57,23 @@ const FormComponent: React.FC = () => {
                 label="Email"
                 name="email"
                 initialValue={session?.user?.email}
-                rules={[
-                  { required: true, message: "Please input your email!" },
-                ]}
+                rules={[{ required: true, message: 'Please input your email!' }]}
               >
                 <Input className="cursor-not-allowed" readOnly />
               </Form.Item>
               <Form.Item
                 label="MRI Number"
                 name="mriNumber"
-                rules={[
-                  { required: true, message: "Please select an MRI number!" },
-                ]}
+                rules={[{ required: true, message: 'Please select an MRI number!' }]}
               >
                 <Select placeholder="Choose">
-                  <Option value="1">
-                    1 - Smart Contracts on Ethereum or Arbitrum
-                  </Option>
+                  <Option value="1">1 - Smart Contracts on Ethereum or Arbitrum</Option>
                   <Option value="2">2 - Smart Agent Tools and Examples</Option>
-                  <Option value="3">
-                    3 - Morpheus Local Install Desktop / Mobile
-                  </Option>
-                  <Option value="4">
-                    4 - TCM / MOR20 Token Standard for Fair Launches
-                  </Option>
+                  <Option value="3">3 - Morpheus Local Install Desktop / Mobile</Option>
+                  <Option value="4">4 - TCM / MOR20 Token Standard for Fair Launches</Option>
                   <Option value="5">5 - Protection Fund</Option>
-                  <Option value="6">
-                    6 - Capital Proofs Extended beyond Lido stETH
-                  </Option>
-                  <Option value="7">
-                    7 - Compute Proofs Morpheus / Lumerin
-                  </Option>
+                  <Option value="6">6 - Capital Proofs Extended beyond Lido stETH</Option>
+                  <Option value="7">7 - Compute Proofs Morpheus / Lumerin</Option>
                   <Option value="8">8 - Code Proofs & Dashboards</Option>
                   <Option value="9">9 - Frontend Proofs & Examples</Option>
                   <Option value="10">10 - Interoperability</Option>
@@ -106,7 +85,7 @@ const FormComponent: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please describe your contribution!",
+                    message: 'Please describe your contribution!',
                   },
                 ]}
               >
@@ -121,7 +100,7 @@ const FormComponent: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please state your deliverables!",
+                    message: 'Please state your deliverables!',
                   },
                 ]}
               >
@@ -136,7 +115,7 @@ const FormComponent: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please input the weights requested!",
+                    message: 'Please input the weights requested!',
                   },
                 ]}
               >
@@ -148,7 +127,7 @@ const FormComponent: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please input your wallet address!",
+                    message: 'Please input your wallet address!',
                   },
                 ]}
               >
@@ -160,7 +139,7 @@ const FormComponent: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please input the minimum weights time!",
+                    message: 'Please input the minimum weights time!',
                   },
                 ]}
               >
@@ -169,45 +148,38 @@ const FormComponent: React.FC = () => {
 
               <div
                 className={
-                  checkboxErrors
-                    ? "checkbox-group error"
-                    : "checkbox-group gap-2 flex flex-col"
+                  checkboxErrors ? 'checkbox-group error' : 'checkbox-group flex flex-col gap-2'
                 }
               >
                 <Form.Item name="understand1" valuePropName="checked" noStyle>
                   <Checkbox className="text-white">
-                    I understand that I will receive a NOTICE OF ACCEPTANCE if
-                    this bid is accepted.
+                    I understand that I will receive a NOTICE OF ACCEPTANCE if this bid is accepted.
                   </Checkbox>
                 </Form.Item>
                 <Form.Item name="understand2" valuePropName="checked" noStyle>
                   <Checkbox className="text-white">
-                    I understand that if I do not get a notice of acceptance, I
-                    will not be rewarded weights.
+                    I understand that if I do not get a notice of acceptance, I will not be rewarded
+                    weights.
                   </Checkbox>
                 </Form.Item>
                 <Form.Item name="understand3" valuePropName="checked" noStyle>
                   <Checkbox className="text-white">
-                    I understand all deliverables will be required for weights
-                    to be rewarded.
+                    I understand all deliverables will be required for weights to be rewarded.
                   </Checkbox>
                 </Form.Item>
                 <Form.Item name="understand4" valuePropName="checked" noStyle>
                   <Checkbox className="text-white">
-                    I understand I can ask questions about this process on the
-                    MORPHEUS Discord.
+                    I understand I can ask questions about this process on the MORPHEUS Discord.
                   </Checkbox>
                 </Form.Item>
                 <Form.Item name="understand5" valuePropName="checked" noStyle>
                   <Checkbox className="text-white">
-                    I understand I am required to maintain what I contribute in
-                    order to keep any weights.
+                    I understand I am required to maintain what I contribute in order to keep any
+                    weights.
                   </Checkbox>
                 </Form.Item>
               </div>
-              {checkboxErrors && (
-                <div className="text-red-500">Please accept all terms!</div>
-              )}
+              {checkboxErrors && <div className="text-red-500">Please accept all terms!</div>}
 
               <Form.Item>
                 <Button
@@ -217,11 +189,7 @@ const FormComponent: React.FC = () => {
                   htmlType="submit"
                   loading={loading}
                 >
-                  {!session?.user?.name ? (
-                    <> Login via GitHub to Submit </>
-                  ) : (
-                    <> Submit </>
-                  )}
+                  {!session?.user?.name ? <> Login via GitHub to Submit </> : <> Submit </>}
                 </Button>
               </Form.Item>
             </Form>

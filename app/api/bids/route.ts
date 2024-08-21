@@ -1,12 +1,12 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/lib/prisma";
-import { auth } from "@/auth";
+import { NextApiRequest, NextApiResponse } from 'next';
+import prisma from '@/lib/prisma';
+import { auth } from '@/auth';
 
 export async function POST(req: Request) {
   const session = await auth();
 
   if (!session || !session.user || !session.user.id) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response('Unauthorized', { status: 401 });
   }
 
   const {
@@ -26,28 +26,27 @@ export async function POST(req: Request) {
       githubUsername,
       email,
       mriNumber: mriNumber ?? 'null',
-       walletAddress,
+      walletAddress,
       // minimumWeightsTime,
       user: { connect: { id: session.user.id } },
     },
   });
 
   // Create the deliverables linked to the BidForm
-await Promise.all(
-  deliverables.map((deliverable:any) =>
-    prisma.bidFormDeliverable.create({
-      data: {
-        bidFormId: bidForm.id,
-        deliverableId: deliverable.id,
-        weightsRequested: deliverable.weightRequested,
-        deliverableDescription: deliverable.description,
-        minimumWeightsTime: deliverable.minimumWeightsTime,  
-        description: deliverable.deliverableDescription,     
-      },
-    })
-  )
-);
+  await Promise.all(
+    deliverables.map((deliverable: any) =>
+      prisma.bidFormDeliverable.create({
+        data: {
+          bidFormId: bidForm.id,
+          deliverableId: deliverable.id,
+          weightsRequested: deliverable.weightRequested,
+          deliverableDescription: deliverable.description,
+          minimumWeightsTime: deliverable.minimumWeightsTime,
+          description: deliverable.deliverableDescription,
+        },
+      }),
+    ),
+  );
 
-
-  return new Response("Bid submitted successfully", { status: 200 });
+  return new Response('Bid submitted successfully', { status: 200 });
 }
