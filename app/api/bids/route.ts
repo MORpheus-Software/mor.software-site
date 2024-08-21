@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/lib/prisma"; // Adjust the path based on your structure
+import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
 
 export async function POST(req: Request) {
@@ -25,9 +25,8 @@ export async function POST(req: Request) {
     data: {
       githubUsername,
       email,
-      mriNumber: mriNumber ?? 'null', // Use null if MRI number is not provided
-      description,
-      walletAddress,
+      mriNumber: mriNumber ?? 'null',
+       walletAddress,
       // minimumWeightsTime,
       user: { connect: { id: session.user.id } },
     },
@@ -42,8 +41,8 @@ await Promise.all(
         deliverableId: deliverable.id,
         weightsRequested: deliverable.weightRequested,
         deliverableDescription: deliverable.description,
-        minimumWeightsTime: deliverable.minimumWeightsTime, // New field
-        description: deliverable.deliverableDescription,      // New field
+        minimumWeightsTime: deliverable.minimumWeightsTime,  
+        description: deliverable.deliverableDescription,     
       },
     })
   )

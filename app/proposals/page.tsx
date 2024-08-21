@@ -1,5 +1,5 @@
 // app/proposals/page.tsx
-import prisma  from "@/lib/prisma"; // adjust the path based on your structure
+import prisma  from "@/lib/prisma";
 import Link from "next/link";
 
 export default async function ProposalsPage() {
@@ -8,6 +8,7 @@ export default async function ProposalsPage() {
       status: "open",
     },
     include: {
+      user:true,
       deliverables: true, // include deliverables if you want to display them
     },
   });
@@ -22,7 +23,9 @@ export default async function ProposalsPage() {
           <div className="flex flex-row justify-between items-center">
             <div className="flex flex-col gap-2"> 
             <h2 className="text-xl font-bold mb-0">{proposal.title}</h2>
-            <p>{proposal.description}</p>
+            <p>Submitted by: {proposal.user.name}</p>
+            <p>Category: {proposal.mri}</p>
+
             </div>
 
 

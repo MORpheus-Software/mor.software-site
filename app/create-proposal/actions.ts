@@ -1,7 +1,14 @@
 "use server";
+import { auth } from "@/auth";
 import prisma from "../../lib/prisma"; // Adjust the path to your prisma client
 
 export async function submitProposal(formData: FormData) {
+  const session = await auth();
+
+  if (!session || !session.user || !session.user.id) {
+    return { success: false, message: "Unauthorized" };
+  }
+
   try {
     // Extract data from the form
     const title = formData.get("title") as string;
@@ -19,16 +26,16 @@ export async function submitProposal(formData: FormData) {
         title,
         description,
         mri,
+        user: { connect: { id: session.user.id } },
         deliverables: {
           create: deliverables,
         },
       },
     });
 
-    // Return a success response
     return { success: true, message: "Proposal submitted successfully!" };
   } catch (error) {
-    // Return an error response
+    console.error("Error submitting proposal:", error);
     return { success: false, message: "Failed to submit the proposal." };
   }
 }

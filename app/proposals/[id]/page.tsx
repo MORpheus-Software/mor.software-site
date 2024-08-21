@@ -1,9 +1,9 @@
-// app/proposals/[id]/page.tsx
-import prisma from "@/lib/prisma"; // adjust the path based on your structure
+import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import BidForm from "./bidform";
 import Button from "@/components/button";
+import ReactMarkdown from "react-markdown";
 
 export default async function ProposalDetailPage({ params }: { params: { id: string } }) {
   const proposal = await prisma.proposal.findUnique({
@@ -42,7 +42,19 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
         <div className="flex flex-col gap-2"> 
           <div className="flex flex-col"> 
             <h1 className="text-2xl font-bold mt-0">{proposal.title}</h1>
-            {/* <p className="text-gray-500 mt-2">{proposal.description}</p> */}
+            <h1 className="text-base font-bold mt-0">{proposal.mri}</h1>
+          </div>
+
+          <div className="flex flex-col"> 
+            <h3 className="text-xl mt-4 font-semibold">Description:</h3>
+            <div className="text-sm text-gray-300">
+            <div>
+
+
+      <ReactMarkdown>{proposal.description}</ReactMarkdown>
+
+    </div>
+                </div>
           </div>
 
           <div className="flex flex-col"> 
@@ -72,12 +84,14 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
             <div key={bid.id} className="mb-6 p-4 border border-gray-600 rounded-lg">
               <h4 className="font-semibold">Bid by {bid.user.name || bid.githubUsername}</h4>
               <p>Email: {bid.email}</p>
-              <p>Description: {bid.description}</p>
               <h5 className="mt-2 font-semibold">Deliverables:</h5>
               <ul>
                 {bid.deliverables.map((deliverable) => (
-                  <li key={deliverable.id}>
-                    {deliverable.deliverable.description} - Weights Requested: {deliverable.weightsRequested}
+                  <li key={deliverable.id} className="mt-2">
+                    <p><strong>Description:</strong> {deliverable.description}</p>
+                    <p><strong>Deliverable Description:</strong> {deliverable.deliverableDescription}</p>
+                    <p><strong>Weights Requested:</strong> {deliverable.weightsRequested}</p>
+                    <p><strong>Minimum Weights Time:</strong> {deliverable.minimumWeightsTime}</p>
                   </li>
                 ))}
               </ul>

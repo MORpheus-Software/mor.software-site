@@ -6,17 +6,18 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-}model User {
+}
+
+model User {
   id             String   @id @default(cuid())
   email          String   @unique
   name           String?
   image          String?
-  emailVerified  DateTime?
-  githubAccount  String?  @unique
   accounts       Account[]
   wallets        Wallet[]
   stakings       Stake[]
   bidform        BidForm[]
+  proposal Proposal[]
   proofContributions ProofContribution[]
 }
 
@@ -60,7 +61,6 @@ model BidForm {
   githubUsername      String
   email               String
   mriNumber           String
-  description         String
   deliverables        BidFormDeliverable[]
   walletAddress       String
   createdAt           DateTime @default(now())
@@ -103,6 +103,8 @@ model Proposal {
   deliverables Deliverable[]
   status      String        @default("open")
   createdAt   DateTime     @default(now())
+  userId             String
+  user          User     @relation(fields: [userId], references: [id])
 }
 
 model Deliverable {

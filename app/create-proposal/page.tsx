@@ -1,11 +1,21 @@
-"use client"
+"use client";
 import Link from "next/link";
-import Button  from "../../components/button";
+import Button from "../../components/button";
 import { submitProposal } from "./actions";
 import { MarkdownField, SubmitButton, Deliverables } from "./components";
 import { notification } from "antd";
 
 export default function CreateProposal() {
+  const handleFormSubmit = async (formData) => {
+    const result = await submitProposal(formData);
+
+    if (result.success) {
+      notification.success({ message: result.message });
+    } else {
+      notification.error({ message: result.message });
+    }
+  };
+
   return (
     <div className="col-span-12 p-4 mx sm:mx-auto sm:p-6 shadow bg-morBg rounded-2xl max-w-3xl border border-borderTr">
       <div className="flex justify-between items-center">
@@ -14,24 +24,18 @@ export default function CreateProposal() {
           <Button text="Go Back" />
         </Link>
       </div>
-    
 
-      <form
-        action={async (formData) => {
-          // "use server";
-          await submitProposal(formData);
-          notification.success({ message: "Proposal submitted successfully!" });
-
-        }}
-      >
+      <form onSubmit={async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        await handleFormSubmit(formData);
+      }}>
         <div className="flex flex-col gap-4 mt-5">
-        <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor="title">
+          <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor="title">
             Title
-            <p className="text-sm text-gray-400 my-0.5 mb-2">
-              MRI Title
-            </p>
+            <p className="text-sm text-gray-400 my-0.5 mb-2">MRI Title</p>
           </label>
-                    <input
+          <input
             type="text"
             id="title"
             name="title"
@@ -41,7 +45,6 @@ export default function CreateProposal() {
           />
         </div>
 
-        {/* Select an option */}
         <div className="flex flex-col mt-5">
           <label className="flex flex-col text-white texg-xl gap-2" htmlFor="mri">
             MRI Number{" "}
@@ -91,7 +94,7 @@ export default function CreateProposal() {
         />
 
         <Deliverables />
-        <SubmitButton />
+        <SubmitButton submitAction={handleFormSubmit} />
       </form>
     </div>
   );

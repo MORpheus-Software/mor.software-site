@@ -59,7 +59,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
   return (
     <div className="col-span-12 p-4 mx sm:mx-auto sm:p-6 shadow bg-morBg rounded-2xl max-w-3xl border border-borderTr">
       <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-        <div className="flex flex-col gap-4 mt-5">
+        <div className="flex flex-col gap-4 mt-5 !hidden">
           <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor="githubUsername">
             GitHub Username
             <input
@@ -74,7 +74,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
           </label>
         </div>
 
-        <div className="flex flex-col gap-4 mt-5">
+        <div className="flex flex-col gap-4 mt-5 !hidden">
           <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor="email">
             Email
             <input
@@ -89,18 +89,18 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
           </label>
         </div>
 
-        <MarkdownField
+        {/* <MarkdownField
           id="description"
           title="Description of Contribution"
           desc="Please describe your contribution in detail."
-        />
+        /> */}
 
 {deliverables.map((deliverable) => (
   <div key={deliverable.id} className="flex flex-col gap-4 mt-5">
     <MarkdownField
       id={`deliverable-${deliverable.id}`}
       title={`Deliverable: ${deliverable.description}`}
-      desc="Describe your contribution to this deliverable."
+      desc="Describe deliverable"
     />
     <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor={`weight-${deliverable.id}`}>
       Weights Requested for this Deliverable
@@ -127,7 +127,7 @@ export default function BidForm({ proposalId, deliverables }: { proposalId: numb
     </label>
 
     <label className="flex flex-col text-white texg-xl gap-2 mb-0" htmlFor={`description-${deliverable.id}`}>
-      Additional Description for this Deliverable
+       Description for this Deliverable
       <input
         type="text"
         id={`description-${deliverable.id}`}
