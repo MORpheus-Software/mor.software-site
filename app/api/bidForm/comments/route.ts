@@ -8,7 +8,10 @@ export async function POST(req: NextRequest) {
     const { bidFormId, text, walletAddress } = await req.json();
 
     if (!bidFormId || !text || !walletAddress) {
-      return NextResponse.json({ message: 'BidForm ID, comment text, and wallet address are required' }, { status: 400 });
+      return NextResponse.json(
+        { message: 'BidForm ID, comment text, and wallet address are required' },
+        { status: 400 },
+      );
     }
 
     // Find the user by their wallet address
@@ -18,7 +21,10 @@ export async function POST(req: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json({ message: 'User not found for this wallet address' }, { status: 404 });
+      return NextResponse.json(
+        { message: 'User not found for this wallet address' },
+        { status: 404 },
+      );
     }
 
     // Fetch the bid form by ID to get its related proposal's category
@@ -43,7 +49,10 @@ export async function POST(req: NextRequest) {
     const proposalId = bidForm.deliverables[0]?.deliverable.proposalId;
 
     if (!proposalId) {
-      return NextResponse.json({ message: 'No proposal associated with this bid form' }, { status: 404 });
+      return NextResponse.json(
+        { message: 'No proposal associated with this bid form' },
+        { status: 404 },
+      );
     }
 
     // Fetch the proposal to get its category ID
@@ -69,7 +78,10 @@ export async function POST(req: NextRequest) {
     });
 
     if (!isMaintainer) {
-      return NextResponse.json({ message: 'Unauthorized: Only category maintainers can leave comments' }, { status: 403 });
+      return NextResponse.json(
+        { message: 'Unauthorized: Only category maintainers can leave comments' },
+        { status: 403 },
+      );
     }
 
     // Add a new comment to the bid form

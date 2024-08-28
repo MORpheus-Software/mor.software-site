@@ -31,28 +31,29 @@ export async function GET(req: NextRequest) {
             comments: {
               include: {
                 user: {
-                  select: { name: true }
-                }
-              }
-            }
-          }
+                  select: { name: true },
+                },
+              },
+            },
+          },
         },
         maintainers: {
           include: {
             maintainer: {
               include: {
-                wallet: true
-              }
-            }
-          }
-        }
+                wallet: true,
+              },
+            },
+          },
+        },
       },
     });
 
-
-    console.log(categories)
     if (categories.length === 0) {
-      return NextResponse.json({ message: 'No categories found for the provided wallet address.' }, { status: 404 });
+      return NextResponse.json(
+        { message: 'No categories found for the provided wallet address.' },
+        { status: 404 },
+      );
     }
 
     return NextResponse.json(categories);

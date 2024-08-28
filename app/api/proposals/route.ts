@@ -19,10 +19,10 @@ export async function GET(req: NextRequest) {
         comments: {
           include: {
             user: {
-              select: { name: true }
-            }
-          }
-        }
+              select: { name: true },
+            },
+          },
+        },
       },
     });
 
@@ -38,14 +38,14 @@ export async function GET(req: NextRequest) {
         comments: {
           include: {
             user: {
-              select: { name: true }
-            }
-          }
+              select: { name: true },
+            },
+          },
         },
         user: {
-          select: { name: true, githubUsername: true }
-        }
-      }
+          select: { name: true, githubUsername: true },
+        },
+      },
     });
 
     return NextResponse.json({ proposal, bidForms });
@@ -61,7 +61,10 @@ export async function PUT(req: NextRequest) {
     const { id, status, walletAddress } = await req.json();
 
     if (!id || !status || !walletAddress) {
-      return NextResponse.json({ message: 'Proposal ID, status, and wallet address are required' }, { status: 400 });
+      return NextResponse.json(
+        { message: 'Proposal ID, status, and wallet address are required' },
+        { status: 400 },
+      );
     }
 
     // Fetch the proposal by ID to get its categoryId
@@ -87,7 +90,10 @@ export async function PUT(req: NextRequest) {
     });
 
     if (!isMaintainer) {
-      return NextResponse.json({ message: 'Unauthorized: You do not have permission to update this proposal' }, { status: 403 });
+      return NextResponse.json(
+        { message: 'Unauthorized: You do not have permission to update this proposal' },
+        { status: 403 },
+      );
     }
 
     // Update the proposal status
@@ -109,7 +115,10 @@ export async function POST(req: NextRequest) {
     const { proposalId, text, walletAddress } = await req.json();
 
     if (!proposalId || !text || !walletAddress) {
-      return NextResponse.json({ message: 'Proposal ID, comment text, and wallet address are required' }, { status: 400 });
+      return NextResponse.json(
+        { message: 'Proposal ID, comment text, and wallet address are required' },
+        { status: 400 },
+      );
     }
 
     // Find the user by their wallet address
@@ -119,7 +128,10 @@ export async function POST(req: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json({ message: 'User not found for this wallet address' }, { status: 404 });
+      return NextResponse.json(
+        { message: 'User not found for this wallet address' },
+        { status: 404 },
+      );
     }
 
     // Fetch the proposal by ID to get its categoryId
@@ -145,7 +157,10 @@ export async function POST(req: NextRequest) {
     });
 
     if (!isMaintainer) {
-      return NextResponse.json({ message: 'Unauthorized: Only category maintainers can leave comments' }, { status: 403 });
+      return NextResponse.json(
+        { message: 'Unauthorized: Only category maintainers can leave comments' },
+        { status: 403 },
+      );
     }
 
     // Add a new comment to the proposal

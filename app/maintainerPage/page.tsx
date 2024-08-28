@@ -243,12 +243,15 @@ export default function MaintainerPage() {
           <>
             {allProposals.length > 0 ? (
               allProposals.map((proposal) => (
-                <div key={proposal.id} className="proposal-item my-3 flex flex-col gap-1 rounded border border-neutral-600 bg-black p-5 hover:bg-neutral-900">
+                <div
+                  key={proposal.id}
+                  className="proposal-item my-3 flex flex-col gap-1 rounded border border-neutral-600 bg-black p-5 hover:bg-neutral-900"
+                >
                   <div className="flex flex-row items-center justify-between">
                     <div className="flex flex-col gap-2">
-                      <div className='flex flex-row gap-4 items-center'>  
-                        <h2 className="mb-0 text-xl font-bold">{proposal.title}</h2>  
-                        <p>{proposal.status}</p> 
+                      <div className="flex flex-row items-center gap-4">
+                        <h2 className="mb-0 text-xl font-bold">{proposal.title}</h2>
+                        <p>{proposal.status}</p>
                       </div>
                       <p>Category: {proposal.mri}</p>
                     </div>
@@ -260,7 +263,6 @@ export default function MaintainerPage() {
                       Manage Proposal & Bids
                     </Button>
                   </div>
-                  <p>{proposal.description}</p>
                 </div>
               ))
             ) : (
@@ -278,11 +280,11 @@ export default function MaintainerPage() {
         open={isModalVisible}
         onCancel={handleModalClose}
         footer={null}
-        width={800} 
+        width={800}
       >
         {selectedProposal && (
           <>
-            <div className="flex flex-row gap-4 items-center"> 
+            <div className="flex flex-row items-center gap-4">
               <Select
                 value={selectedProposal.status}
                 onChange={(value) => handleUpdateStatus(selectedProposal.id, value)}
@@ -309,14 +311,20 @@ export default function MaintainerPage() {
               ))}
             </ul>
 
-            <h3 className="mt-4 text-xl font-semibold mb-2">Comments:</h3>
+            <h3 className="mb-2 mt-4 text-xl font-semibold">Comments:</h3>
             <ul className="markdown-body">
-              {selectedProposal.comments?.map((comment) => ( // Add optional chaining
-                <li key={comment.id} className="mt-2">
-                  <strong>{comment.user.name}:</strong> {comment.text}
-                  <p className="text-xs text-gray-500">{new Date(comment.createdAt).toLocaleString()}</p>
-                </li>
-              ))}
+              {selectedProposal.comments?.map(
+                (
+                  comment, // Add optional chaining
+                ) => (
+                  <li key={comment.id} className="mt-2">
+                    <strong>{comment.user.name}:</strong> {comment.text}
+                    <p className="text-xs text-gray-500">
+                      {new Date(comment.createdAt).toLocaleString()}
+                    </p>
+                  </li>
+                ),
+              )}
             </ul>
 
             <TextArea
@@ -325,7 +333,12 @@ export default function MaintainerPage() {
               placeholder="Leave a comment..."
               rows={3}
             />
-            <Button type="primary" className='mt-2' onClick={handleCommentSubmit} disabled={updating}>
+            <Button
+              type="primary"
+              className="mt-2"
+              onClick={handleCommentSubmit}
+              disabled={updating}
+            >
               Submit Comment
             </Button>
 
@@ -333,7 +346,9 @@ export default function MaintainerPage() {
             {bidForms.length > 0 ? (
               bidForms.map((bid) => (
                 <div key={bid.id} className="mb-6 rounded-lg border border-gray-600 p-4">
-                  <h4 className="font-semibold mb-1">Bid by {bid.user.name || bid.user.githubUsername}</h4>
+                  <h4 className="mb-1 font-semibold">
+                    Bid by {bid.user.name || bid.user.githubUsername}
+                  </h4>
                   <Select
                     value={bid.status}
                     onChange={(value) => handleUpdateBidStatus(bid.id, value)}
@@ -371,12 +386,18 @@ export default function MaintainerPage() {
 
                   <h5 className="mt-2 font-semibold">Comments:</h5>
                   <ul className="markdown-body">
-                    {bid.comments?.map((comment) => ( // Add optional chaining
-                      <li key={comment.id} className="mt-2">
-                        <strong>{comment.user.name}:</strong> {comment.text}
-                        <p className="text-xs text-gray-500">{new Date(comment.createdAt).toLocaleString()}</p>
-                      </li>
-                    ))}
+                    {bid.comments?.map(
+                      (
+                        comment, // Add optional chaining
+                      ) => (
+                        <li key={comment.id} className="mt-2">
+                          <strong>{comment.user.name}:</strong> {comment.text}
+                          <p className="text-xs text-gray-500">
+                            {new Date(comment.createdAt).toLocaleString()}
+                          </p>
+                        </li>
+                      ),
+                    )}
                   </ul>
 
                   <TextArea
@@ -387,7 +408,7 @@ export default function MaintainerPage() {
                   />
                   <Button
                     type="primary"
-                    className='mt-2'
+                    className="mt-2"
                     onClick={() => handleBidCommentSubmit(bid.id)}
                     disabled={updating}
                   >

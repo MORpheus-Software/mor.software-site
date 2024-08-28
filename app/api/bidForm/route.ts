@@ -31,7 +31,10 @@ export async function PUT(req: NextRequest) {
     const { id, status, walletAddress } = await req.json();
 
     if (!id || !status || !walletAddress) {
-      return NextResponse.json({ message: 'BidForm ID, status, and wallet address are required' }, { status: 400 });
+      return NextResponse.json(
+        { message: 'BidForm ID, status, and wallet address are required' },
+        { status: 400 },
+      );
     }
 
     // Fetch the bid form by ID to get its related proposal's category
@@ -56,7 +59,10 @@ export async function PUT(req: NextRequest) {
     const proposalId = bidForm.deliverables[0]?.deliverable.proposalId;
 
     if (!proposalId) {
-      return NextResponse.json({ message: 'No proposal associated with this bid form' }, { status: 404 });
+      return NextResponse.json(
+        { message: 'No proposal associated with this bid form' },
+        { status: 404 },
+      );
     }
 
     // Fetch the proposal to get its category ID
@@ -82,7 +88,10 @@ export async function PUT(req: NextRequest) {
     });
 
     if (!isMaintainer) {
-      return NextResponse.json({ message: 'Unauthorized: You do not have permission to update this bid form' }, { status: 403 });
+      return NextResponse.json(
+        { message: 'Unauthorized: You do not have permission to update this bid form' },
+        { status: 403 },
+      );
     }
 
     // Update the bid form status
@@ -97,7 +106,6 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ message: 'Failed to update bid form status.' }, { status: 500 });
   }
 }
-
 
 // import { NextRequest, NextResponse } from "next/server";
 // import prisma from "../../../lib/prisma"; // Adjust the path as needed
