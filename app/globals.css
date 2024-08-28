@@ -89,6 +89,8 @@
 }
 
 
+.ant-select-selector{background: white !important;}
+
 
 .input-container-mor {
   padding: 16px;
@@ -117,3 +119,4 @@
   color: #16a261;
   border: 0;
 }
+

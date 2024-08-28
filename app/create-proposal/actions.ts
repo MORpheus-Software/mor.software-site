@@ -14,19 +14,22 @@ export async function submitProposal(formData: FormData) {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const mri = formData.get('mri') as string;
+    const categoryId = parseInt(formData.get('categoryId') as string, 10); // Get the categoryId
 
     // Gather deliverables
     const deliverables = Array.from(formData.entries())
       .filter(([key]) => key.startsWith('deliverable-'))
       .map(([, value]) => ({ description: value as string }));
 
-    // Create a new proposal with associated deliverables
+    // Create a new proposal with associated deliverables and category
     await prisma.proposal.create({
       data: {
         title,
         description,
         mri,
+        status:'closed',
         user: { connect: { id: session.user.id } },
+        category: { connect: { id: categoryId } }, // Correctly associate the category
         deliverables: {
           create: deliverables,
         },

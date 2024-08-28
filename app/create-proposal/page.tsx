@@ -16,6 +16,20 @@ export default function CreateProposal() {
     }
   };
 
+  // Mapping MRI names to category IDs
+  const categoryMap = {
+    '1 - Smart Contracts on Ethereum or Arbitrum': 1,
+    '2 - Smart Agent Tools and Examples': 2,
+    '3 - Morpheus Local Install Desktop / Mobile': 3,
+    '4 - TCM / MOR20 Token Standard for Fair Launches': 4,
+    '5 - Protection Fund': 5,
+    '6 - Capital Proofs Extended beyond Lido stETH': 6,
+    '7 - Compute Proofs Morpheus / Lumerin': 7,
+    '8 - Code Proofs & Dashboards': 8,
+    '9 - Frontend Proofs & Examples': 9,
+    '10 - Interoperability': 10,
+  };
+
   return (
     <div className="mx col-span-12 max-w-3xl rounded-2xl border border-borderTr bg-morBg p-4 shadow sm:mx-auto sm:p-6">
       <div className="flex items-center justify-between">
@@ -30,6 +44,12 @@ export default function CreateProposal() {
           e.preventDefault();
           const formElement = e.target as HTMLFormElement;
           const formData = new FormData(formElement);
+
+          // Add category ID based on the selected MRI
+          const mri = formData.get('mri') as string;
+          const categoryId = categoryMap[mri];
+          formData.append('categoryId', categoryId.toString());
+
           await handleFormSubmit(formData);
         }}
       >

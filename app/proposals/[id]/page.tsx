@@ -1,3 +1,5 @@
+// app/proposals/[id]/page.tsx
+
 import prisma from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -26,6 +28,8 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
           deliverable: true,
         },
       },
+
+      
     },
   });
 
@@ -77,7 +81,29 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
         {bidForms.length > 0 ? (
           bidForms.map((bid) => (
             <div key={bid.id} className="mb-6 rounded-lg border border-gray-600 p-4">
+
+              <div className='flex flex-row justify-between w-full' > 
               <h4 className="font-semibold">Bid by {bid.user.name || bid.githubUsername}</h4>
+
+              <h4 className="font-semibold">
+  Status:{" "}
+  <span
+    className={`${
+      bid.status === "pending"
+        ? "bg-yellow-500 text-white"
+        : bid.status === "approved"
+        ? "bg-green-500 text-white"
+        : "bg-red-500 text-white"
+    } px-2 py-1 rounded-sm text-sm`}
+  >
+    {bid.status}
+  </span>
+</h4>
+
+
+              </div>
+
+
               <p>Email: {bid.email}</p>
               <h5 className="mt-2 font-semibold">Deliverables:</h5>
               <ul className="markdown-body">

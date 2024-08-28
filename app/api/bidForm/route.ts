@@ -26,6 +26,79 @@ export async function GET(req: NextRequest) {
   }
 }
 
+export async function PUT(req: NextRequest) {
+  try {
+    const { id, status, walletAddress } = await req.json();
+
+    if (!id || !status || !walletAddress) {
+      return NextResponse.json({ message: 'BidForm ID, status, and wallet address are required' }, { status: 400 });
+    }
+
+    // Fetch the bid form by ID to get its related proposal's category
+    const bidForm = await prisma.bidForm.findUnique({
+      where: { id },
+      include: {
+        deliverables: {
+          include: {
+            deliverable: {
+              select: { proposalId: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!bidForm) {
+      return NextResponse.json({ message: 'BidForm not found' }, { status: 404 });
+    }
+
+    // Get the proposal ID related to the bid form
+    const proposalId = bidForm.deliverables[0]?.deliverable.proposalId;
+
+    if (!proposalId) {
+      return NextResponse.json({ message: 'No proposal associated with this bid form' }, { status: 404 });
+    }
+
+    // Fetch the proposal to get its category ID
+    const proposal = await prisma.proposal.findUnique({
+      where: { id: proposalId },
+      select: { categoryId: true },
+    });
+
+    if (!proposal) {
+      return NextResponse.json({ message: 'Associated proposal not found' }, { status: 404 });
+    }
+
+    // Check if the wallet is a maintainer for this category
+    const isMaintainer = await prisma.maintainerCategory.findFirst({
+      where: {
+        maintainer: {
+          wallet: {
+            address: walletAddress,
+          },
+        },
+        categoryId: proposal.categoryId,
+      },
+    });
+
+    if (!isMaintainer) {
+      return NextResponse.json({ message: 'Unauthorized: You do not have permission to update this bid form' }, { status: 403 });
+    }
+
+    // Update the bid form status
+    const updatedBidForm = await prisma.bidForm.update({
+      where: { id },
+      data: { status },
+    });
+
+    return NextResponse.json(updatedBidForm);
+  } catch (error) {
+    console.error('Error updating bid form status:', error);
+    return NextResponse.json({ message: 'Failed to update bid form status.' }, { status: 500 });
+  }
+}
+
+
 // import { NextRequest, NextResponse } from "next/server";
 // import prisma from "../../../lib/prisma"; // Adjust the path as needed
 // import { appendToSheet } from "@/utils/googlesheets";

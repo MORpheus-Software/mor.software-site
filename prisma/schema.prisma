@@ -6,20 +6,23 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  engineType = "library"
 }
 
 model User {
-  id             String   @id @default(cuid())
-  email          String   @unique
-  name           String?
-  image          String?
-  emailVerified  DateTime?
-  accounts       Account[]
-  wallets        Wallet[]
-  stakings       Stake[]
-  bidform        BidForm[]
-  proposal Proposal[]
-  proofContributions ProofContribution[]
+  id                   String                @id @default(cuid())
+  email                String                @unique
+  name                 String?
+  image                String?
+  emailVerified        DateTime?
+  accounts             Account[]
+  wallets              Wallet[]
+  stakings             Stake[]
+  bidform              BidForm[]
+  proposal             Proposal[]
+  proofContributions   ProofContribution[]
+  bidFormComments      BidFormComment[]
+  proposalComments     ProposalComment[]
 }
 
 model Account {
@@ -37,13 +40,14 @@ model Account {
 }
 
 model Wallet {
-  id          String   @id @default(cuid())
-  address     String   @unique
+  id          String       @id @default(cuid())
+  address     String       @unique
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User         @relation(fields: [userId], references: [id])
   stakings    Stake[]
   name        String?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime     @default(now())
+  maintainers Maintainer[]
 }
 
 model Stake {
@@ -58,29 +62,30 @@ model Stake {
 }
 
 model BidForm {
-  id                  String   @id @default(cuid())
+  id                  String           @id @default(cuid())
   githubUsername      String
   email               String
   mriNumber           String
   deliverables        BidFormDeliverable[]
   walletAddress       String
-  createdAt           DateTime @default(now())
+  createdAt           DateTime         @default(now())
   userId              String
-  user                User     @relation(fields: [userId], references: [id])
+  status              String           @default("pending")
+  user                User             @relation(fields: [userId], references: [id])
+  comments            BidFormComment[]
 }
 
 model BidFormDeliverable {
-  id                    String   @id @default(cuid())
+  id                    String         @id @default(cuid())
   bidFormId             String
-  bidForm               BidForm  @relation(fields: [bidFormId], references: [id])
+  bidForm               BidForm        @relation(fields: [bidFormId], references: [id])
   deliverableId         Int
-  deliverable           Deliverable @relation(fields: [deliverableId], references: [id])
+  deliverable           Deliverable    @relation(fields: [deliverableId], references: [id])
   weightsRequested      String
   deliverableDescription String 
   minimumWeightsTime    String    
-  description           String     
+  description           String    
 }
-
 
 model ProofContribution {
   id                 String   @id @default(cuid())
@@ -97,21 +102,68 @@ model ProofContribution {
 }
 
 model Proposal {
-  id          Int          @id @default(autoincrement())
+  id          Int              @id @default(autoincrement())
   title       String
   description String
-  mri         String
+  mri         String           // Keep this as a readable string for legacy purposes
+  categoryId  Int
+  category    Category         @relation(fields: [categoryId], references: [id])
   deliverables Deliverable[]
-  status      String        @default("open")
-  createdAt   DateTime     @default(now())
-  userId             String
-  user          User     @relation(fields: [userId], references: [id])
+  status      String           @default("closed")
+  createdAt   DateTime         @default(now())
+  userId      String
+  user        User             @relation(fields: [userId], references: [id])
+  comments    ProposalComment[]
 }
 
 model Deliverable {
-  id          Int          @id @default(autoincrement())
+  id          Int                @id @default(autoincrement())
   description String
   proposalId  Int
-  proposal    Proposal      @relation(fields: [proposalId], references: [id])
+  proposal    Proposal           @relation(fields: [proposalId], references: [id])
   bidFormDeliverables BidFormDeliverable[]
+}
+
+model Category {
+  id           Int                @id @default(autoincrement())
+  name         String             @unique
+  description  String?
+  proposals    Proposal[]
+  maintainers  MaintainerCategory[]
+}
+
+model Maintainer {
+  id              String               @id @default(cuid())
+  walletId        String
+  wallet          Wallet               @relation(fields: [walletId], references: [id])
+  categories      MaintainerCategory[]
+}
+
+model MaintainerCategory {
+  maintainerId  String
+  maintainer    Maintainer  @relation(fields: [maintainerId], references: [id])
+  categoryId    Int
+  category      Category    @relation(fields: [categoryId], references: [id])
+
+  @@id([maintainerId, categoryId])
+}
+
+model BidFormComment {
+  id          String   @id @default(cuid())
+  text        String
+  createdAt   DateTime @default(now())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  bidFormId   String
+  bidForm     BidForm  @relation(fields: [bidFormId], references: [id])
+}
+
+model ProposalComment {
+  id          String   @id @default(cuid())
+  text        String
+  createdAt   DateTime @default(now())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  proposalId  Int
+  proposal    Proposal @relation(fields: [proposalId], references: [id])
 }
