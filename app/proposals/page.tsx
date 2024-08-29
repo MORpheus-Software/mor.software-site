@@ -6,7 +6,7 @@ import Link from 'next/link';
 export default async function ProposalsPage() {
   const openProposals = await prisma.proposal.findMany({
     where: {
-      status: 'open',
+      status: 'approved',
     },
     include: {
       user: true,

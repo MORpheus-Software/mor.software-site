@@ -27,7 +27,7 @@ export async function submitProposal(formData: FormData) {
         title,
         description,
         mri,
-        status: 'closed',
+        status: 'pending',
         user: { connect: { id: session.user.id } },
         category: { connect: { id: categoryId } }, // Correctly associate the category
         deliverables: {

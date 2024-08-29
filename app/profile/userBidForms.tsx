@@ -1,13 +1,13 @@
 import prisma from '@/lib/prisma';
 
-export default async function BidFormsPage({ uid }: { uid: string }) {
+export default async function JobFormsPage({ uid }: { uid: string }) {
   console.log(uid, 'uid');
   if (!uid) {
     return <p>User ID is required to view this page.</p>;
   }
 
-  // Fetch BidForms for the provided user ID and include deliverables
-  const bidForms = await prisma.bidForm.findMany({
+  // Fetch JobForms for the provided user ID and include deliverables
+  const jobForms = await prisma.jobForm.findMany({
     where: {
       userId: uid,
     },
@@ -18,9 +18,9 @@ export default async function BidFormsPage({ uid }: { uid: string }) {
 
   return (
     <div>
-      <h1>Your BidForms</h1>
+      <h1>Your JobForms</h1>
       <ul>
-        {bidForms.map((form) => (
+        {jobForms.map((form) => (
           <li key={form.id}>
             <h2>{form.githubUsername}</h2>
             {/* <p>{form.description}</p> */}

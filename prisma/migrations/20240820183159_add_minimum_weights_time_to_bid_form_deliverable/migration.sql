@@ -11,7 +11,7 @@ ALTER TABLE "Contribution" DROP CONSTRAINT "Contribution_userId_fkey";
 DROP TABLE "Contribution";
 
 -- CreateTable
-CREATE TABLE "BidForm" (
+CREATE TABLE "JobForm" (
     "id" TEXT NOT NULL,
     "githubUsername" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -22,20 +22,20 @@ CREATE TABLE "BidForm" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" TEXT NOT NULL,
 
-    CONSTRAINT "BidForm_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "JobForm_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "BidFormDeliverable" (
+CREATE TABLE "JobFormDeliverable" (
     "id" TEXT NOT NULL,
-    "bidFormId" TEXT NOT NULL,
+    "jobFormId" TEXT NOT NULL,
     "deliverableId" INTEGER NOT NULL,
     "weightsRequested" TEXT NOT NULL,
     "deliverableDescription" TEXT NOT NULL,
     "minimumWeightsTime" TEXT NOT NULL,
     "description" TEXT NOT NULL,
 
-    CONSTRAINT "BidFormDeliverable_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "JobFormDeliverable_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -76,13 +76,13 @@ CREATE TABLE "Deliverable" (
 );
 
 -- AddForeignKey
-ALTER TABLE "BidForm" ADD CONSTRAINT "BidForm_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "JobForm" ADD CONSTRAINT "JobForm_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BidFormDeliverable" ADD CONSTRAINT "BidFormDeliverable_bidFormId_fkey" FOREIGN KEY ("bidFormId") REFERENCES "BidForm"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "JobFormDeliverable" ADD CONSTRAINT "JobFormDeliverable_jobFormId_fkey" FOREIGN KEY ("jobFormId") REFERENCES "JobForm"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BidFormDeliverable" ADD CONSTRAINT "BidFormDeliverable_deliverableId_fkey" FOREIGN KEY ("deliverableId") REFERENCES "Deliverable"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "JobFormDeliverable" ADD CONSTRAINT "JobFormDeliverable_deliverableId_fkey" FOREIGN KEY ("deliverableId") REFERENCES "Deliverable"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ProofContribution" ADD CONSTRAINT "ProofContribution_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

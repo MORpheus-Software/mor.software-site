@@ -30,8 +30,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: 'Proposal not found' }, { status: 404 });
     }
 
-    // Fetch related bid forms for the proposal
-    // const bidForms = await prisma.bidForm.findMany({
+    // Fetch related job forms for the proposal
+    // const jobForms = await prisma.jobForm.findMany({
     //   where: { proposalId: Number(id) },
     //   include: {
     //     deliverables: true,

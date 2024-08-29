@@ -1,15 +1,15 @@
-// /api/bidForms/comments/route.ts
+// /api/jobForms/comments/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
-// POST handler to add a comment to a bid form
+// POST handler to add a comment to a job form
 export async function POST(req: NextRequest) {
   try {
-    const { bidFormId, text, walletAddress } = await req.json();
+    const { jobFormId, text, walletAddress } = await req.json();
 
-    if (!bidFormId || !text || !walletAddress) {
+    if (!jobFormId || !text || !walletAddress) {
       return NextResponse.json(
-        { message: 'BidForm ID, comment text, and wallet address are required' },
+        { message: 'JobForm ID, comment text, and wallet address are required' },
         { status: 400 },
       );
     }
@@ -27,9 +27,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Fetch the bid form by ID to get its related proposal's category
-    const bidForm = await prisma.bidForm.findUnique({
-      where: { id: bidFormId },
+    // Fetch the job form by ID to get its related proposal's category
+    const jobForm = await prisma.jobForm.findUnique({
+      where: { id: jobFormId },
       include: {
         deliverables: {
           include: {
@@ -41,16 +41,16 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    if (!bidForm) {
-      return NextResponse.json({ message: 'BidForm not found' }, { status: 404 });
+    if (!jobForm) {
+      return NextResponse.json({ message: 'JobForm not found' }, { status: 404 });
     }
 
-    // Get the proposal ID related to the bid form
-    const proposalId = bidForm.deliverables[0]?.deliverable.proposalId;
+    // Get the proposal ID related to the job form
+    const proposalId = jobForm.deliverables[0]?.deliverable.proposalId;
 
     if (!proposalId) {
       return NextResponse.json(
-        { message: 'No proposal associated with this bid form' },
+        { message: 'No proposal associated with this job form' },
         { status: 404 },
       );
     }
@@ -84,18 +84,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Add a new comment to the bid form
-    const comment = await prisma.bidFormComment.create({
+    // Add a new comment to the job form
+    const comment = await prisma.jobFormComment.create({
       data: {
         text,
         userId: user.userId,
-        bidFormId,
+        jobFormId,
       },
     });
 
     return NextResponse.json(comment, { status: 201 });
   } catch (error) {
-    console.error('Error adding comment to bid form:', error);
-    return NextResponse.json({ message: 'Failed to add comment to bid form.' }, { status: 500 });
+    console.error('Error adding comment to job form:', error);
+    return NextResponse.json({ message: 'Failed to add comment to job form.' }, { status: 500 });
   }
 }

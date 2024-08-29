@@ -59,7 +59,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     if (wallet.userId !== userId) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: 'Forjobden' }, { status: 403 });
     }
 
     const updatedWallet = await prisma.wallet.update({

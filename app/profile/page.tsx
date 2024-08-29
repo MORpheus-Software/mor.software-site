@@ -23,13 +23,13 @@ interface Wallet {
   createdAt: string;
 }
 
-interface BidFormDeliverable {
+interface JobFormDeliverable {
   id: string;
   deliverableDescription: string;
   weightsRequested: string;
 }
 
-interface BidFormComment {
+interface JobFormComment {
   id: string;
   text: string;
   createdAt: string;
@@ -38,13 +38,13 @@ interface BidFormComment {
   };
 }
 
-interface BidForm {
+interface JobForm {
   id: string;
   githubUsername: string;
   description: string;
   status: string;
-  deliverables: BidFormDeliverable[];
-  comments: BidFormComment[];
+  deliverables: JobFormDeliverable[];
+  comments: JobFormComment[];
 }
 
 interface ProposalComment {
@@ -81,12 +81,12 @@ const ProfilePage = () => {
   const [editingWallet, setEditingWallet] = useState<Wallet | null>(null);
   const [walletName, setWalletName] = useState<string>('');
   const [isMobile, setIsMobile] = useState(false);
-  const [bidForms, setBidForms] = useState<BidForm[]>([]);
+  const [jobForms, setJobForms] = useState<JobForm[]>([]);
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null);
-  const [selectedBidForm, setSelectedBidForm] = useState<BidForm | null>(null);
+  const [selectedJobForm, setSelectedJobForm] = useState<JobForm | null>(null);
   const [loading, setLoading] = useState(true);
-  console.log(selectedBidForm, 's bid form');
+  console.log(selectedJobForm, 's job form');
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -109,15 +109,15 @@ const ProfilePage = () => {
           setLoading(false);
         });
 
-      // Fetch user's bid forms
-      fetch('/api/proposals/user/bidforms')
+      // Fetch user's job forms
+      fetch('/api/proposals/user/jobforms')
         .then((response) => response.json())
         .then((data) => {
-          setBidForms(data.bidForms || []);
+          setJobForms(data.jobForms || []);
           setLoading(false);
         })
         .catch((error) => {
-          console.error('Error fetching bid forms:', error);
+          console.error('Error fetching job forms:', error);
           setLoading(false);
         });
     }
@@ -184,8 +184,8 @@ const ProfilePage = () => {
     setIsModalVisible(true);
   };
 
-  const handleViewBidForm = (bidForm: BidForm) => {
-    setSelectedBidForm(bidForm);
+  const handleViewJobForm = (jobForm: JobForm) => {
+    setSelectedJobForm(jobForm);
     setIsModalVisible(true);
   };
 
@@ -325,17 +325,17 @@ const ProfilePage = () => {
                     </ul>
                   )}
 
-                  {/* Display Bid Forms */}
+                  {/* Display Job Forms */}
                   <div className="mb-[0.5rem] mt-[1.5rem] text-xl font-bold">
                     Your Submitted Jobs
                   </div>
-                  {bidForms.length === 0 ? (
+                  {jobForms.length === 0 ? (
                     <div>Your submitted proposal jobs will appear here.</div>
                   ) : (
                     <ul>
-                      {bidForms && (
+                      {jobForms && (
                         <ul className="">
-                          {bidForms.map((form) => (
+                          {jobForms.map((form) => (
                             <li
                               className="my-3 flex flex-col gap-1 rounded border border-neutral-600 bg-black p-5 hover:bg-neutral-900"
                               key={form.id}
@@ -360,7 +360,7 @@ const ProfilePage = () => {
                                     </span>
                                   </h4>
 
-                                  <Button onClick={() => handleViewBidForm(form)} className="ml-2">
+                                  <Button onClick={() => handleViewJobForm(form)} className="ml-2">
                                     View Details
                                   </Button>
                                 </div>
@@ -370,7 +370,7 @@ const ProfilePage = () => {
                               {form.deliverables.length > 0 ? (
                                 <ul>
                                   {form.deliverables.map(
-                                    (deliverable: BidFormDeliverable, index: number) => (
+                                    (deliverable: JobFormDeliverable, index: number) => (
                                       <li key={index}>
                                         <p>Description: {deliverable.deliverableDescription}</p>
                                         <p>Weight Requested: {deliverable.weightsRequested}</p>
@@ -386,11 +386,11 @@ const ProfilePage = () => {
                         </ul>
                       )}
 
-                      {/* {bidForms.map((bidForm) => (
-                        <li key={bidForm.id} className="flex items-center mb-3">
+                      {/* {jobForms.map((jobForm) => (
+                        <li key={jobForm.id} className="flex items-center mb-3">
                           <div className="flex-grow">
-                            <strong>{bidForm.githubUsername}</strong>
-                            <Button onClick={() => handleViewBidForm(bidForm)} className="ml-2">
+                            <strong>{jobForm.githubUsername}</strong>
+                            <Button onClick={() => handleViewJobForm(jobForm)} className="ml-2">
                               View Details
                             </Button>
                           </div>
@@ -405,15 +405,15 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* Modal for Proposal and BidForm Details */}
+      {/* Modal for Proposal and JobForm Details */}
       <Modal
-        title={selectedProposal ? selectedProposal.title : selectedBidForm ? 'Job Details' : ''}
+        title={selectedProposal ? selectedProposal.title : selectedJobForm ? 'Job Details' : ''}
         footer={null}
         open={isModalVisible}
         onCancel={() => {
           setIsModalVisible(false);
           setSelectedProposal(null);
-          setSelectedBidForm(null);
+          setSelectedJobForm(null);
         }}
       >
         {selectedProposal && (
@@ -434,22 +434,22 @@ const ProfilePage = () => {
             </ul>
           </>
         )}
-        {selectedBidForm && (
+        {selectedJobForm && (
           <>
             <h3 className="mt-4 text-xl font-semibold">Description:</h3>
             <p>
               {' '}
-              {selectedBidForm.deliverables.map((description) => (
+              {selectedJobForm.deliverables.map((description) => (
                 <li key={description.id}>
-                  <p>{description.deliverableDescription}</p>
-                  <p>{description.weightsRequested}</p>
+                  <p>Description: {description.deliverableDescription}</p>
+                  <p>Weight Requested: {description.weightsRequested}</p>
                 </li>
               ))}
             </p>
 
             <h3 className="mt-4 text-xl font-semibold">Maintainer Comments:</h3>
             <ul>
-              {selectedBidForm.comments.map((comment) => (
+              {selectedJobForm.comments.map((comment) => (
                 <li key={comment.id}>
                   <strong>{comment.user.name}:</strong> {comment.text}
                   <p className="text-xs text-gray-500">

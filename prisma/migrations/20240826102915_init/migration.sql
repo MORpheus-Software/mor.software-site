@@ -1,8 +1,8 @@
 /*
   Warnings:
 
-  - You are about to drop the column `description` on the `BidForm` table. All the data in the column will be lost.
-  - You are about to drop the column `minimumWeightsTime` on the `BidForm` table. All the data in the column will be lost.
+  - You are about to drop the column `description` on the `JobForm` table. All the data in the column will be lost.
+  - You are about to drop the column `minimumWeightsTime` on the `JobForm` table. All the data in the column will be lost.
   - You are about to drop the column `githubAccount` on the `User` table. All the data in the column will be lost.
   - Added the required column `categoryId` to the `Proposal` table without a default value. This is not possible if the table is not empty.
   - Added the required column `userId` to the `Proposal` table without a default value. This is not possible if the table is not empty.
@@ -12,7 +12,7 @@
 DROP INDEX "User_githubAccount_key";
 
 -- AlterTable
-ALTER TABLE "BidForm" DROP COLUMN "description",
+ALTER TABLE "JobForm" DROP COLUMN "description",
 DROP COLUMN "minimumWeightsTime";
 
 -- AlterTable

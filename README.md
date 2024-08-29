@@ -2,7 +2,7 @@
 # MOR.software
 
 
-MOR.Software is the portal for MOR Developers.  Sign in, read up, bid on weights, and contribute.
+MOR.Software is the portal for MOR Developers.  Sign in, read up, job on weights, and contribute.
 
 
 ## Table of Contents

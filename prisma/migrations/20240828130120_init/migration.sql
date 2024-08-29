@@ -8,7 +8,7 @@
 ALTER TABLE "Maintainer" DROP CONSTRAINT "Maintainer_categoryId_fkey";
 
 -- AlterTable
-ALTER TABLE "BidForm" ADD COLUMN     "status" TEXT NOT NULL DEFAULT 'pending';
+ALTER TABLE "JobForm" ADD COLUMN     "status" TEXT NOT NULL DEFAULT 'pending';
 
 -- AlterTable
 ALTER TABLE "Maintainer" DROP COLUMN "categoryId";
@@ -22,14 +22,14 @@ CREATE TABLE "MaintainerCategory" (
 );
 
 -- CreateTable
-CREATE TABLE "BidFormComment" (
+CREATE TABLE "JobFormComment" (
     "id" TEXT NOT NULL,
     "text" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" TEXT NOT NULL,
-    "bidFormId" TEXT NOT NULL,
+    "jobFormId" TEXT NOT NULL,
 
-    CONSTRAINT "BidFormComment_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "JobFormComment_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -50,10 +50,10 @@ ALTER TABLE "MaintainerCategory" ADD CONSTRAINT "MaintainerCategory_maintainerId
 ALTER TABLE "MaintainerCategory" ADD CONSTRAINT "MaintainerCategory_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BidFormComment" ADD CONSTRAINT "BidFormComment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "JobFormComment" ADD CONSTRAINT "JobFormComment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BidFormComment" ADD CONSTRAINT "BidFormComment_bidFormId_fkey" FOREIGN KEY ("bidFormId") REFERENCES "BidForm"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "JobFormComment" ADD CONSTRAINT "JobFormComment_jobFormId_fkey" FOREIGN KEY ("jobFormId") REFERENCES "JobForm"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ProposalComment" ADD CONSTRAINT "ProposalComment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

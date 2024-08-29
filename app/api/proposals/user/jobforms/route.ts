@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import prisma from '@/lib/prisma'; // Adjust the path to your prisma client
 
-// Get bid forms created by the authenticated user
+// Get job forms created by the authenticated user
 export async function GET(req: NextRequest) {
   try {
     const session = await auth();
@@ -15,8 +15,8 @@ export async function GET(req: NextRequest) {
 
     const userId = session.user.id;
 
-    // Fetch bid forms created by the authenticated user
-    const bidForms = await prisma.bidForm.findMany({
+    // Fetch job forms created by the authenticated user
+    const jobForms = await prisma.jobForm.findMany({
       where: { userId: userId },
       include: {
         deliverables: true,
@@ -30,9 +30,9 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ bidForms });
+    return NextResponse.json({ jobForms });
   } catch (error) {
-    console.error('Error fetching user bid forms:', error);
-    return NextResponse.json({ message: 'Failed to fetch user bid forms.' }, { status: 500 });
+    console.error('Error fetching user job forms:', error);
+    return NextResponse.json({ message: 'Failed to fetch user job forms.' }, { status: 500 });
   }
 }

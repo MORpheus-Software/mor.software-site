@@ -32,7 +32,7 @@ interface Deliverable {
   description: string;
 }
 
-interface BidForm {
+interface JobForm {
   id: number;
   user: {
     name: string;
@@ -45,10 +45,10 @@ interface BidForm {
     minimumWeightsTime: number;
   }[];
   status: string;
-  comments?: BidFormComment[]; // Make comments optional
+  comments?: JobFormComment[]; // Make comments optional
 }
 
-interface BidFormComment {
+interface JobFormComment {
   id: string;
   text: string;
   createdAt: string;
@@ -68,12 +68,12 @@ export default function MaintainerPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [allProposals, setAllProposals] = useState<Proposal[]>([]);
   const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null);
-  const [bidForms, setBidForms] = useState<BidForm[]>([]);
+  const [jobForms, setJobForms] = useState<JobForm[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [updating, setUpdating] = useState<boolean>(false);
   const [comment, setComment] = useState<string>('');
-  const [bidComments, setBidComments] = useState<{ [key: number]: string }>({});
-  const [selectedBidForm, setSelectedBidForm] = useState<BidForm | null>(null);
+  const [jobComments, setJobComments] = useState<{ [key: number]: string }>({});
+  const [selectedJobForm, setSelectedJobForm] = useState<JobForm | null>(null);
 
   useEffect(() => {
     if (address && isConnected) {
@@ -102,11 +102,11 @@ export default function MaintainerPage() {
   const fetchProposalDetails = async (proposalId: number) => {
     try {
       const response = await fetch(`/api/proposals/${proposalId}`);
-      const { proposal, bidForms } = await response.json();
+      const { proposal, jobForms } = await response.json();
 
       if (response.ok) {
         setSelectedProposal(proposal);
-        setBidForms(bidForms);
+        setJobForms(jobForms);
         setIsModalVisible(true);
       } else {
         toast.error('Failed to fetch proposal details.');
@@ -147,16 +147,16 @@ export default function MaintainerPage() {
     }
   };
 
-  const handleUpdateBidStatus = async (bidFormId: number, status: string) => {
+  const handleUpdateJobStatus = async (jobFormId: number, status: string) => {
     setUpdating(true);
     try {
-      const response = await fetch('/api/bidForm', {
+      const response = await fetch('/api/jobForm', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id: bidFormId,
+          id: jobFormId,
           status,
           walletAddress: address,
         }),
@@ -164,13 +164,13 @@ export default function MaintainerPage() {
 
       if (response.ok) {
         fetchProposalDetails(selectedProposal?.id || 0); // Refresh the proposal details after update
-        toast.success('BidForm status updated successfully!');
+        toast.success('JobForm status updated successfully!');
       } else {
-        toast.error('Failed to update BidForm status.');
+        toast.error('Failed to update JobForm status.');
       }
     } catch (error) {
-      console.error('Error updating BidForm status:', error);
-      toast.error('Failed to update BidForm status.');
+      console.error('Error updating JobForm status:', error);
+      toast.error('Failed to update JobForm status.');
     } finally {
       setUpdating(false);
     }
@@ -203,37 +203,37 @@ export default function MaintainerPage() {
     }
   };
 
-  const handleBidCommentSubmit = async (bidFormId: number) => {
+  const handleJobCommentSubmit = async (jobFormId: number) => {
     try {
-      const response = await fetch('/api/bidForm/comments', {
+      const response = await fetch('/api/jobForm/comments', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          bidFormId,
-          text: bidComments[bidFormId] || '',
+          jobFormId,
+          text: jobComments[jobFormId] || '',
           walletAddress: address,
         }),
       });
 
       if (response.ok) {
-        toast.success('Comment added to bid form successfully!');
-        setBidComments((prev) => ({ ...prev, [bidFormId]: '' }));
+        toast.success('Comment added to job form successfully!');
+        setJobComments((prev) => ({ ...prev, [jobFormId]: '' }));
         fetchProposalDetails(selectedProposal?.id || 0); // Refresh proposal details
       } else {
-        toast.error('Failed to add comment to bid form.');
+        toast.error('Failed to add comment to job form.');
       }
     } catch (error) {
-      console.error('Error adding comment to bid form:', error);
-      toast.error('Failed to add comment to bid form.');
+      console.error('Error adding comment to job form:', error);
+      toast.error('Failed to add comment to job form.');
     }
   };
 
   const handleModalClose = () => {
     setIsModalVisible(false);
     setSelectedProposal(null);
-    setBidForms([]);
+    setJobForms([]);
   };
 
   return (
@@ -291,9 +291,10 @@ export default function MaintainerPage() {
                 style={{ width: 200 }}
                 disabled={updating}
               >
-                <Option value="open">Open</Option>
-                <Option value="closed">Closed</Option>
-                <Option value="archived">Archived</Option>
+                <Option value="pending">Pending</Option>
+                <Option value="approved">Approved</Option>
+                <Option value="denied">Denied</Option>
+                {/* <Option value="archived">Archived</Option> */}
               </Select>
             </div>
 
@@ -338,31 +339,31 @@ export default function MaintainerPage() {
               Submit Comment
             </Button>
 
-            <h3 className="my-6 text-2xl font-semibold">Submitted Bids</h3>
-            {bidForms.length > 0 ? (
-              bidForms.map((bid) => (
-                <div key={bid.id} className="mb-6 rounded-lg border border-gray-600 p-4">
+            <h3 className="my-6 text-2xl font-semibold">Submitted Jobs</h3>
+            {jobForms.length > 0 ? (
+              jobForms.map((job) => (
+                <div key={job.id} className="mb-6 rounded-lg border border-gray-600 p-4">
                   <h4 className="mb-1 font-semibold">
-                    Bid by {bid.user.name || bid.user.githubUsername}
+                    Job by {job.user.name || job.user.githubUsername}
                   </h4>
                   <Select
-                    value={bid.status}
-                    onChange={(value) => handleUpdateBidStatus(bid.id, value)}
+                    value={job.status}
+                    onChange={(value) => handleUpdateJobStatus(job.id, value)}
                     style={{ width: 200 }}
                     disabled={updating}
                   >
                     <Option value="pending">Pending</Option>
                     <Option value="approved">Approved</Option>
                     <Option value="denied">Denied</Option>
-                    <Option value="archived">Archived</Option>
+                    {/* <Option value="archived">Archived</Option> */}
                   </Select>
 
                   <h5 className="mt-2 font-semibold">Deliverables:</h5>
                   <ul className="markdown-body">
-                    {bid.deliverables.map((deliverable) => (
+                    {job.deliverables.map((deliverable) => (
                       <li key={deliverable.deliverableDescription} className="mt-2">
                         <div className="flex flex-col">
-                          <strong>Bid for weights description:</strong>
+                          <strong>Job for weights description:</strong>
                           <ReactMarkdown>{deliverable.deliverableDescription}</ReactMarkdown>
                         </div>
                         <div className="mt-2 flex flex-col">
@@ -383,7 +384,7 @@ export default function MaintainerPage() {
 
                   <h5 className="mt-2 font-semibold">Comments:</h5>
                   <ul className="markdown-body">
-                    {bid.comments?.map((comment) => (
+                    {job.comments?.map((comment) => (
                       <li key={comment.id} className="mt-2">
                         <strong>{comment.user.name}:</strong> {comment.text}
                         <p className="text-xs text-gray-500">
@@ -394,17 +395,17 @@ export default function MaintainerPage() {
                   </ul>
 
                   <TextArea
-                    value={bidComments[bid.id] || ''}
+                    value={jobComments[job.id] || ''}
                     onChange={(e) =>
-                      setBidComments((prev) => ({ ...prev, [bid.id]: e.target.value }))
+                      setJobComments((prev) => ({ ...prev, [job.id]: e.target.value }))
                     }
-                    placeholder="Leave a comment on this bid..."
+                    placeholder="Leave a comment on this job..."
                     rows={3}
                   />
                   <Button
                     type="primary"
                     className="mt-2"
-                    onClick={() => handleBidCommentSubmit(bid.id)}
+                    onClick={() => handleJobCommentSubmit(job.id)}
                     disabled={updating}
                   >
                     Submit Comment
@@ -412,7 +413,7 @@ export default function MaintainerPage() {
                 </div>
               ))
             ) : (
-              <p>No bids have been submitted yet.</p>
+              <p>No jobs have been submitted yet.</p>
             )}
           </>
         )}

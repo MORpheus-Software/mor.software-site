@@ -1,4 +1,4 @@
-//bidform.tsx
+//jobform.tsx
 
 'use client';
 

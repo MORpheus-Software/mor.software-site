@@ -29,7 +29,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ error: 'Proposal not found' }, { status: 404 });
     }
 
-    const bidForms = await prisma.bidForm.findMany({
+    const jobForms = await prisma.jobForm.findMany({
       where: { deliverables: { some: { deliverable: { proposalId: proposal.id } } } },
       include: {
         user: true,
@@ -48,7 +48,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       },
     });
 
-    return NextResponse.json({ proposal, bidForms }, { status: 200 });
+    return NextResponse.json({ proposal, jobForms }, { status: 200 });
   } catch (error) {
     console.error('Error fetching proposal data:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

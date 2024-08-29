@@ -18,10 +18,10 @@ model User {
   accounts             Account[]
   wallets              Wallet[]
   stakings             Stake[]
-  bidform              BidForm[]
+  jobform              JobForm[]
   proposal             Proposal[]
   proofContributions   ProofContribution[]
-  bidFormComments      BidFormComment[]
+  jobFormComments      JobFormComment[]
   proposalComments     ProposalComment[]
 }
 
@@ -61,24 +61,24 @@ model Stake {
   user          User     @relation(fields: [userId], references: [id])
 }
 
-model BidForm {
+model JobForm {
   id                  String           @id @default(cuid())
   githubUsername      String
   email               String
   mriNumber           String
-  deliverables        BidFormDeliverable[]
+  deliverables        JobFormDeliverable[]
   walletAddress       String
   createdAt           DateTime         @default(now())
   userId              String
   status              String           @default("pending")
   user                User             @relation(fields: [userId], references: [id])
-  comments            BidFormComment[]
+  comments            JobFormComment[]
 }
 
-model BidFormDeliverable {
+model JobFormDeliverable {
   id                    String         @id @default(cuid())
-  bidFormId             String
-  bidForm               BidForm        @relation(fields: [bidFormId], references: [id])
+  jobFormId             String
+  jobForm               JobForm        @relation(fields: [jobFormId], references: [id])
   deliverableId         Int
   deliverable           Deliverable    @relation(fields: [deliverableId], references: [id])
   weightsRequested      String
@@ -121,7 +121,7 @@ model Deliverable {
   description String
   proposalId  Int
   proposal    Proposal           @relation(fields: [proposalId], references: [id])
-  bidFormDeliverables BidFormDeliverable[]
+  jobFormDeliverables JobFormDeliverable[]
 }
 
 model Category {
@@ -148,14 +148,14 @@ model MaintainerCategory {
   @@id([maintainerId, categoryId])
 }
 
-model BidFormComment {
+model JobFormComment {
   id          String   @id @default(cuid())
   text        String
   createdAt   DateTime @default(now())
   userId      String
   user        User     @relation(fields: [userId], references: [id])
-  bidFormId   String
-  bidForm     BidForm  @relation(fields: [bidFormId], references: [id])
+  jobFormId   String
+  jobForm     JobForm  @relation(fields: [jobFormId], references: [id])
 }
 
 model ProposalComment {

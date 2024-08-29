@@ -22,7 +22,7 @@ const FormComponent: React.FC = () => {
 
     setLoading(true);
     try {
-      await axios.post('/api/bidForm', {
+      await axios.post('/api/jobForm', {
         ...values,
         userId: session?.user?.id,
       });
@@ -153,7 +153,7 @@ const FormComponent: React.FC = () => {
               >
                 <Form.Item name="understand1" valuePropName="checked" noStyle>
                   <Checkbox className="text-white">
-                    I understand that I will receive a NOTICE OF ACCEPTANCE if this bid is accepted.
+                    I understand that I will receive a NOTICE OF ACCEPTANCE if this job is accepted.
                   </Checkbox>
                 </Form.Item>
                 <Form.Item name="understand2" valuePropName="checked" noStyle>

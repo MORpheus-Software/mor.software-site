@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const bidForms = await prisma.bidForm.findMany({
+    const jobForms = await prisma.jobForm.findMany({
       where: {
         userId: uid,
       },
@@ -19,9 +19,9 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(bidForms);
+    return NextResponse.json(jobForms);
   } catch (error) {
-    console.error('Error fetching bid forms:', error);
+    console.error('Error fetching job forms:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
@@ -32,13 +32,13 @@ export async function PUT(req: NextRequest) {
 
     if (!id || !status || !walletAddress) {
       return NextResponse.json(
-        { message: 'BidForm ID, status, and wallet address are required' },
+        { message: 'JobForm ID, status, and wallet address are required' },
         { status: 400 },
       );
     }
 
-    // Fetch the bid form by ID to get its related proposal's category
-    const bidForm = await prisma.bidForm.findUnique({
+    // Fetch the job form by ID to get its related proposal's category
+    const jobForm = await prisma.jobForm.findUnique({
       where: { id },
       include: {
         deliverables: {
@@ -51,16 +51,16 @@ export async function PUT(req: NextRequest) {
       },
     });
 
-    if (!bidForm) {
-      return NextResponse.json({ message: 'BidForm not found' }, { status: 404 });
+    if (!jobForm) {
+      return NextResponse.json({ message: 'JobForm not found' }, { status: 404 });
     }
 
-    // Get the proposal ID related to the bid form
-    const proposalId = bidForm.deliverables[0]?.deliverable.proposalId;
+    // Get the proposal ID related to the job form
+    const proposalId = jobForm.deliverables[0]?.deliverable.proposalId;
 
     if (!proposalId) {
       return NextResponse.json(
-        { message: 'No proposal associated with this bid form' },
+        { message: 'No proposal associated with this job form' },
         { status: 404 },
       );
     }
@@ -89,21 +89,21 @@ export async function PUT(req: NextRequest) {
 
     if (!isMaintainer) {
       return NextResponse.json(
-        { message: 'Unauthorized: You do not have permission to update this bid form' },
+        { message: 'Unauthorized: You do not have permission to update this job form' },
         { status: 403 },
       );
     }
 
-    // Update the bid form status
-    const updatedBidForm = await prisma.bidForm.update({
+    // Update the job form status
+    const updatedJobForm = await prisma.jobForm.update({
       where: { id },
       data: { status },
     });
 
-    return NextResponse.json(updatedBidForm);
+    return NextResponse.json(updatedJobForm);
   } catch (error) {
-    console.error('Error updating bid form status:', error);
-    return NextResponse.json({ message: 'Failed to update bid form status.' }, { status: 500 });
+    console.error('Error updating job form status:', error);
+    return NextResponse.json({ message: 'Failed to update job form status.' }, { status: 500 });
   }
 }
 

@@ -3,7 +3,7 @@
 import prisma from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import BidForm from './bidform';
+import JobForm from './jobform';
 import Button from '@/components/button';
 import ReactMarkdown from 'react-markdown';
 import 'easymde/dist/easymde.min.css';
@@ -18,7 +18,7 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
   if (!proposal) {
     notFound();
   }
-  const bidForms = await prisma.bidForm.findMany({
+  const jobForms = await prisma.jobForm.findMany({
     where: {
       status: 'approved', // Filter for approved status
       deliverables: {
@@ -42,7 +42,7 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
   return (
     <div className="mx col-span-12 max-w-3xl rounded-2xl border border-borderTr bg-morBg p-4 shadow sm:mx-auto sm:p-6">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="mb-0 text-2xl font-semibold">Submit Bid</h1>
+        <h1 className="mb-0 text-2xl font-semibold">Submit Job</h1>
         <Link href="/">
           <Button text="Go Back" />
         </Link>
@@ -75,44 +75,44 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
         </div>
       </div>
 
-      <h3 className="my-10 text-center text-2xl font-semibold text-white">Submit Your Bid</h3>
+      <h3 className="my-10 text-center text-2xl font-semibold text-white">Submit Your Job</h3>
 
-      {/* Pass the deliverables array to the BidForm component */}
-      <BidForm proposalId={proposal.id} deliverables={proposal.deliverables} />
+      {/* Pass the deliverables array to the JobForm component */}
+      <JobForm proposalId={proposal.id} deliverables={proposal.deliverables} />
 
-      <h3 className="my-6 mt-6 text-center text-2xl font-semibold text-white">Submitted Bids</h3>
+      <h3 className="my-6 mt-6 text-center text-2xl font-semibold text-white">Submitted Jobs</h3>
 
-      {/* Display all submitted bids */}
+      {/* Display all submitted jobs */}
       <div>
-        {bidForms.length > 0 ? (
-          bidForms.map((bid) => (
-            <div key={bid.id} className="mb-6 rounded-lg border border-gray-600 p-4">
+        {jobForms.length > 0 ? (
+          jobForms.map((job) => (
+            <div key={job.id} className="mb-6 rounded-lg border border-gray-600 p-4">
               <div className="flex w-full flex-row justify-between">
-                <h4 className="font-semibold">Bid by {bid.user.name || bid.githubUsername}</h4>
+                <h4 className="font-semibold">Job by {job.user.name || job.githubUsername}</h4>
 
                 <h4 className="font-semibold">
                   Status:{' '}
                   <span
                     className={`${
-                      bid.status === 'pending'
+                      job.status === 'pending'
                         ? 'bg-yellow-500 text-white'
-                        : bid.status === 'approved'
+                        : job.status === 'approved'
                           ? 'bg-green-500 text-white'
                           : 'bg-red-500 text-white'
                     } rounded-sm px-2 py-1 text-sm`}
                   >
-                    {bid.status}
+                    {job.status}
                   </span>
                 </h4>
               </div>
 
-              <p>Email: {bid.email}</p>
+              <p>Email: {job.email}</p>
               <h5 className="mt-2 font-semibold">Deliverables:</h5>
               <ul className="markdown-body">
-                {bid.deliverables.map((deliverable) => (
+                {job.deliverables.map((deliverable) => (
                   <li key={deliverable.id} className="mt-2">
                     <div className="flex flex-col">
-                      <strong className="mb-4">Bid for weights description:</strong>
+                      <strong className="mb-4">Job for weights description:</strong>
                       <ReactMarkdown>{deliverable.deliverableDescription}</ReactMarkdown>
                     </div>
                     <div className="mt-2 flex flex-col">
@@ -133,7 +133,7 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
             </div>
           ))
         ) : (
-          <p>Approved bids will appear here.</p>
+          <p>Approved jobs will appear here.</p>
         )}
       </div>
     </div>

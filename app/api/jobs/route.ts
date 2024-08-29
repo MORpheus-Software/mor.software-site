@@ -20,8 +20,8 @@ export async function POST(req: Request) {
     deliverables, // Directly destructure deliverables from the body
   } = await req.json();
 
-  // Create the BidForm first
-  const bidForm = await prisma.bidForm.create({
+  // Create the JobForm first
+  const jobForm = await prisma.jobForm.create({
     data: {
       githubUsername,
       email,
@@ -32,12 +32,12 @@ export async function POST(req: Request) {
     },
   });
 
-  // Create the deliverables linked to the BidForm
+  // Create the deliverables linked to the JobForm
   await Promise.all(
     deliverables.map((deliverable: any) =>
-      prisma.bidFormDeliverable.create({
+      prisma.jobFormDeliverable.create({
         data: {
-          bidFormId: bidForm.id,
+          jobFormId: jobForm.id,
           deliverableId: deliverable.id,
           weightsRequested: deliverable.weightRequested,
           deliverableDescription: deliverable.description,
@@ -48,5 +48,5 @@ export async function POST(req: Request) {
     ),
   );
 
-  return new Response('Bid submitted successfully', { status: 200 });
+  return new Response('Job submitted successfully', { status: 200 });
 }

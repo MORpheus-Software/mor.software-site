@@ -51,8 +51,8 @@ const Header = () => {
         <Link href="/proposals">Proposals</Link>
       </Menu.Item>
 
-      {/* <Menu.Item key="bidform">
-        <Link href="/bidform">Bid Form</Link>
+      {/* <Menu.Item key="jobform">
+        <Link href="/jobform">Job Form</Link>
       </Menu.Item> */}
 
       <Menu.Item key="profile">
@@ -95,8 +95,8 @@ const Header = () => {
                   Proposals
                 </Link>
 
-                {/* <Link href="/bidform" className="">
-                  Bid Form
+                {/* <Link href="/jobform" className="">
+                  Job Form
                 </Link> */}
 
                 <Link href="/profile" className="">

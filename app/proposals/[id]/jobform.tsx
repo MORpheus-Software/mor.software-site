@@ -6,7 +6,7 @@ import { notification } from 'antd';
 import { useSession } from 'next-auth/react';
 import { MarkdownField, SubmitButton } from '@/app/create-proposal/components';
 
-export default function BidForm({
+export default function JobForm({
   proposalId,
   deliverables,
 }: {
@@ -31,7 +31,7 @@ export default function BidForm({
     }));
 
     try {
-      const res = await fetch('/api/bids', {
+      const res = await fetch('/api/jobs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,10 +48,10 @@ export default function BidForm({
       });
 
       if (res.ok) {
-        notification.success({ message: 'Bid submitted successfully!' });
+        notification.success({ message: 'Job submitted successfully!' });
         router.push('/proposals');
       } else {
-        notification.error({ message: 'Failed to submit bid' });
+        notification.error({ message: 'Failed to submit job' });
       }
     } catch (error) {
       notification.error({ message: 'An error occurred during submission' });
@@ -108,8 +108,8 @@ export default function BidForm({
 
             <MarkdownField
               id={`deliverable-${deliverable.id}`}
-              title={`Description of this bid for weights`}
-              desc="Describe this bid for weights"
+              title={`Description of this job for weights`}
+              desc="Describe this job for weights"
             />
 
             <MarkdownField
@@ -197,7 +197,7 @@ export default function BidForm({
           disabled={loading}
           className="mt-5 rounded bg-green-500 p-3 text-white"
         >
-          {loading ? 'Submitting...' : 'Submit Bid'}
+          {loading ? 'Submitting...' : 'Submit Job'}
         </button>
       </form>
     </div>

@@ -1,0 +1,54 @@
+yarn run v1.22.19
+$ /Users/mac/Desktop/morpheus/walletconnect-nextjs/node_modules/.bin/prisma migrate dev --name bid
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "postgres", schema "public" at "aws-0-eu-central-1.pooler.supabase.com:5432"
+
+- The migration `20240820183159_add_minimum_weights_time_to_bid_form_deliverable` was modified after it was applied.
+- The migration `20240826102915_init` was modified after it was applied.
+- The migration `20240828130120_init` was modified after it was applied.
+- Drift detected: Your database schema is not in sync with your migration history.
+
+The following is a summary of the differences between the expected database schema given your migrations files, and the actual schema of the database.
+
+It should be understood as the set of changes to get from the expected schema to the actual schema.
+
+[+] Added tables
+  - BidForm
+  - BidFormComment
+  - BidFormDeliverable
+
+[-] Removed tables
+  - JobForm
+  - JobFormComment
+  - JobFormDeliverable
+
+[*] Changed the `BidForm` table
+  [+] Added foreign key on columns (userId)
+
+[*] Changed the `BidFormComment` table
+  [+] Added foreign key on columns (bidFormId)
+  [+] Added foreign key on columns (userId)
+
+[*] Changed the `BidFormDeliverable` table
+  [+] Added foreign key on columns (bidFormId)
+  [+] Added foreign key on columns (deliverableId)
+
+[*] Changed the `JobForm` table
+  [-] Removed foreign key on columns (userId)
+
+[*] Changed the `JobFormComment` table
+  [-] Removed foreign key on columns (jobFormId)
+  [-] Removed foreign key on columns (userId)
+
+[*] Changed the `JobFormDeliverable` table
+  [-] Removed foreign key on columns (deliverableId)
+  [-] Removed foreign key on columns (jobFormId)
+
+
+[?25l[2K[1G[36m?[39m [1mWe need to reset the "public" schema at "aws-0-eu-central-1.pooler.supabase.com:5432"
+Do you want to continue? All data will be lost.[22m [90m›[39m [90m(y/N)[39m[2K[1G[2K[1G[31m✖[39m [1mWe need to reset the "public" schema at "aws-0-eu-central-1.pooler.supabase.com:5432"
+Do you want to continue? All data will be lost.[22m [90m…[39m no
+[?25h
+Reset cancelled.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
