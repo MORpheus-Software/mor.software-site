@@ -31,24 +31,24 @@ export async function GET(req: NextRequest) {
     }
 
     // Fetch related bid forms for the proposal
-    const bidForms = await prisma.bidForm.findMany({
-      where: { proposalId: Number(id) },
-      include: {
-        deliverables: true,
-        comments: {
-          include: {
-            user: {
-              select: { name: true },
-            },
-          },
-        },
-        user: {
-          select: { name: true, githubUsername: true },
-        },
-      },
-    });
+    // const bidForms = await prisma.bidForm.findMany({
+    //   where: { proposalId: Number(id) },
+    //   include: {
+    //     deliverables: true,
+    //     comments: {
+    //       include: {
+    //         user: {
+    //           select: { name: true },
+    //         },
+    //       },
+    //     },
+    //     user: {
+    //       select: { name: true, githubUsername: true },
+    //     },
+    //   },
+    // });
 
-    return NextResponse.json({ proposal, bidForms });
+    return NextResponse.json({ proposal });
   } catch (error) {
     console.error('Error fetching proposal:', error);
     return NextResponse.json({ message: 'Failed to fetch proposal.' }, { status: 500 });

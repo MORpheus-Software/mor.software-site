@@ -72,7 +72,7 @@ export default function MaintainerPage() {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [updating, setUpdating] = useState<boolean>(false);
   const [comment, setComment] = useState<string>('');
-  const [bidComment, setBidComment] = useState<string>('');
+  const [bidComments, setBidComments] = useState<{ [key: number]: string }>({});
   const [selectedBidForm, setSelectedBidForm] = useState<BidForm | null>(null);
 
   useEffect(() => {
@@ -212,14 +212,14 @@ export default function MaintainerPage() {
         },
         body: JSON.stringify({
           bidFormId,
-          text: bidComment,
+          text: bidComments[bidFormId] || '',
           walletAddress: address,
         }),
       });
 
       if (response.ok) {
         toast.success('Comment added to bid form successfully!');
-        setBidComment('');
+        setBidComments((prev) => ({ ...prev, [bidFormId]: '' }));
         fetchProposalDetails(selectedProposal?.id || 0); // Refresh proposal details
       } else {
         toast.error('Failed to add comment to bid form.');
@@ -260,7 +260,7 @@ export default function MaintainerPage() {
                       className="text-blue-500 underline"
                       onClick={() => fetchProposalDetails(proposal.id)}
                     >
-                      Manage Proposal & Bids
+                      Manage Proposal & Jobs
                     </Button>
                   </div>
                 </div>
@@ -313,18 +313,14 @@ export default function MaintainerPage() {
 
             <h3 className="mb-2 mt-4 text-xl font-semibold">Comments:</h3>
             <ul className="markdown-body">
-              {selectedProposal.comments?.map(
-                (
-                  comment, // Add optional chaining
-                ) => (
-                  <li key={comment.id} className="mt-2">
-                    <strong>{comment.user.name}:</strong> {comment.text}
-                    <p className="text-xs text-gray-500">
-                      {new Date(comment.createdAt).toLocaleString()}
-                    </p>
-                  </li>
-                ),
-              )}
+              {selectedProposal.comments?.map((comment) => (
+                <li key={comment.id} className="mt-2">
+                  <strong>{comment.user.name}:</strong> {comment.text}
+                  <p className="text-xs text-gray-500">
+                    {new Date(comment.createdAt).toLocaleString()}
+                  </p>
+                </li>
+              ))}
             </ul>
 
             <TextArea
@@ -355,9 +351,10 @@ export default function MaintainerPage() {
                     style={{ width: 200 }}
                     disabled={updating}
                   >
-                    <Option value="pending">pending</Option>
-                    <Option value="approved">approved</Option>
-                    <Option value="denied">denied</Option>
+                    <Option value="pending">Pending</Option>
+                    <Option value="approved">Approved</Option>
+                    <Option value="denied">Denied</Option>
+                    <Option value="archived">Archived</Option>
                   </Select>
 
                   <h5 className="mt-2 font-semibold">Deliverables:</h5>
@@ -386,23 +383,21 @@ export default function MaintainerPage() {
 
                   <h5 className="mt-2 font-semibold">Comments:</h5>
                   <ul className="markdown-body">
-                    {bid.comments?.map(
-                      (
-                        comment, // Add optional chaining
-                      ) => (
-                        <li key={comment.id} className="mt-2">
-                          <strong>{comment.user.name}:</strong> {comment.text}
-                          <p className="text-xs text-gray-500">
-                            {new Date(comment.createdAt).toLocaleString()}
-                          </p>
-                        </li>
-                      ),
-                    )}
+                    {bid.comments?.map((comment) => (
+                      <li key={comment.id} className="mt-2">
+                        <strong>{comment.user.name}:</strong> {comment.text}
+                        <p className="text-xs text-gray-500">
+                          {new Date(comment.createdAt).toLocaleString()}
+                        </p>
+                      </li>
+                    ))}
                   </ul>
 
                   <TextArea
-                    value={bidComment}
-                    onChange={(e) => setBidComment(e.target.value)}
+                    value={bidComments[bid.id] || ''}
+                    onChange={(e) =>
+                      setBidComments((prev) => ({ ...prev, [bid.id]: e.target.value }))
+                    }
                     placeholder="Leave a comment on this bid..."
                     rows={3}
                   />

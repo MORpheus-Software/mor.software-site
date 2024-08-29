@@ -18,9 +18,17 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
   if (!proposal) {
     notFound();
   }
-
   const bidForms = await prisma.bidForm.findMany({
-    where: { deliverables: { some: { deliverable: { proposalId: proposal.id } } } },
+    where: {
+      status: 'approved', // Filter for approved status
+      deliverables: {
+        some: {
+          deliverable: {
+            proposalId: proposal.id,
+          },
+        },
+      },
+    },
     include: {
       user: true,
       deliverables: {
@@ -104,7 +112,7 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
                 {bid.deliverables.map((deliverable) => (
                   <li key={deliverable.id} className="mt-2">
                     <div className="flex flex-col">
-                      <strong>Bid for weights description:</strong>
+                      <strong className="mb-4">Bid for weights description:</strong>
                       <ReactMarkdown>{deliverable.deliverableDescription}</ReactMarkdown>
                     </div>
                     <div className="mt-2 flex flex-col">
@@ -125,7 +133,7 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
             </div>
           ))
         ) : (
-          <p>No bids have been submitted yet.</p>
+          <p>Approved bids will appear here.</p>
         )}
       </div>
     </div>

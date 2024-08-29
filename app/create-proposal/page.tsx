@@ -47,7 +47,7 @@ export default function CreateProposal() {
 
           // Add category ID based on the selected MRI
           const mri = formData.get('mri') as string;
-          const categoryId = categoryMap[mri];
+          const categoryId = categoryMap[mri as keyof typeof categoryMap];
           formData.append('categoryId', categoryId.toString());
 
           await handleFormSubmit(formData);
