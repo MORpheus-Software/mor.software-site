@@ -43,21 +43,22 @@ const Header = () => {
 
   const menu = (
     <Menu>
-      <Menu.Item key="staking">
-        <Link href="/proposals">Weights Staking</Link>
-      </Menu.Item>
+      {user && (<>
+              <Menu.Item key="staking">
+              <Link href="/proposals">Weights Staking</Link>
+            </Menu.Item>
+      
+            <Menu.Item key="proposals">
+              <Link href="/proposals">Proposals</Link>
+            </Menu.Item>
+      
+            <Menu.Item key="profile">
+              <Link href="/profile">Profile</Link>
+            </Menu.Item>
+            </>
 
-      <Menu.Item key="proposals">
-        <Link href="/proposals">Proposals</Link>
-      </Menu.Item>
+      ) }
 
-      {/* <Menu.Item key="jobform">
-        <Link href="/jobform">Job Form</Link>
-      </Menu.Item> */}
-
-      <Menu.Item key="profile">
-        <Link href="/profile">Profile</Link>
-      </Menu.Item>
     </Menu>
   );
 
@@ -86,7 +87,11 @@ const Header = () => {
             </>
           ) : (
             <>
+
               <nav className="flex gap-4">
+
+              {user && (<>
+
                 <Link href="/staking" className="">
                   Weights Staking
                 </Link>
@@ -102,6 +107,8 @@ const Header = () => {
                 <Link href="/profile" className="">
                   Profile
                 </Link>
+                </>
+              )}
               </nav>
             </>
           )}

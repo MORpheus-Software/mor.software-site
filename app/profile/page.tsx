@@ -327,10 +327,10 @@ const ProfilePage = () => {
 
                   {/* Display Job Forms */}
                   <div className="mb-[0.5rem] mt-[1.5rem] text-xl font-bold">
-                    Your Submitted Jobs
+                    Your Attached Jobs
                   </div>
                   {jobForms.length === 0 ? (
-                    <div>Your submitted proposal jobs will appear here.</div>
+                    <div>Your attached proposal jobs will appear here.</div>
                   ) : (
                     <ul>
                       {jobForms && (

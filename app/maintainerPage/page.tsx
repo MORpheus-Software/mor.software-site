@@ -339,7 +339,7 @@ export default function MaintainerPage() {
               Submit Comment
             </Button>
 
-            <h3 className="my-6 text-2xl font-semibold">Submitted Jobs</h3>
+            <h3 className="my-6 text-2xl font-semibold">Attached Jobs</h3>
             {jobForms.length > 0 ? (
               jobForms.map((job) => (
                 <div key={job.id} className="mb-6 rounded-lg border border-gray-600 p-4">
