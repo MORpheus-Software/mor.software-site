@@ -43,22 +43,21 @@ const Header = () => {
 
   const menu = (
     <Menu>
-      {user && (<>
-              <Menu.Item key="staking">
-              <Link href="/proposals">Weights Staking</Link>
-            </Menu.Item>
-      
-            <Menu.Item key="proposals">
-              <Link href="/proposals">Proposals</Link>
-            </Menu.Item>
-      
-            <Menu.Item key="profile">
-              <Link href="/profile">Profile</Link>
-            </Menu.Item>
-            </>
+      {user && (
+        <>
+          <Menu.Item key="staking">
+            <Link href="/proposals">Weights Staking</Link>
+          </Menu.Item>
 
-      ) }
+          <Menu.Item key="proposals">
+            <Link href="/proposals">Proposals</Link>
+          </Menu.Item>
 
+          <Menu.Item key="profile">
+            <Link href="/profile">Profile</Link>
+          </Menu.Item>
+        </>
+      )}
     </Menu>
   );
 
@@ -87,28 +86,26 @@ const Header = () => {
             </>
           ) : (
             <>
-
               <nav className="flex gap-4">
+                {user && (
+                  <>
+                    <Link href="/staking" className="">
+                      Weights Staking
+                    </Link>
 
-              {user && (<>
+                    <Link href="/proposals" className="">
+                      Proposals
+                    </Link>
 
-                <Link href="/staking" className="">
-                  Weights Staking
-                </Link>
-
-                <Link href="/proposals" className="">
-                  Proposals
-                </Link>
-
-                {/* <Link href="/jobform" className="">
+                    {/* <Link href="/jobform" className="">
                   Job Form
                 </Link> */}
 
-                <Link href="/profile" className="">
-                  Profile
-                </Link>
-                </>
-              )}
+                    <Link href="/profile" className="">
+                      Profile
+                    </Link>
+                  </>
+                )}
               </nav>
             </>
           )}
