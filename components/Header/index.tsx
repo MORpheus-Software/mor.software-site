@@ -123,12 +123,6 @@ const Header = () => {
                       Proposals
                     </Link>
 
-                    {isMaintainer && (
-                      <Link href="/maintainerPage" className="">
-                        Maintainer Page
-                      </Link>
-                    )}
-
                     {/* <Link href="/jobform" className="">
                   Job Form
                 </Link> */}
@@ -136,6 +130,14 @@ const Header = () => {
                     <Link href="/profile" className="">
                       Profile
                     </Link>
+
+                    {isMaintainer && (
+                      <Link href="/maintainerPage" className="">
+                        Maintainer Page
+                      </Link>
+                    )}
+
+                    
                   </>
                 )}
               </nav>
