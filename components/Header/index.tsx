@@ -26,8 +26,6 @@ const Header = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-
-
   useEffect(() => {
     if (!address) return;
 
@@ -46,8 +44,6 @@ const Header = () => {
         console.error('Failed to check maintainer status', error);
       });
   }, [address]);
-
-
 
   const connectMenu = (
     <Menu>
@@ -84,14 +80,8 @@ const Header = () => {
           </Menu.Item>
 
           <Menu.Item key="maintainerPage">
-
-          {isMaintainer &&   <Link href="/maintainerPage">Maintainer Page</Link>}
-
+            {isMaintainer && <Link href="/maintainerPage">Maintainer Page</Link>}
           </Menu.Item>
-
-
-    
-
         </>
       )}
     </Menu>
@@ -133,12 +123,11 @@ const Header = () => {
                       Proposals
                     </Link>
 
-                    {isMaintainer &&                  
-                    <Link href="/maintainerPage" className="">
-                      Maintainer Page
-                    </Link>
-}
-
+                    {isMaintainer && (
+                      <Link href="/maintainerPage" className="">
+                        Maintainer Page
+                      </Link>
+                    )}
 
                     {/* <Link href="/jobform" className="">
                   Job Form
