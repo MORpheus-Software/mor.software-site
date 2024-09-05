@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { createNotification } from '@/utils/notifications';
 
 // Get a proposal by ID
 export async function GET(req: NextRequest) {
@@ -30,24 +31,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: 'Proposal not found' }, { status: 404 });
     }
 
-    // Fetch related job forms for the proposal
-    // const jobForms = await prisma.jobForm.findMany({
-    //   where: { proposalId: Number(id) },
-    //   include: {
-    //     deliverables: true,
-    //     comments: {
-    //       include: {
-    //         user: {
-    //           select: { name: true },
-    //         },
-    //       },
-    //     },
-    //     user: {
-    //       select: { name: true, githubUsername: true },
-    //     },
-    //   },
-    // });
-
     return NextResponse.json({ proposal });
   } catch (error) {
     console.error('Error fetching proposal:', error);
@@ -67,10 +50,10 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    // Fetch the proposal by ID to get its categoryId
+    // Fetch the proposal by ID to get its categoryId and userId
     const proposal = await prisma.proposal.findUnique({
       where: { id: Number(id) },
-      select: { categoryId: true },
+      select: { categoryId: true, userId: true, title: true },
     });
 
     if (!proposal) {
@@ -101,6 +84,13 @@ export async function PUT(req: NextRequest) {
       where: { id: Number(id) },
       data: { status },
     });
+
+    // Create a notification for the user about the status change
+    await createNotification(
+      proposal.userId,
+      id,
+      `The status of your proposal "${proposal.title}" has been changed to ${status}.`,
+    );
 
     return NextResponse.json(updatedProposal);
   } catch (error) {

@@ -1,8 +1,9 @@
-'use server';
+export const dynamic = 'force-dynamic'; // Forces the route to be treated as dynamic
 
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import prisma from '@/lib/prisma'; // Adjust the path to your prisma client
+// export const dynamic = 'force-dynamic'; // Forces the route to be treated as dynamic
 
 // Get job forms created by the authenticated user
 export async function GET(req: NextRequest) {

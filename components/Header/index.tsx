@@ -10,8 +10,10 @@ import { useSession } from 'next-auth/react'; // Use the correct hook
 import SignIn from './SignIn';
 import SignOut from './SignOut';
 import { useAccount } from 'wagmi';
+import NotificationPanel from '../NotificationPanel';
+// import NotificationPanel from '../NotificationPanel';
 
-const Header = () => {
+const Header: React.FC<any> = ({ uid, initialNotifications }) => {
   const { data: session, status } = useSession(); // Fetch session data and status
   const [isMobile, setIsMobile] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -90,6 +92,8 @@ const Header = () => {
   return (
     <header className="mx-auto w-full max-w-screen-2xl p-4 text-white sm:px-10 sm:py-6">
       <div className="flex items-center justify-between">
+        {/* <NotificationPanel/> */}
+
         {/* Left section: Logo and navigation */}
         <div className="flex items-center gap-4">
           <Link href="/">
@@ -153,6 +157,8 @@ const Header = () => {
             </Dropdown>
           ) : (
             <div className="flex items-center gap-4">
+              <NotificationPanel uid={uid} initialNotifications={initialNotifications} />
+
               <w3m-button balance="hide" />
               {user ? <SignOut /> : <SignIn />}
             </div>

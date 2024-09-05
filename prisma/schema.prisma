@@ -23,7 +23,10 @@ model User {
   proofContributions   ProofContribution[]
   jobFormComments      JobFormComment[]
   proposalComments     ProposalComment[]
+  notifications        Notification[]        // Add this line
 }
+
+
 
 model Account {
   id                String   @id @default(cuid())
@@ -114,6 +117,7 @@ model Proposal {
   userId      String
   user        User             @relation(fields: [userId], references: [id])
   comments    ProposalComment[]
+  notifications Notification[]  // Add this line
 }
 
 model Deliverable {
@@ -166,4 +170,17 @@ model ProposalComment {
   user        User     @relation(fields: [userId], references: [id])
   proposalId  Int
   proposal    Proposal @relation(fields: [proposalId], references: [id])
+}
+
+
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  proposalId  Int
+  proposal    Proposal @relation(fields: [proposalId], references: [id])
+  message     String
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }
