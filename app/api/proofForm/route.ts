@@ -3,7 +3,6 @@ import prisma from '../../../lib/prisma'; // Adjust the path as needed
 import { auth } from '@/auth';
 
 export async function POST(request: NextRequest) {
-
   const session = await auth();
 
   // Check if the user is authenticated
@@ -11,7 +10,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
   }
 
-  
   try {
     const body = await request.json();
     const {
@@ -32,7 +30,7 @@ export async function POST(request: NextRequest) {
       !linksToProof ||
       !weightsAgreed ||
       !description ||
-      !walletAddress 
+      !walletAddress
     ) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
@@ -58,7 +56,7 @@ export async function POST(request: NextRequest) {
         description,
         walletAddress,
         user: { connect: { id: session.user.id } },
-        category: { connect: { id: parseInt(mriNumber, 10) } }, 
+        category: { connect: { id: parseInt(mriNumber, 10) } },
       },
     });
 

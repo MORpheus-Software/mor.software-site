@@ -70,11 +70,19 @@ const Header: React.FC<any> = ({ uid, initialNotifications }) => {
       {user && (
         <>
           <Menu.Item key="staking">
-            <Link href="/proposals">Weights Staking</Link>
+            <Link href="/proposals">Staking</Link>
           </Menu.Item>
 
           <Menu.Item key="proposals">
             <Link href="/proposals">Proposals</Link>
+          </Menu.Item>
+
+          <Menu.Item key="jobform">
+            <Link href="/jobform">Standalone Jobs</Link>
+          </Menu.Item>
+
+          <Menu.Item key="proofcontribution">
+            <Link href="/proofform">Proof of Contribution</Link>
           </Menu.Item>
 
           <Menu.Item key="profile">
@@ -82,7 +90,7 @@ const Header: React.FC<any> = ({ uid, initialNotifications }) => {
           </Menu.Item>
 
           <Menu.Item key="maintainerPage">
-            {isMaintainer && <Link href="/maintainerPage">Maintainer Page</Link>}
+            {isMaintainer && <Link href="/maintainerPage">Maintainer</Link>}
           </Menu.Item>
         </>
       )}
@@ -127,9 +135,9 @@ const Header: React.FC<any> = ({ uid, initialNotifications }) => {
                       Proposals
                     </Link>
 
-                    {/* <Link href="/jobform" className="">
-                  Job Form
-                </Link> */}
+                    <Link href="/jobform">Standalone Jobs</Link>
+
+                    <Link href="/proofform">Proof of Contribution</Link>
 
                     <Link href="/profile" className="">
                       Profile
@@ -137,7 +145,7 @@ const Header: React.FC<any> = ({ uid, initialNotifications }) => {
 
                     {isMaintainer && (
                       <Link href="/maintainerPage" className="">
-                        Maintainer Page
+                        Maintainer
                       </Link>
                     )}
                   </>
