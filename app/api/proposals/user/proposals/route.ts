@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic'; // Forces the route to be treated as dyn
 
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
-import prisma from '@/lib/prisma'; // Adjust the path to your prisma client
+import prisma from '@/lib/prisma';
 
 // Get proposals created by the authenticated user
 export async function GET(req: NextRequest) {

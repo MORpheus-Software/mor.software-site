@@ -1,6 +1,6 @@
 'use server';
 import { auth } from '@/auth';
-import prisma from '../../lib/prisma'; // Adjust the path to your prisma client
+import prisma from '../../lib/prisma';
 
 export async function submitProposal(formData: FormData) {
   const session = await auth();
