@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
         minimumWeightsTime: parseInt(minimumWeightsTime, 10),
         status: 'pending',
         user: { connect: { id: session.user.id } },
-        category: { connect: { id: parseInt(mriNumber, 10) } }, // Ensure mriNumber is correctly parsed as an integer
+        category: { connect: { id: parseInt(mriNumber, 10) } }, 
       },
     });
 

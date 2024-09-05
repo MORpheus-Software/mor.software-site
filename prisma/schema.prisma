@@ -126,6 +126,8 @@ model ProofContribution {
   createdAt          DateTime @default(now())
   userId             String
   user               User     @relation(fields: [userId], references: [id])
+  categoryId            Int              // Foreign key to link with Category model
+  category              Category         @relation(fields: [categoryId], references: [id])
 }
 
 model Proposal {
@@ -158,6 +160,8 @@ model Category {
   description  String?
   proposals    Proposal[]
   standaloneJobForm StandaloneJobForm[]
+  proofContribution ProofContribution[]
+
   maintainers  MaintainerCategory[]
 }
 

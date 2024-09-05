@@ -26,7 +26,7 @@ const FormComponent: React.FC = () => {
     try {
       await axios.post('/api/proofForm', {
         ...values,
-        userId: session?.user?.id,
+        // userId: session?.user?.id,
       });
       notification.success({ message: 'Form submitted successfully!' });
     } catch (error) {
