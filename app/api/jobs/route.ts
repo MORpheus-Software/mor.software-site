@@ -34,12 +34,11 @@ export async function POST(req: Request) {
     },
   });
 
-
   const maintainers = await prisma.maintainer.findMany({
     where: {
       categories: {
         some: {
-          categoryId: categoryId, 
+          categoryId: categoryId,
         },
       },
     },
@@ -49,7 +48,7 @@ export async function POST(req: Request) {
         select: {
           user: {
             select: {
-              id: true, 
+              id: true,
             },
           },
         },
@@ -57,15 +56,11 @@ export async function POST(req: Request) {
     },
   });
 
-
   await Promise.all(
     maintainers.map((maintainer) =>
-
-      notifyNewJobSubmitted(maintainer.wallet?.user?.id, jobForm.githubUsername)
-    )
+      notifyNewJobSubmitted(maintainer.wallet?.user?.id, jobForm.githubUsername),
+    ),
   );
-  
-
 
   // Create the deliverables linked to the JobForm
   await Promise.all(
@@ -82,8 +77,6 @@ export async function POST(req: Request) {
       }),
     ),
   );
-
-
 
   return new Response('Job submitted successfully', { status: 200 });
 }

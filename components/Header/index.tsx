@@ -150,11 +150,15 @@ const Header: React.FC<any> = ({ uid, initialNotifications }) => {
         {/* Right section: Connect buttons */}
         <div className="flex items-center gap-4">
           {isMobile ? (
-            <Dropdown className="bg-morGreen-600" overlay={connectMenu} trigger={['click']}>
-              <Button type="text" icon={<DownOutlined />}>
-                Connect
-              </Button>
-            </Dropdown>
+            <>
+              <NotificationPanel uid={uid} initialNotifications={initialNotifications} />
+
+              <Dropdown className="bg-morGreen-600" overlay={connectMenu} trigger={['click']}>
+                <Button type="text" icon={<DownOutlined />}>
+                  Connect
+                </Button>
+              </Dropdown>
+            </>
           ) : (
             <div className="flex items-center gap-4">
               <NotificationPanel uid={uid} initialNotifications={initialNotifications} />

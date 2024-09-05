@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { createNotification, notifyProposalCommentAdded, notifyProposalStatusChanged } from '@/utils/notifications';
+import {
+  createNotification,
+  notifyProposalCommentAdded,
+  notifyProposalStatusChanged,
+} from '@/utils/notifications';
 
 // Get a proposal by ID
 export async function GET(req: NextRequest) {
@@ -86,10 +90,7 @@ export async function PUT(req: NextRequest) {
     });
 
     // Create a notification for the user about the status change
-    await notifyProposalStatusChanged(
-      proposal.userId,
-      id
-    );
+    await notifyProposalStatusChanged(proposal.userId, id, proposal.title);
 
     return NextResponse.json(updatedProposal);
   } catch (error) {
@@ -126,7 +127,7 @@ export async function POST(req: NextRequest) {
     // Fetch the proposal by ID to get its categoryId
     const proposal = await prisma.proposal.findUnique({
       where: { id: Number(proposalId) },
-      select: { categoryId: true, userId: true, title:true}, // Include userId of the proposal author
+      select: { categoryId: true, userId: true, title: true }, // Include userId of the proposal author
     });
 
     if (!proposal) {
@@ -160,8 +161,7 @@ export async function POST(req: NextRequest) {
         proposalId: Number(proposalId),
       },
     });
-    await notifyProposalCommentAdded(proposal.userId,proposalId,proposal.title)
-
+    await notifyProposalCommentAdded(proposal.userId, proposalId, proposal.title);
 
     return NextResponse.json(comment);
   } catch (error) {

@@ -38,11 +38,11 @@ export async function createNotification({
 }
 
 // Notify users about proposals
-export async function notifyProposalStatusChanged(userId: string, proposalId: number) {
+export async function notifyProposalStatusChanged(userId: string, proposalId: number,title:string) {
   await createNotification({
     userId,
     proposalId,
-    message: `The status of proposal #${proposalId} has changed.`,
+    message: `The status of proposal "${title}" has been updated.`,
     type: 'ProposalStatusChanged',
   });
 }

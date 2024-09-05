@@ -37,12 +37,11 @@ export async function submitProposal(formData: FormData) {
       },
     });
 
-
     const maintainers = await prisma.maintainer.findMany({
       where: {
         categories: {
           some: {
-            categoryId: categoryId, 
+            categoryId: categoryId,
           },
         },
       },
@@ -52,7 +51,7 @@ export async function submitProposal(formData: FormData) {
           select: {
             user: {
               select: {
-                id: true, 
+                id: true,
               },
             },
           },
@@ -60,14 +59,13 @@ export async function submitProposal(formData: FormData) {
       },
     });
 
-  console.log(maintainers,createdProposal.id,'asdasdasda')
+    console.log(maintainers, createdProposal.id, 'asdasdasda');
 
-   await Promise.all(
-    maintainers.map((maintainer) =>
-
-      notifyNewProposalSubmitted(maintainer.wallet?.user?.id, createdProposal.id,title)
-    )
-  );
+    await Promise.all(
+      maintainers.map((maintainer) =>
+        notifyNewProposalSubmitted(maintainer.wallet?.user?.id, createdProposal.id, title),
+      ),
+    );
 
     return { success: true, message: 'Proposal submitted successfully!' };
   } catch (error) {

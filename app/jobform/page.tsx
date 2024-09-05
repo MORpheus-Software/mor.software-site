@@ -22,9 +22,8 @@ const FormComponent: React.FC = () => {
 
     setLoading(true);
     try {
-      await axios.post('/api/jobForm', {
+      await axios.post('/api/jobForm/standalone', {
         ...values,
-        userId: session?.user?.id,
       });
       notification.success({ message: 'Form submitted successfully!' });
     } catch (error) {

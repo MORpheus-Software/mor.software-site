@@ -5,6 +5,9 @@ import prisma from '@/lib/prisma';
 import { auth } from '@/auth';
 
 export async function getNotificationsByUserId(userId: any) {
+  if (!userId) {
+    return;
+  }
   return await prisma.notification.findMany({
     where: { userId },
     orderBy: { createdAt: 'desc' },

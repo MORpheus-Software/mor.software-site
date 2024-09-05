@@ -40,7 +40,6 @@ export async function POST(req: NextRequest) {
             deliverable: {
               select: { proposalId: true },
             },
-            
           },
         },
       },
@@ -89,8 +88,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    notifyJobFormCommentAdded(jobForm.userId,jobFormId)
-
+    notifyJobFormCommentAdded(jobForm.userId, jobFormId);
 
     // Add a new comment to the job form
     const comment = await prisma.jobFormComment.create({
@@ -100,9 +98,6 @@ export async function POST(req: NextRequest) {
         jobFormId,
       },
     });
-
-
-
 
     return NextResponse.json(comment, { status: 201 });
   } catch (error) {

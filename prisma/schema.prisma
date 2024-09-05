@@ -19,11 +19,12 @@ model User {
   wallets              Wallet[]
   stakings             Stake[]
   jobform              JobForm[]
+  standaloneJobForm    StandaloneJobForm[]
   proposal             Proposal[]
   proofContributions   ProofContribution[]
   jobFormComments      JobFormComment[]
   proposalComments     ProposalComment[]
-  notifications        Notification[]        // Add this line
+  notifications        Notification[]        
 }
 
 
@@ -63,6 +64,27 @@ model Stake {
   userId        String
   user          User     @relation(fields: [userId], references: [id])
 }
+
+
+model StandaloneJobForm {
+  id                    String           @id @default(cuid())
+  githubUsername        String
+  email                 String
+  description           String
+  deliverables          String
+  weightsRequested      String
+  walletAddress         String
+  minimumWeightsTime    Int
+  status                String           @default("pending")
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  userId                String           // Foreign key to link with User model
+  user                  User             @relation(fields: [userId], references: [id])
+  categoryId            Int              // Foreign key to link with Category model
+  category              Category         @relation(fields: [categoryId], references: [id])
+}
+
+
 
 model JobForm {
   id                  String           @id @default(cuid())
@@ -135,6 +157,7 @@ model Category {
   name         String             @unique
   description  String?
   proposals    Proposal[]
+  standaloneJobForm StandaloneJobForm[]
   maintainers  MaintainerCategory[]
 }
 

@@ -12,7 +12,7 @@ export default function JobForm({
   deliverables,
 }: {
   proposalId: number;
-  categoryId: string;
+  categoryId: number;
   deliverables: Array<{ id: number; description: string }>;
 }) {
   const { data: session } = useSession();

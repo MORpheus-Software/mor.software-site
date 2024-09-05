@@ -30,7 +30,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // Fetch notifications, ensuring they are handled correctly
   let notifications = (await getNotificationsByUserId(user?.id)) || [];
 
-  
   return (
     <html lang="en">
       <body>

@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { NotificationFilled as NotificationsIcon } from '@ant-design/icons';
+// import { NotificationFilled as NotificationsIcon } from '@ant-design/icons';
 import { markNotificationsAsRead } from '@/lib/server';
+import { Bell as NotificationsIcon } from 'lucide-react';
 
 const NotificationPanel: React.FC<any> = ({ uid, initialNotifications }) => {
   const [notifications, setNotifications] = useState(
@@ -53,7 +54,9 @@ const NotificationPanel: React.FC<any> = ({ uid, initialNotifications }) => {
               {notifications.map((notification) => (
                 <li
                   key={notification.id}
-                  className={`p-2 ${notification.isRead ? 'text-gray-600' : 'bg-blue-100'}`}
+                  className={`p-2 transition-colors duration-300 ${
+                    notification.isRead ? 'bg-white text-gray-600' : 'bg-morBg'
+                  }`}
                 >
                   <p>{notification.message}</p>
                   <small className="text-sm text-gray-500">
