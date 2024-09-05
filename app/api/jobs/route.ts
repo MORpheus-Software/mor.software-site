@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/lib/prisma';
 import { auth } from '@/auth';
+import { notifyNewJobSubmitted } from '@/utils/notifications';
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -14,6 +15,7 @@ export async function POST(req: Request) {
     githubUsername,
     email,
     mriNumber,
+    categoryId,
     description,
     walletAddress,
     minimumWeightsTime,
@@ -25,12 +27,45 @@ export async function POST(req: Request) {
     data: {
       githubUsername,
       email,
-      mriNumber: mriNumber ?? 'null',
+      mriNumber: categoryId ?? 'null',
       walletAddress,
       // minimumWeightsTime,
       user: { connect: { id: session.user.id } },
     },
   });
+
+
+  const maintainers = await prisma.maintainer.findMany({
+    where: {
+      categories: {
+        some: {
+          categoryId: categoryId, 
+        },
+      },
+    },
+    select: {
+      id: true,
+      wallet: {
+        select: {
+          user: {
+            select: {
+              id: true, 
+            },
+          },
+        },
+      },
+    },
+  });
+
+
+  await Promise.all(
+    maintainers.map((maintainer) =>
+
+      notifyNewJobSubmitted(maintainer.wallet?.user?.id, jobForm.githubUsername)
+    )
+  );
+  
+
 
   // Create the deliverables linked to the JobForm
   await Promise.all(
@@ -47,6 +82,8 @@ export async function POST(req: Request) {
       }),
     ),
   );
+
+
 
   return new Response('Job submitted successfully', { status: 200 });
 }

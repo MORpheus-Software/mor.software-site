@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '../../../lib/prisma'; // Adjust the path as needed
+import { notifyJobFormStatusChanged } from '@/utils/notifications';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -48,8 +49,16 @@ export async function PUT(req: NextRequest) {
             },
           },
         },
+        user: {
+          select: { id: true }, // Include the user and get the user ID
+        },
       },
     });
+    
+    
+
+
+
 
     if (!jobForm) {
       return NextResponse.json({ message: 'JobForm not found' }, { status: 404 });
@@ -100,6 +109,11 @@ export async function PUT(req: NextRequest) {
       data: { status },
     });
 
+
+
+    notifyJobFormStatusChanged(jobForm?.user?.id,jobForm.id,status)
+
+    
     return NextResponse.json(updatedJobForm);
   } catch (error) {
     console.error('Error updating job form status:', error);

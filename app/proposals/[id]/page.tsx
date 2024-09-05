@@ -78,7 +78,7 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
       <h3 className="my-10 text-center text-2xl font-semibold text-white">Submit Your Job</h3>
 
       {/* Pass the deliverables array to the JobForm component */}
-      <JobForm proposalId={proposal.id} deliverables={proposal.deliverables} />
+      <JobForm proposalId={proposal.id} categoryId={proposal.categoryId} deliverables={proposal.deliverables} />
 
       <h3 className="my-6 mt-6 text-center text-2xl font-semibold text-white">Attached Jobs</h3>
 

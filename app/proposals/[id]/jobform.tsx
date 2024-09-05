@@ -8,9 +8,11 @@ import { MarkdownField, SubmitButton } from '@/app/create-proposal/components';
 
 export default function JobForm({
   proposalId,
+  categoryId,
   deliverables,
 }: {
   proposalId: number;
+  categoryId: string;
   deliverables: Array<{ id: number; description: string }>;
 }) {
   const { data: session } = useSession();

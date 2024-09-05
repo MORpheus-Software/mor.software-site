@@ -29,8 +29,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   // Fetch notifications, ensuring they are handled correctly
   let notifications = (await getNotificationsByUserId(user?.id)) || [];
-  console.log(notifications, 'noti');
 
+  
   return (
     <html lang="en">
       <body>

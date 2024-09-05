@@ -1,6 +1,7 @@
 // /api/jobForms/comments/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { notifyJobFormCommentAdded } from '@/utils/notifications';
 
 // POST handler to add a comment to a job form
 export async function POST(req: NextRequest) {
@@ -31,11 +32,15 @@ export async function POST(req: NextRequest) {
     const jobForm = await prisma.jobForm.findUnique({
       where: { id: jobFormId },
       include: {
+        user: {
+          select: { id: true }, // Select the userId of the submitter
+        },
         deliverables: {
           include: {
             deliverable: {
               select: { proposalId: true },
             },
+            
           },
         },
       },
@@ -84,6 +89,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    notifyJobFormCommentAdded(jobForm.userId,jobFormId)
+
+
     // Add a new comment to the job form
     const comment = await prisma.jobFormComment.create({
       data: {
@@ -92,6 +100,9 @@ export async function POST(req: NextRequest) {
         jobFormId,
       },
     });
+
+
+
 
     return NextResponse.json(comment, { status: 201 });
   } catch (error) {

@@ -76,6 +76,8 @@ model JobForm {
   status              String           @default("pending")
   user                User             @relation(fields: [userId], references: [id])
   comments            JobFormComment[]
+  notifications Notification[]  // Add this line
+
 }
 
 model JobFormDeliverable {
@@ -178,9 +180,13 @@ model Notification {
   id          String   @id @default(cuid())
   userId      String
   user        User     @relation(fields: [userId], references: [id])
-  proposalId  Int
-  proposal    Proposal @relation(fields: [proposalId], references: [id])
+  proposalId  Int?     // Optional field for proposal-related notifications
+  proposal    Proposal? @relation(fields: [proposalId], references: [id])
+  jobFormId   String?  // Optional field for job form-related notifications
+  jobForm     JobForm? @relation(fields: [jobFormId], references: [id])
   message     String
   isRead      Boolean  @default(false)
   createdAt   DateTime @default(now())
+  type        String?   // Notification type
 }
+

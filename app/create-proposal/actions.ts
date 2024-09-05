@@ -1,6 +1,7 @@
 'use server';
 import { auth } from '@/auth';
 import prisma from '../../lib/prisma';
+import { notifyNewProposalSubmitted, notifyProposalStatusChanged } from '@/utils/notifications';
 
 export async function submitProposal(formData: FormData) {
   const session = await auth();
@@ -22,7 +23,7 @@ export async function submitProposal(formData: FormData) {
       .map(([, value]) => ({ description: value as string }));
 
     // Create a new proposal with associated deliverables and category
-    await prisma.proposal.create({
+    const createdProposal = await prisma.proposal.create({
       data: {
         title,
         description,
@@ -35,6 +36,38 @@ export async function submitProposal(formData: FormData) {
         },
       },
     });
+
+
+    const maintainers = await prisma.maintainer.findMany({
+      where: {
+        categories: {
+          some: {
+            categoryId: categoryId, 
+          },
+        },
+      },
+      select: {
+        id: true,
+        wallet: {
+          select: {
+            user: {
+              select: {
+                id: true, 
+              },
+            },
+          },
+        },
+      },
+    });
+
+  console.log(maintainers,createdProposal.id,'asdasdasda')
+
+   await Promise.all(
+    maintainers.map((maintainer) =>
+
+      notifyNewProposalSubmitted(maintainer.wallet?.user?.id, createdProposal.id,title)
+    )
+  );
 
     return { success: true, message: 'Proposal submitted successfully!' };
   } catch (error) {
