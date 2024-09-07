@@ -11,7 +11,7 @@ import parsePhoneNumberFromString from 'libphonenumber-js';
  * @param {string} newPhoneNumber - The new phone number to be validated and saved.
  * @returns {Promise<object | void>} - Returns the updated user object or an error message if validation fails.
  */
-export async function updatePhoneNumber(newPhoneNumber: any) {
+export async function updatePhoneNumber(newPhoneNumber: string) {
   if (!newPhoneNumber) {
     return { error: 'Phone number is required.' };
   }
@@ -19,6 +19,11 @@ export async function updatePhoneNumber(newPhoneNumber: any) {
   console.log(newPhoneNumber);
 
   const user = await getCurrentUser();
+
+  // Check if user retrieval resulted in an error
+  if (!user || 'error' in user) {
+    return { error: 'User is not authenticated or not found.' };
+  }
 
   // Parse and validate the phone number using libphonenumber-js
   const phoneNumberParsed = parsePhoneNumberFromString(newPhoneNumber, 'US'); // Adjust country code as needed
@@ -30,7 +35,7 @@ export async function updatePhoneNumber(newPhoneNumber: any) {
   try {
     // Update the user's phone number in the database
     const updatedUser = await prisma.user.update({
-      where: { id: user?.id },
+      where: { id: user.id },
       data: { phoneNumber: phoneNumberParsed.format('E.164') },
     });
 
@@ -64,13 +69,18 @@ export async function getCurrentUser() {
       },
     });
 
+    if (!user) {
+      return { error: 'User not found.' };
+    }
+
     return user;
   } catch (error) {
     console.error('Error fetching user:', error);
     return { error: 'Failed to fetch user data.' };
   }
 }
-export async function getNotificationsByUserId(userId: any) {
+
+export async function getNotificationsByUserId(userId: string) {
   if (!userId) {
     return;
   }

@@ -25,11 +25,27 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const initialState = cookieToInitialState(config, headers().get('cookie'));
   let session = await auth();
-  let user = session?.user;
 
-  // Fetch notifications, ensuring they are handled correctly
-  let notifications = (await getNotificationsByUserId(user?.id)) || [];
+  const user = session?.user || null;
+  let notifications: {
+    id: string;
+    userId: string;
+    createdAt: Date;
+    proposalId: number | null;
+    jobFormId: string | null;
+    message: string;
+    isRead: boolean;
+    type: string | null;
+  }[] = [];
 
+  try {
+    // Fetch notifications if user exists
+    if (user?.id) {
+      notifications = (await getNotificationsByUserId(user.id)) || [];
+    }
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+  }
   return (
     <html lang="en">
       <body>

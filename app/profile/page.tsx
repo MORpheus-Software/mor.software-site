@@ -212,7 +212,9 @@ const ProfilePage = () => {
       try {
         const result = await updatePhoneNumber(phoneNumber);
 
+        //@ts-ignore
         if (result.error) {
+          //@ts-ignore
           message.error(result.error);
         } else {
           message.success('Phone number updated successfully!');
