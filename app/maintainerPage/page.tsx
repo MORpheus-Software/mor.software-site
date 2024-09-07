@@ -15,7 +15,7 @@ interface Proposal {
   mri: string;
   status: string;
   deliverables: Deliverable[];
-  comments?: ProposalComment[]; // Make comments optional
+  comments?: ProposalComment[];
 }
 
 interface ProposalComment {
@@ -45,7 +45,7 @@ interface JobForm {
     minimumWeightsTime: number;
   }[];
   status: string;
-  comments?: JobFormComment[]; // Make comments optional
+  comments?: JobFormComment[];
 }
 
 interface JobFormComment {
@@ -57,10 +57,32 @@ interface JobFormComment {
   };
 }
 
+interface StandaloneJobForm {
+  id: string;
+  githubUsername: string;
+  email: string;
+  description: string;
+  deliverables: string;
+  weightsRequested: string;
+  minimumWeightsTime: number;
+  status: string;
+}
+
+interface ProofContribution {
+  id: string;
+  githubUsername: string;
+  walletAddress: string;
+  description: string;
+  weightsAgreed: string;
+  linksToProof: string;
+}
+
 interface Category {
   id: number;
   name: string;
   proposals: Proposal[];
+  standaloneJobForm: StandaloneJobForm[];
+  proofContribution: ProofContribution[];
 }
 
 export default function MaintainerPage() {
@@ -73,7 +95,6 @@ export default function MaintainerPage() {
   const [updating, setUpdating] = useState<boolean>(false);
   const [comment, setComment] = useState<string>('');
   const [jobComments, setJobComments] = useState<{ [key: number]: string }>({});
-  const [selectedJobForm, setSelectedJobForm] = useState<JobForm | null>(null);
 
   useEffect(() => {
     if (address && isConnected) {
@@ -81,6 +102,7 @@ export default function MaintainerPage() {
     }
   }, [address, isConnected]);
 
+  // Fetch categories associated with the maintainer's wallet address
   const fetchCategories = async () => {
     try {
       const response = await fetch(`/api/categories?walletAddress=${address}`);
@@ -99,6 +121,7 @@ export default function MaintainerPage() {
     }
   };
 
+  // Fetch proposal details including job forms
   const fetchProposalDetails = async (proposalId: number) => {
     try {
       const response = await fetch(`/api/proposals/${proposalId}`);
@@ -117,6 +140,7 @@ export default function MaintainerPage() {
     }
   };
 
+  // Update proposal status
   const handleUpdateStatus = async (proposalId: number, status: string) => {
     setUpdating(true);
     try {
@@ -147,6 +171,7 @@ export default function MaintainerPage() {
     }
   };
 
+  // Update job form status
   const handleUpdateJobStatus = async (jobFormId: number, status: string) => {
     setUpdating(true);
     try {
@@ -176,6 +201,7 @@ export default function MaintainerPage() {
     }
   };
 
+  // Submit a comment on a proposal
   const handleCommentSubmit = async () => {
     try {
       const response = await fetch('/api/proposals', {
@@ -203,6 +229,7 @@ export default function MaintainerPage() {
     }
   };
 
+  // Submit a comment on a job form
   const handleJobCommentSubmit = async (jobFormId: number) => {
     try {
       const response = await fetch('/api/jobForm/comments', {
@@ -230,6 +257,7 @@ export default function MaintainerPage() {
     }
   };
 
+  // Close the proposal modal
   const handleModalClose = () => {
     setIsModalVisible(false);
     setSelectedProposal(null);
@@ -240,35 +268,78 @@ export default function MaintainerPage() {
     <div className="maintainer-page">
       <div className="mx col-span-12 max-w-3xl rounded-2xl border border-borderTr bg-morBg p-4 shadow sm:mx-auto sm:p-6">
         {categories.length > 0 ? (
-          <>
-            {allProposals.length > 0 ? (
-              allProposals.map((proposal) => (
-                <div
-                  key={proposal.id}
-                  className="proposal-item my-3 flex flex-col gap-1 rounded border border-neutral-600 bg-black p-5 hover:bg-neutral-900"
-                >
-                  <div className="flex flex-row items-center justify-between">
-                    <div className="flex flex-col gap-2">
-                      <div className="flex flex-row items-center gap-4">
-                        <h2 className="mb-0 text-xl font-bold">{proposal.title}</h2>
-                        <p>{proposal.status}</p>
+          categories.map((category) => (
+            <div key={category.id} className="category-section my-6">
+              <h2 className="text-2xl font-bold">{category.name}</h2>
+
+              {/* Proposals Section */}
+              <h3 className="mt-4 text-xl font-semibold">Proposals:</h3>
+              {category.proposals.length > 0 ? (
+                category.proposals.map((proposal) => (
+                  <div
+                    key={proposal.id}
+                    className="proposal-item my-3 flex flex-col gap-1 rounded border border-neutral-600 bg-black p-5 hover:bg-neutral-900"
+                  >
+                    <div className="flex flex-row items-center justify-between">
+                      <div className="flex flex-col gap-2">
+                        <div className="flex flex-row items-center gap-4">
+                          <h4 className="mb-0 text-xl font-bold">{proposal.title}</h4>
+                          <p>{proposal.status}</p>
+                        </div>
+                        <p>Category: {proposal.mri}</p>
                       </div>
-                      <p>Category: {proposal.mri}</p>
+                      <Button
+                        type="link"
+                        className="text-blue-500 underline"
+                        onClick={() => fetchProposalDetails(proposal.id)}
+                      >
+                        Manage Proposal & Jobs
+                      </Button>
                     </div>
-                    <Button
-                      type="link"
-                      className="text-blue-500 underline"
-                      onClick={() => fetchProposalDetails(proposal.id)}
-                    >
-                      Manage Proposal & Jobs
-                    </Button>
                   </div>
-                </div>
-              ))
-            ) : (
-              <p>No proposals found for this wallet.</p>
-            )}
-          </>
+                ))
+              ) : (
+                <p>No proposals available.</p>
+              )}
+
+              {/* Standalone Jobs Section */}
+              <h3 className="mt-4 text-xl font-semibold">Standalone Jobs:</h3>
+              {category.standaloneJobForm.length > 0 ? (
+                category.standaloneJobForm.map((job) => (
+                  <div
+                    key={job.id}
+                    className="job-item my-3 rounded border border-neutral-600 bg-gray-800 p-4"
+                  >
+                    <p>Author: {job.githubUsername}</p>
+                    <p>Description: {job.description}</p>
+                    <p>Requested Weights: {job.weightsRequested}</p>
+                    <p>Minimum Weights Time: {job.minimumWeightsTime}</p>
+                    <p>Status: {job.status}</p>
+                  </div>
+                ))
+              ) : (
+                <p>No standalone jobs available in this category.</p>
+              )}
+
+              {/* Proof Contributions Section */}
+              <h3 className="mt-4 text-xl font-semibold">Proof Contributions:</h3>
+              {category.proofContribution.length > 0 ? (
+                category.proofContribution.map((proof) => (
+                  <div
+                    key={proof.id}
+                    className="proof-item my-3 rounded border border-neutral-600 bg-gray-800 p-4"
+                  >
+                    <p>Author: {proof.githubUsername}</p>
+                    <p>Description: {proof.description}</p>
+                    <p>Weights Agreed: {proof.weightsAgreed}</p>
+                    <p>Link to Proof: {proof.linksToProof}</p>
+                  </div>
+                ))
+              ) : (
+                <p>No proof contributions available in this category.</p>
+              )}
+            </div>
+          ))
         ) : (
           <p>No categories assigned to this wallet.</p>
         )}
@@ -294,7 +365,6 @@ export default function MaintainerPage() {
                 <Option value="pending">Pending</Option>
                 <Option value="approved">Approved</Option>
                 <Option value="denied">Denied</Option>
-                {/* <Option value="archived">Archived</Option> */}
               </Select>
             </div>
 
@@ -355,7 +425,6 @@ export default function MaintainerPage() {
                     <Option value="pending">Pending</Option>
                     <Option value="approved">Approved</Option>
                     <Option value="denied">Denied</Option>
-                    {/* <Option value="archived">Archived</Option> */}
                   </Select>
 
                   <h5 className="mt-2 font-semibold">Deliverables:</h5>

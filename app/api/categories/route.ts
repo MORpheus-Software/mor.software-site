@@ -1,10 +1,9 @@
 // app/api/categories/route.ts
-// export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
-// GET handler to fetch categories with proposals for a specific wallet address
+// GET handler to fetch categories with proposals, standalone job forms, and proof contributions for a specific wallet address
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -40,6 +39,8 @@ export async function GET(req: NextRequest) {
             },
           },
         },
+        standaloneJobForm: true, // Include standalone job forms
+        proofContribution: true, // Include proof contributions
         maintainers: {
           include: {
             maintainer: {

@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useSession } from 'next-auth/react';
-import { Modal, Button, Input } from 'antd';
+import { Modal, Button, Input, message } from 'antd';
 import useSWR from 'swr';
 import { EditOutlined, LockOutlined } from '@ant-design/icons';
 import { conciseAddress } from '@/utils/trunc';
+import { updatePhoneNumber } from '@/lib/server';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -71,6 +72,7 @@ interface User {
   id: string;
   email: string;
   name: string;
+  phoneNumber?: string;
   wallets: Wallet[];
 }
 
@@ -86,7 +88,11 @@ const ProfilePage = () => {
   const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null);
   const [selectedJobForm, setSelectedJobForm] = useState<JobForm | null>(null);
   const [loading, setLoading] = useState(true);
-  console.log(selectedJobForm, 's job form');
+  const [isPending, startTransition] = useTransition();
+
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [loadingPhone, setLoadingPhone] = useState(false);
+  const [isEditingPhoneNumber, setIsEditingPhoneNumber] = useState<boolean>(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -189,6 +195,38 @@ const ProfilePage = () => {
     setIsModalVisible(true);
   };
 
+  useEffect(() => {
+    // Load the current user's phone number on component mount
+    if (user && user.phoneNumber) {
+      setPhoneNumber(user.phoneNumber);
+    }
+  }, [user]);
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhoneNumber(e.target.value);
+  };
+
+  const savePhoneNumber = () => {
+    setLoadingPhone(true);
+    startTransition(async () => {
+      try {
+        const result = await updatePhoneNumber(phoneNumber);
+
+        if (result.error) {
+          message.error(result.error);
+        } else {
+          message.success('Phone number updated successfully!');
+          mutate(); // Re-fetch user data to update UI
+        }
+      } catch (error) {
+        console.error('Error updating phone number:', error);
+        message.error('Failed to update phone number.');
+      } finally {
+        setLoadingPhone(false);
+      }
+    });
+  };
+
   return (
     <div className="mx col-span-12 max-w-3xl rounded-2xl border border-borderTr bg-morBg p-4 shadow sm:mx-auto sm:p-6 md:col-span-9">
       <div className="flex flex-col-reverse text-base text-gray-200 lg:grid lg:grid-cols-1 lg:space-x-4">
@@ -212,6 +250,31 @@ const ProfilePage = () => {
                       <strong>Email:</strong> {user.email}
                     </div>
 
+                    <div className="mb-[0.5rem] mt-[1.5rem] text-xl font-bold">Phone Number</div>
+
+                    {isEditingPhoneNumber ? (
+                      <div className="flex items-center gap-2">
+                        <Input
+                          value={phoneNumber}
+                          onChange={handlePhoneChange}
+                          placeholder="+1234567890"
+                          style={{ maxWidth: 200 }}
+                        />
+                        <Button type="primary" onClick={savePhoneNumber}>
+                          Save
+                        </Button>
+                        <Button onClick={() => setIsEditingPhoneNumber(false)}>Cancel</Button>
+                      </div>
+                    ) : (
+                      <div>
+                        <span>{user.phoneNumber || 'No phone number set.'}</span>
+                        <EditOutlined
+                          onClick={() => setIsEditingPhoneNumber(true)}
+                          style={{ marginLeft: '10px', cursor: 'pointer' }}
+                        />
+                      </div>
+                    )}
+
                     <div className="mb-[0.5rem] mt-[1.5rem] text-xl font-bold">Wallets</div>
                     {user?.wallets.length === 0 && <div>Your stats will appear here</div>}
                     <ul>
@@ -223,46 +286,36 @@ const ProfilePage = () => {
                         .map((wallet: Wallet) => (
                           <li key={wallet.id} className="flex items-center">
                             {editingWallet?.id === wallet.id ? (
-                              <>
-                                <div className="flex flex-grow flex-col gap-4 sm:flex-row">
-                                  <input
-                                    type="text"
-                                    value={walletName}
-                                    placeholder="Name your wallet"
-                                    onChange={handleNameChange}
-                                    className="mb-0 mr-2 p-3"
-                                  />
-                                  <button onClick={saveWalletName}>Save</button>
-                                  <button onClick={() => setEditingWallet(null)}>Cancel</button>
-                                </div>
-                              </>
+                              <div className="flex items-center gap-2">
+                                <Input
+                                  type="text"
+                                  value={walletName}
+                                  placeholder="Name your wallet"
+                                  onChange={handleNameChange}
+                                  style={{ maxWidth: 200 }}
+                                />
+                                <Button type="primary" onClick={saveWalletName}>
+                                  Save
+                                </Button>
+                                <Button onClick={() => setEditingWallet(null)}>Cancel</Button>
+                              </div>
                             ) : (
-                              <>
-                                {wallet.name ? (
-                                  <>
-                                    {isMobile ? conciseAddress(wallet.address) : wallet.address}{' '}
-                                    {wallet.name}
-                                  </>
-                                ) : (
-                                  <>{isMobile ? conciseAddress(wallet.address) : wallet.address} </>
-                                )}
+                              <div className="flex items-center">
+                                <span>
+                                  {isMobile ? conciseAddress(wallet.address) : wallet.address}{' '}
+                                  {wallet.name || ''}
+                                </span>
                                 <EditOutlined
                                   onClick={() => handleEditClick(wallet)}
-                                  style={{
-                                    marginLeft: '10px',
-                                    cursor: 'pointer',
-                                  }}
+                                  style={{ marginLeft: '10px', cursor: 'pointer' }}
                                 />
                                 {wallet.stakings.length > 0 && (
                                   <LockOutlined
                                     onClick={() => showStakingDetails(wallet.stakings[0])}
-                                    style={{
-                                      marginLeft: '10px',
-                                      cursor: 'pointer',
-                                    }}
+                                    style={{ marginLeft: '10px', cursor: 'pointer' }}
                                   />
                                 )}
-                              </>
+                              </div>
                             )}
                           </li>
                         ))}
