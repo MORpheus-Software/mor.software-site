@@ -53,10 +53,10 @@ export async function createNotification({
   console.log(user)
   // If user contact details exist, send notifications
   if (user) {
-    // if (user.phoneNumber) {
-    //   await sendSMS(user.phoneNumber, message);
-    // }
-    await sendSMS('+995557786556', message);
+    if (user.phoneNumber) {
+      await sendSMS(user.phoneNumber, message);
+    }
+    // await sendSMS('+995557786556', message);
 
     // if (user.email) {
     //   await sendEmail(user.email, `Notification: ${type}`, message);

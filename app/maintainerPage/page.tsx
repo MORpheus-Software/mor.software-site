@@ -71,6 +71,7 @@ interface StandaloneJobForm {
 interface ProofContribution {
   id: string;
   githubUsername: string;
+  email: string;
   walletAddress: string;
   description: string;
   weightsAgreed: string;
@@ -311,6 +312,7 @@ export default function MaintainerPage() {
                     className="job-item my-3 rounded border border-neutral-600 bg-gray-800 p-4"
                   >
                     <p>Author: {job.githubUsername}</p>
+                    <p>Email: {job.email}</p>
                     <p>Description: {job.description}</p>
                     <p>Requested Weights: {job.weightsRequested}</p>
                     <p>Minimum Weights Time: {job.minimumWeightsTime}</p>
@@ -330,6 +332,7 @@ export default function MaintainerPage() {
                     className="proof-item my-3 rounded border border-neutral-600 bg-gray-800 p-4"
                   >
                     <p>Author: {proof.githubUsername}</p>
+                    <p>Email: {proof.email}</p>
                     <p>Description: {proof.description}</p>
                     <p>Weights Agreed: {proof.weightsAgreed}</p>
                     <p>Link to Proof: {proof.linksToProof}</p>
