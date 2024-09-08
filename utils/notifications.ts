@@ -54,9 +54,12 @@ export async function createNotification({
   // If user contact details exist, send notifications
   if (user) {
     if (user.phoneNumber) {
-      await sendSMS(user.phoneNumber, message);
-    }
-    
+
+      if (isValidPhoneNumber(user.phoneNumber)){
+        await sendSMS(user.phoneNumber, message);
+      }
+    } 
+
     // if (user.email) {
     //   await sendEmail(user.email, `Notification: ${type}`, message);
     // }
