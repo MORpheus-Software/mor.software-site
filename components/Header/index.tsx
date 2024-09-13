@@ -70,11 +70,11 @@ const Header: React.FC<any> = ({ uid, initialNotifications }) => {
       {user && (
         <>
           <Menu.Item key="staking">
-            <Link href="/proposals">Staking</Link>
+            <Link href="/staking">Staking</Link>
           </Menu.Item>
 
           <Menu.Item key="proposals">
-            <Link href="/proposals">Proposals</Link>
+            <Link href="/proposals">MRC</Link>
           </Menu.Item>
 
           <Menu.Item key="jobform">
@@ -132,7 +132,7 @@ const Header: React.FC<any> = ({ uid, initialNotifications }) => {
                     </Link>
 
                     <Link href="/proposals" className="">
-                      Proposals
+                      MRC
                     </Link>
 
                     <Link href="/jobform">Standalone Jobs</Link>

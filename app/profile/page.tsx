@@ -348,9 +348,9 @@ const ProfilePage = () => {
                   </>
 
                   {/* Display Proposals */}
-                  <div className="mb-[0.5rem] mt-[1.5rem] text-xl font-bold">Your Proposals</div>
+                  <div className="mb-[0.5rem] mt-[1.5rem] text-xl font-bold">Your MRCs</div>
                   {proposals.length === 0 ? (
-                    <div>You have not created any proposals yet.</div>
+                    <div>You have not created any MRCs yet.</div>
                   ) : (
                     <ul>
                       {proposals.map((proposal) => (
@@ -385,7 +385,7 @@ const ProfilePage = () => {
                     Your Attached Jobs
                   </div>
                   {jobForms.length === 0 ? (
-                    <div>Your attached proposal jobs will appear here.</div>
+                    <div>Your attached MRC jobs will appear here.</div>
                   ) : (
                     <ul>
                       {jobForms && (

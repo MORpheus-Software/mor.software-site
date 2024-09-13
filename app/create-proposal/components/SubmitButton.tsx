@@ -24,7 +24,7 @@ export default function SubmitButton() {
       {pending ? (
         <span>Creating ...</span>
       ) : (
-        <span>{session ? 'Create Proposal' : 'Sign in with GitHub'}</span>
+        <span>{session ? 'Create MRC' : 'Sign in with GitHub'}</span>
       )}
     </button>
   );

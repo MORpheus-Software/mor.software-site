@@ -17,7 +17,7 @@ export default async function ProposalsPage() {
   return (
     <div className="mx col-span-12 max-w-3xl rounded-2xl border border-borderTr bg-morBg p-4 shadow sm:mx-auto sm:p-6">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="mb-0 text-2xl font-semibold">Open Proposals</h1>
+        <h1 className="mb-0 text-2xl font-semibold">Open MRCs</h1>
         <Link href="/create-proposal">
           <Button text="+ NEW MRC" />
         </Link>
@@ -36,7 +36,7 @@ export default async function ProposalsPage() {
               </div>
 
               <Link legacyBehavior href={`/proposals/${proposal.id}`}>
-                <a className="text-blue-500 underline">View Proposal</a>
+                <a className="text-blue-500 underline">View MRC</a>
               </Link>
             </div>
           </li>
