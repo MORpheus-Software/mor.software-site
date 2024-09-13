@@ -1,6 +1,7 @@
 'use server';
 import { auth } from '@/auth';
 import prisma from '@/lib/prisma';
+import { notifyStandaloneJobFormCreation } from '@/utils/notifications';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -57,6 +58,36 @@ export async function POST(req: NextRequest) {
         category: { connect: { id: parseInt(mriNumber, 10) } },
       },
     });
+
+    const maintainers = await prisma.maintainer.findMany({
+      where: {
+        categories: {
+          some: {
+            categoryId: parseInt(mriNumber, 10),
+          },
+        },
+      },
+      select: {
+        id: true,
+        wallet: {
+          select: {
+            user: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (newJobForm.id) {
+      await Promise.all(
+        maintainers.map((maintainer) =>
+          notifyStandaloneJobFormCreation(maintainer.wallet?.user?.id, newJobForm.githubUsername),
+        ),
+      );
+    }
 
     return NextResponse.json(newJobForm, { status: 201 });
   } catch (error) {

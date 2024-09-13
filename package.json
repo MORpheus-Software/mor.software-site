@@ -27,6 +27,7 @@
     "buffer-layout": "^1.2.2",
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.5.1",
+    "dayjs": "^1.11.13",
     "easymde": "^2.18.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",

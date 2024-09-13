@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '../../../lib/prisma'; // Adjust the path as needed
 import { auth } from '@/auth';
+import { notifyProofOfContributionCreation } from '@/utils/notifications';
 
 export async function POST(request: NextRequest) {
   const session = await auth();
@@ -59,6 +60,39 @@ export async function POST(request: NextRequest) {
         category: { connect: { id: parseInt(mriNumber, 10) } },
       },
     });
+
+    const maintainers = await prisma.maintainer.findMany({
+      where: {
+        categories: {
+          some: {
+            categoryId: parseInt(mriNumber, 10),
+          },
+        },
+      },
+      select: {
+        id: true,
+        wallet: {
+          select: {
+            user: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (contribution.id) {
+      await Promise.all(
+        maintainers.map((maintainer) =>
+          notifyProofOfContributionCreation(
+            maintainer.wallet?.user?.id,
+            contribution.githubUsername,
+          ),
+        ),
+      );
+    }
 
     return NextResponse.json(
       { message: 'Form submitted successfully', contribution },

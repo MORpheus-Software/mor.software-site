@@ -1,6 +1,6 @@
 // utils/notifications.ts
 import prisma from '@/lib/prisma';
-import { sendSMS } from '@/lib/twilio';
+import { sendSMS,sendEmail } from '@/lib/twilio';
 
 type NotificationType =
   | 'ProposalStatusChanged'
@@ -10,6 +10,8 @@ type NotificationType =
   | 'NewProposalSubmitted'
   | 'NewJobSubmitted'
   | 'JobFormStatusChanged'
+  | 'NewProofOfContributionSubmitted'
+  | 'NewStandaloneJobFormSubmitted'
   | 'JobFormCommentAdded';
 
 interface CreateNotificationParams {
@@ -19,6 +21,21 @@ interface CreateNotificationParams {
   message: string;
   type: NotificationType;
 }
+
+const notificationDescriptions: Record<NotificationType, string> = {
+  ProposalStatusChanged: 'The status of the proposal has been updated - Morpheus',
+  ProposalCommentAdded: 'A new comment has been added to the proposal - Morpheus',
+  JobStatusChanged: 'The status of your job has changed - Morpheus',
+  JobCommentAdded: 'A new comment has been added to the job - Morpheus',
+  NewProposalSubmitted: 'A new proposal has been submitted - Morpheus',
+  NewJobSubmitted: 'A new job has been submitted - Morpheus',
+  JobFormStatusChanged: 'Your attached job form status has been updated - Morpheus',
+  NewProofOfContributionSubmitted: 'A new proof of contribution has been submitted - Morpheus',
+  NewStandaloneJobFormSubmitted: 'A new standalone job proposal has been submitted - Morpheus',
+  JobFormCommentAdded: 'A new comment has been added to your standalone job - Morpheus',
+};
+
+
 
 
 const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/;
@@ -47,24 +64,31 @@ export async function createNotification({
     },
   });
 
-  // Fetch user contact details from the database
-  const user = await prisma.user.findUnique({ where: { id: userId } });
+  // Fetch user contact details and maintainer information from the database
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: { wallets: { include: { maintainers: true } } },
+  });
 
-  console.log(user)
+  console.log(user);
+  
   // If user contact details exist, send notifications
   if (user) {
-    if (user.phoneNumber) {
+    // Check if user is a maintainer
+    const isMaintainer = user.wallets.some((wallet) => wallet.maintainers.length > 0);
 
-      if (isValidPhoneNumber(user.phoneNumber)){
-        await sendSMS(user.phoneNumber, message);
-      }
-    } 
+    // Send SMS only if the user is a maintainer
+    if (isMaintainer && user.phoneNumber && isValidPhoneNumber(user.phoneNumber)) {
+      await sendSMS(user.phoneNumber, message);
+    }
 
-    // if (user.email) {
-    //   await sendEmail(user.email, `Notification: ${type}`, message);
-    // }
+    // Send email regardless of whether the user is a maintainer
+    if (user.email) {
+      await sendEmail(user.email, `${notificationDescriptions[type]}`, message);
+    }
   }
 }
+
 
 // Notify users about proposals
 export async function notifyProposalStatusChanged(userId: string, proposalId: number,title:string) {
@@ -113,6 +137,23 @@ export async function notifyJobFormStatusChanged(userId: string, jobFormId: stri
     jobFormId,
     message: `You job form has been ${status}.`,
     type: 'JobFormStatusChanged',
+  });
+}
+
+// Notify users maintainers standalonde job forms
+export async function notifyStandaloneJobFormCreation(maintainerId: string, jobId: string) {
+  await createNotification({
+    userId: maintainerId,
+    message: `A new standalone job by ${jobId} has been submitted.`,
+    type: 'NewStandaloneJobFormSubmitted',
+  });
+}
+
+export async function notifyProofOfContributionCreation(maintainerId: string, jobId: string) {
+  await createNotification({
+    userId: maintainerId,
+    message: `A new proof of contribution by ${jobId} has been submitted.`,
+    type: 'NewProofOfContributionSubmitted',
   });
 }
 

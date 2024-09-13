@@ -120,3 +120,8 @@
   border: 0;
 }
 
+
+
+.ant-picker-input >input{
+  margin-bottom: 0;
+}

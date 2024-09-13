@@ -102,3 +102,67 @@ export async function markNotificationsAsRead(userId: string) {
   });
   return response;
 }
+
+export async function exportData(
+  type: string,
+  startDate: string,
+  endDate: string,
+  categoryIds: number[],
+): Promise<string> {
+  let data;
+
+  // Parse start and end dates
+  const start = new Date(startDate);
+  let end = new Date(endDate);
+
+  // If endDate is today, set the end date to the current time
+  const today = new Date();
+  if (
+    end.getFullYear() === today.getFullYear() &&
+    end.getMonth() === today.getMonth() &&
+    end.getDate() === today.getDate()
+  ) {
+    end = new Date(); // Set end to the current date and time
+  }
+
+  // Fetch data based on type and timeframe
+  switch (type) {
+    case 'proofContribution':
+      data = await prisma.proofContribution.findMany({
+        where: {
+          categoryId: { in: categoryIds },
+          createdAt: { gte: start, lte: end },
+        },
+      });
+      break;
+    case 'standaloneJobForm':
+      data = await prisma.standaloneJobForm.findMany({
+        where: {
+          categoryId: { in: categoryIds },
+          createdAt: { gte: start, lte: end },
+        },
+      });
+      break;
+    case 'proposals':
+      data = await prisma.proposal.findMany({
+        where: {
+          categoryId: { in: categoryIds },
+          createdAt: { gte: start, lte: end },
+        },
+      });
+      break;
+    default:
+      throw new Error('Invalid type');
+  }
+
+  // Convert data to CSV format
+  return convertToCSV(data);
+}
+
+// Convert data to CSV format
+function convertToCSV(data: any[]): string {
+  if (!data.length) return '';
+  const headers = Object.keys(data[0]).join(',');
+  const rows = data.map((row) => Object.values(row).join(','));
+  return [headers, ...rows].join('\n');
+}

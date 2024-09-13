@@ -1,12 +1,17 @@
 'use client';
-import { Select, Button, Modal, Input } from 'antd';
+import { Select, Button, Modal, Input, DatePicker } from 'antd';
 import { useAccount } from 'wagmi';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { toast } from 'react-toastify';
 import ReactMarkdown from 'react-markdown';
+import { exportData } from '@/lib/server';
+import { revalidatePath } from 'next/cache';
+import moment from 'moment';
+import dayjs, { Dayjs } from 'dayjs'; // Import Dayjs for date handling
 
 const { Option } = Select;
 const { TextArea } = Input;
+const { RangePicker } = DatePicker;
 
 interface Proposal {
   id: number;
@@ -97,11 +102,51 @@ export default function MaintainerPage() {
   const [comment, setComment] = useState<string>('');
   const [jobComments, setJobComments] = useState<{ [key: number]: string }>({});
 
+  const [timeframe, setTimeframe] = useState<[Dayjs, Dayjs] | null>(null); // Use Dayjs type here
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [type, setType] = useState('proofContribution');
+  const [isPending, startTransition] = useTransition();
+  const [isExportModalVisible, setIsExportModalVisible] = useState(false);
+
   useEffect(() => {
     if (address && isConnected) {
       fetchCategories();
     }
   }, [address, isConnected]);
+
+  const handleExport = async () => {
+    if (!timeframe) {
+      toast.error('Please select a timeframe.');
+      return;
+    }
+    const startDate = timeframe[0].toISOString();
+    const endDate = timeframe[1].toISOString();
+
+    try {
+      // Call the server function from lib.ts to get the CSV string
+      const csvString = await exportData(type, startDate, endDate, selectedCategories);
+
+      // Create a Blob from the CSV string
+      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${type}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+
+      // Revalidate the path to update the UI with fresh data
+      // startTransition(() => {
+      //   revalidatePath('/maintainerPage'); // Adjust path as needed
+      // });
+
+      toast.success('Data exported successfully!');
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      toast.error('Error exporting data.');
+    }
+  };
 
   // Fetch categories associated with the maintainer's wallet address
   const fetchCategories = async () => {
@@ -184,6 +229,7 @@ export default function MaintainerPage() {
         body: JSON.stringify({
           id: jobFormId,
           status,
+          username: '',
           walletAddress: address,
         }),
       });
@@ -268,6 +314,52 @@ export default function MaintainerPage() {
   return (
     <div className="maintainer-page">
       <div className="mx col-span-12 max-w-3xl rounded-2xl border border-borderTr bg-morBg p-4 shadow sm:mx-auto sm:p-6">
+        <Button type="primary" onClick={() => setIsExportModalVisible(true)}>
+          Export Data
+        </Button>
+
+        <Modal
+          title="Export Data"
+          open={isExportModalVisible}
+          onCancel={() => setIsExportModalVisible(false)}
+          footer={null}
+        >
+          <Select value={type} onChange={setType} style={{ width: '100%', marginBottom: 20 }}>
+            <Option value="proofContribution">Proof Contributions</Option>
+            <Option value="standaloneJobForm">Standalone Job Forms</Option>
+            <Option value="proposals">Proposals</Option>
+          </Select>
+
+          <RangePicker
+            value={timeframe}
+            onChange={(dates) => setTimeframe(dates as [Dayjs, Dayjs] | null)} // Ensure proper Dayjs handling
+            style={{ width: '100%', marginBottom: 20 }}
+            disabledDate={(current) => current && current > dayjs().endOf('day')}
+          />
+
+          <Select
+            mode="multiple"
+            placeholder="Select Categories"
+            value={selectedCategories}
+            onChange={setSelectedCategories}
+            style={{ width: '100%', marginBottom: 20 }}
+          >
+            {categories.map((category) => (
+              <Option key={category.id} value={category.id}>
+                {category.name}
+              </Option>
+            ))}
+          </Select>
+
+          <Button
+            type="primary"
+            onClick={handleExport}
+            disabled={isPending || !timeframe || selectedCategories.length === 0}
+          >
+            {isPending ? 'Exporting...' : 'Export Data'}
+          </Button>
+        </Modal>
+
         {categories.length > 0 ? (
           categories.map((category) => (
             <div key={category.id} className="category-section my-6">
