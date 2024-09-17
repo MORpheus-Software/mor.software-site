@@ -351,6 +351,9 @@ export default function MaintainerPage() {
               category={category}
               fetchStandaloneJobDetails={fetchStandaloneJobDetails}
               fetchProposalDetails={fetchProposalDetails}
+              fetchProofContributionDetails={function (proofId: string): void {
+                throw new Error('Function not implemented.');
+              }}
             />
           ))
         ) : (
