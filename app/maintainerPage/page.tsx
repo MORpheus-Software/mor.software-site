@@ -1,100 +1,28 @@
 'use client';
-import { Select, Button, Modal, Input, DatePicker } from 'antd';
+// MaintainerPage.tsx
+import React, { useEffect, useState, useTransition } from 'react';
+import { Button } from 'antd';
 import { useAccount } from 'wagmi';
-import { useEffect, useState, useTransition } from 'react';
 import { toast } from 'react-toastify';
-import ReactMarkdown from 'react-markdown';
+import dayjs, { Dayjs } from 'dayjs';
+
+import ExportDataModal from './ExportDataModal';
+import CategorySection from './CategorySection';
+import ProposalModal from './ProposalModal';
 import { exportData } from '@/lib/server';
-import { revalidatePath } from 'next/cache';
-import moment from 'moment';
-import dayjs, { Dayjs } from 'dayjs'; // Import Dayjs for date handling
-
-const { Option } = Select;
-const { TextArea } = Input;
-const { RangePicker } = DatePicker;
-
-interface Proposal {
-  id: number;
-  title: string;
-  description: string;
-  mri: string;
-  status: string;
-  deliverables: Deliverable[];
-  comments?: ProposalComment[];
-}
-
-interface ProposalComment {
-  id: string;
-  text: string;
-  createdAt: string;
-  user: {
-    name: string;
-  };
-}
-
-interface Deliverable {
-  id: number;
-  description: string;
-}
-
-interface JobForm {
-  id: number;
-  user: {
-    name: string;
-    githubUsername: string;
-  };
-  deliverables: {
-    deliverableDescription: string;
-    description: string;
-    weightsRequested: number;
-    minimumWeightsTime: number;
-  }[];
-  status: string;
-  comments?: JobFormComment[];
-}
-
-interface JobFormComment {
-  id: string;
-  text: string;
-  createdAt: string;
-  user: {
-    name: string;
-  };
-}
-
-interface StandaloneJobForm {
-  id: string;
-  githubUsername: string;
-  email: string;
-  description: string;
-  deliverables: string;
-  weightsRequested: string;
-  minimumWeightsTime: number;
-  status: string;
-}
-
-interface ProofContribution {
-  id: string;
-  githubUsername: string;
-  email: string;
-  walletAddress: string;
-  description: string;
-  weightsAgreed: string;
-  linksToProof: string;
-}
-
-interface Category {
-  id: number;
-  name: string;
-  proposals: Proposal[];
-  standaloneJobForm: StandaloneJobForm[];
-  proofContribution: ProofContribution[];
-}
+import {
+  Category,
+  Proposal,
+  JobForm,
+  ProposalComment,
+  JobFormComment,
+  StandaloneJobForm,
+} from './types'; // Adjust the import path as necessary
+import StandaloneJobModal from './StandaloneJobModal';
 
 export default function MaintainerPage() {
   const { address, isConnected } = useAccount();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [allProposals, setAllProposals] = useState<Proposal[]>([]);
   const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null);
   const [jobForms, setJobForms] = useState<JobForm[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -102,11 +30,15 @@ export default function MaintainerPage() {
   const [comment, setComment] = useState<string>('');
   const [jobComments, setJobComments] = useState<{ [key: number]: string }>({});
 
-  const [timeframe, setTimeframe] = useState<[Dayjs, Dayjs] | null>(null); // Use Dayjs type here
+  const [timeframe, setTimeframe] = useState<[Dayjs, Dayjs] | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [type, setType] = useState('proofContribution');
   const [isPending, startTransition] = useTransition();
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
+  const [selectedStandaloneJob, setSelectedStandaloneJob] = useState<StandaloneJobForm | null>(
+    null,
+  );
+  const [isStandaloneJobModalVisible, setIsStandaloneJobModalVisible] = useState<boolean>(false);
 
   useEffect(() => {
     if (address && isConnected) {
@@ -114,6 +46,61 @@ export default function MaintainerPage() {
     }
   }, [address, isConnected]);
 
+  // Fetch categories associated with the maintainer's wallet address
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch(`/api/categories?walletAddress=${address}`);
+      const data: Category[] = await response.json();
+
+      if (response.ok && data.length > 0) {
+        setCategories(data);
+      } else {
+        toast.error('No categories found.');
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      toast.error('Failed to fetch categories.');
+    }
+  };
+
+  const fetchStandaloneJobDetails = async (jobId: string) => {
+    try {
+      const response = await fetch(`/api/jobForm/standalone/${jobId}`);
+      const data = await response.json();
+      console.log(data, 'dataa');
+
+      if (response.ok) {
+        setSelectedStandaloneJob(data.standaloneJob);
+        setIsStandaloneJobModalVisible(true);
+      } else {
+        toast.error('Failed to fetch standalone job details.');
+      }
+    } catch (error) {
+      console.error('Error fetching standalone job details:', error);
+      toast.error('Failed to fetch standalone job details.');
+    }
+  };
+
+  // Fetch proposal details including job forms
+  const fetchProposalDetails = async (proposalId: number) => {
+    try {
+      const response = await fetch(`/api/proposals/${proposalId}`);
+      const { proposal, jobForms } = await response.json();
+
+      if (response.ok) {
+        setSelectedProposal(proposal);
+        setJobForms(jobForms);
+        setIsModalVisible(true);
+      } else {
+        toast.error('Failed to fetch proposal details.');
+      }
+    } catch (error) {
+      console.error('Error fetching proposal details:', error);
+      toast.error('Failed to fetch proposal details.');
+    }
+  };
+
+  // Handle exporting data
   const handleExport = async () => {
     if (!timeframe) {
       toast.error('Please select a timeframe.');
@@ -136,11 +123,6 @@ export default function MaintainerPage() {
       link.click();
       link.parentNode?.removeChild(link);
 
-      // Revalidate the path to update the UI with fresh data
-      // startTransition(() => {
-      //   revalidatePath('/maintainerPage'); // Adjust path as needed
-      // });
-
       toast.success('Data exported successfully!');
     } catch (error) {
       console.error('Error exporting data:', error);
@@ -148,41 +130,33 @@ export default function MaintainerPage() {
     }
   };
 
-  // Fetch categories associated with the maintainer's wallet address
-  const fetchCategories = async () => {
+  const handleUpdateStandaloneJobStatus = async (jobId: string, status: string) => {
+    setUpdating(true);
     try {
-      const response = await fetch(`/api/categories?walletAddress=${address}`);
-      const data: Category[] = await response.json();
-
-      if (response.ok && data.length > 0) {
-        setCategories(data);
-        const proposals = data.flatMap((category) => category.proposals);
-        setAllProposals(proposals);
-      } else {
-        toast.error('No categories found.');
-      }
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-      toast.error('Failed to fetch categories.');
-    }
-  };
-
-  // Fetch proposal details including job forms
-  const fetchProposalDetails = async (proposalId: number) => {
-    try {
-      const response = await fetch(`/api/proposals/${proposalId}`);
-      const { proposal, jobForms } = await response.json();
+      const response = await fetch('/api/jobForm/standalone', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: jobId,
+          status,
+          walletAddress: address,
+        }),
+      });
 
       if (response.ok) {
-        setSelectedProposal(proposal);
-        setJobForms(jobForms);
-        setIsModalVisible(true);
+        fetchCategories(); // Refresh the categories list after update
+        toast.success('Standalone Job status updated successfully!');
       } else {
-        toast.error('Failed to fetch proposal details.');
+        toast.error('Failed to update Standalone Job status.');
       }
     } catch (error) {
-      console.error('Error fetching proposal details:', error);
-      toast.error('Failed to fetch proposal details.');
+      console.error('Error updating Standalone Job status:', error);
+      toast.error('Failed to update Standalone Job status.');
+    } finally {
+      fetchStandaloneJobDetails(jobId);
+      setUpdating(false);
     }
   };
 
@@ -235,7 +209,9 @@ export default function MaintainerPage() {
       });
 
       if (response.ok) {
-        fetchProposalDetails(selectedProposal?.id || 0); // Refresh the proposal details after update
+        if (selectedProposal?.id) {
+          fetchProposalDetails(selectedProposal.id); // Refresh the proposal details after update
+        }
         toast.success('JobForm status updated successfully!');
       } else {
         toast.error('Failed to update JobForm status.');
@@ -245,6 +221,38 @@ export default function MaintainerPage() {
       toast.error('Failed to update JobForm status.');
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const [standaloneJobComment, setStandaloneJobComment] = useState<string>('');
+
+  const handleStandaloneJobCommentSubmit = async () => {
+    if (!selectedStandaloneJob) return;
+
+    try {
+      const response = await fetch('/api/jobForm/standalone', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          comment: true,
+          jobId: selectedStandaloneJob.id,
+          text: standaloneJobComment,
+          walletAddress: address,
+        }),
+      });
+
+      if (response.ok) {
+        toast.success('Comment added to Standalone Job successfully!');
+        setStandaloneJobComment('');
+        fetchStandaloneJobDetails(selectedStandaloneJob.id);
+      } else {
+        toast.error('Failed to add comment to Standalone Job.');
+      }
+    } catch (error) {
+      console.error('Error adding comment to Standalone Job:', error);
+      toast.error('Failed to add comment to Standalone Job.');
     }
   };
 
@@ -266,7 +274,9 @@ export default function MaintainerPage() {
       if (response.ok) {
         toast.success('Comment added successfully!');
         setComment('');
-        fetchProposalDetails(selectedProposal?.id || 0); // Refresh proposal details
+        if (selectedProposal?.id) {
+          fetchProposalDetails(selectedProposal.id); // Refresh proposal details
+        }
       } else {
         toast.error('Failed to add comment.');
       }
@@ -294,7 +304,9 @@ export default function MaintainerPage() {
       if (response.ok) {
         toast.success('Comment added to job form successfully!');
         setJobComments((prev) => ({ ...prev, [jobFormId]: '' }));
-        fetchProposalDetails(selectedProposal?.id || 0); // Refresh proposal details
+        if (selectedProposal?.id) {
+          fetchProposalDetails(selectedProposal.id); // Refresh proposal details
+        }
       } else {
         toast.error('Failed to add comment to job form.');
       }
@@ -318,270 +330,63 @@ export default function MaintainerPage() {
           Export Data
         </Button>
 
-        <Modal
-          title="Export Data"
-          open={isExportModalVisible}
-          onCancel={() => setIsExportModalVisible(false)}
-          footer={null}
-        >
-          <Select value={type} onChange={setType} style={{ width: '100%', marginBottom: 20 }}>
-            <Option value="proofContribution">Proof Contributions</Option>
-            <Option value="standaloneJobForm">Standalone Job Forms</Option>
-            <Option value="proposals">Proposals</Option>
-          </Select>
-
-          <RangePicker
-            value={timeframe}
-            onChange={(dates) => setTimeframe(dates as [Dayjs, Dayjs] | null)} // Ensure proper Dayjs handling
-            style={{ width: '100%', marginBottom: 20 }}
-            disabledDate={(current) => current && current > dayjs().endOf('day')}
-          />
-
-          <Select
-            mode="multiple"
-            placeholder="Select Categories"
-            value={selectedCategories}
-            onChange={setSelectedCategories}
-            style={{ width: '100%', marginBottom: 20 }}
-          >
-            {categories.map((category) => (
-              <Option key={category.id} value={category.id}>
-                {category.name}
-              </Option>
-            ))}
-          </Select>
-
-          <Button
-            type="primary"
-            onClick={handleExport}
-            disabled={isPending || !timeframe || selectedCategories.length === 0}
-          >
-            {isPending ? 'Exporting...' : 'Export Data'}
-          </Button>
-        </Modal>
+        <ExportDataModal
+          isVisible={isExportModalVisible}
+          onClose={() => setIsExportModalVisible(false)}
+          categories={categories}
+          type={type}
+          setType={setType}
+          timeframe={timeframe}
+          setTimeframe={setTimeframe}
+          selectedCategories={selectedCategories}
+          setSelectedCategories={setSelectedCategories}
+          handleExport={handleExport}
+          isPending={isPending}
+        />
 
         {categories.length > 0 ? (
           categories.map((category) => (
-            <div key={category.id} className="category-section my-6">
-              <h2 className="text-2xl font-bold">{category.name}</h2>
-
-              {/* Proposals Section */}
-              <h3 className="mt-4 text-xl font-semibold">Proposals:</h3>
-              {category.proposals.length > 0 ? (
-                category.proposals.map((proposal) => (
-                  <div
-                    key={proposal.id}
-                    className="proposal-item my-3 flex flex-col gap-1 rounded border border-neutral-600 bg-black p-5 hover:bg-neutral-900"
-                  >
-                    <div className="flex flex-row items-center justify-between">
-                      <div className="flex flex-col gap-2">
-                        <div className="flex flex-row items-center gap-4">
-                          <h4 className="mb-0 text-xl font-bold">{proposal.title}</h4>
-                          <p>{proposal.status}</p>
-                        </div>
-                        <p>Category: {proposal.mri}</p>
-                      </div>
-                      <Button
-                        type="link"
-                        className="text-blue-500 underline"
-                        onClick={() => fetchProposalDetails(proposal.id)}
-                      >
-                        Manage Proposal & Jobs
-                      </Button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p>No proposals available.</p>
-              )}
-
-              {/* Standalone Jobs Section */}
-              <h3 className="mt-4 text-xl font-semibold">Standalone Jobs:</h3>
-              {category.standaloneJobForm.length > 0 ? (
-                category.standaloneJobForm.map((job) => (
-                  <div
-                    key={job.id}
-                    className="job-item my-3 rounded border border-neutral-600 bg-gray-800 p-4"
-                  >
-                    <p>Author: {job.githubUsername}</p>
-                    <p>Email: {job.email}</p>
-                    <p>Description: {job.description}</p>
-                    <p>Requested Weights: {job.weightsRequested}</p>
-                    <p>Minimum Weights Time: {job.minimumWeightsTime}</p>
-                    <p>Status: {job.status}</p>
-                  </div>
-                ))
-              ) : (
-                <p>No standalone jobs available in this category.</p>
-              )}
-
-              {/* Proof Contributions Section */}
-              <h3 className="mt-4 text-xl font-semibold">Proof Contributions:</h3>
-              {category.proofContribution.length > 0 ? (
-                category.proofContribution.map((proof) => (
-                  <div
-                    key={proof.id}
-                    className="proof-item my-3 rounded border border-neutral-600 bg-gray-800 p-4"
-                  >
-                    <p>Author: {proof.githubUsername}</p>
-                    <p>Email: {proof.email}</p>
-                    <p>Description: {proof.description}</p>
-                    <p>Weights Agreed: {proof.weightsAgreed}</p>
-                    <p>Link to Proof: {proof.linksToProof}</p>
-                  </div>
-                ))
-              ) : (
-                <p>No proof contributions available in this category.</p>
-              )}
-            </div>
+            <CategorySection
+              key={category.id}
+              category={category}
+              fetchStandaloneJobDetails={fetchStandaloneJobDetails}
+              fetchProposalDetails={fetchProposalDetails}
+            />
           ))
         ) : (
           <p>No categories assigned to this wallet.</p>
         )}
       </div>
 
-      {/* Modal for displaying proposal details */}
-      <Modal
-        title={selectedProposal ? selectedProposal.title : 'Proposal Details'}
-        open={isModalVisible}
-        onCancel={handleModalClose}
-        footer={null}
-        width={800}
-      >
-        {selectedProposal && (
-          <>
-            <div className="flex flex-row items-center gap-4">
-              <Select
-                value={selectedProposal.status}
-                onChange={(value) => handleUpdateStatus(selectedProposal.id, value)}
-                style={{ width: 200 }}
-                disabled={updating}
-              >
-                <Option value="pending">Pending</Option>
-                <Option value="approved">Approved</Option>
-                <Option value="denied">Denied</Option>
-              </Select>
-            </div>
+      <ProposalModal
+        isVisible={isModalVisible}
+        onClose={handleModalClose}
+        proposal={selectedProposal}
+        jobForms={jobForms}
+        updating={updating}
+        comment={comment}
+        setComment={setComment}
+        handleCommentSubmit={handleCommentSubmit}
+        handleUpdateStatus={handleUpdateStatus}
+        handleUpdateJobStatus={handleUpdateJobStatus}
+        handleJobCommentSubmit={handleJobCommentSubmit}
+        jobComments={jobComments}
+        setJobComments={setJobComments}
+      />
 
-            <h3 className="mt-4 text-xl font-semibold">Description:</h3>
-            <div className="markdown-body text-sm text-gray-300">
-              <ReactMarkdown>{selectedProposal.description}</ReactMarkdown>
-            </div>
-
-            <h3 className="mt-4 text-xl font-semibold">Deliverables:</h3>
-            <ul className="markdown-body">
-              {selectedProposal.deliverables.map((deliverable) => (
-                <li key={deliverable.id} className="mt-2">
-                  <ReactMarkdown>{deliverable.description}</ReactMarkdown>
-                </li>
-              ))}
-            </ul>
-
-            <h3 className="mb-2 mt-4 text-xl font-semibold">Comments:</h3>
-            <ul className="markdown-body">
-              {selectedProposal.comments?.map((comment) => (
-                <li key={comment.id} className="mt-2">
-                  <strong>{comment.user.name}:</strong> {comment.text}
-                  <p className="text-xs text-gray-500">
-                    {new Date(comment.createdAt).toLocaleString()}
-                  </p>
-                </li>
-              ))}
-            </ul>
-
-            <TextArea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Leave a comment..."
-              rows={3}
-            />
-            <Button
-              type="primary"
-              className="mt-2"
-              onClick={handleCommentSubmit}
-              disabled={updating}
-            >
-              Submit Comment
-            </Button>
-
-            <h3 className="my-6 text-2xl font-semibold">Attached Jobs</h3>
-            {jobForms.length > 0 ? (
-              jobForms.map((job) => (
-                <div key={job.id} className="mb-6 rounded-lg border border-gray-600 p-4">
-                  <h4 className="mb-1 font-semibold">
-                    Job by {job.user.name || job.user.githubUsername}
-                  </h4>
-                  <Select
-                    value={job.status}
-                    onChange={(value) => handleUpdateJobStatus(job.id, value)}
-                    style={{ width: 200 }}
-                    disabled={updating}
-                  >
-                    <Option value="pending">Pending</Option>
-                    <Option value="approved">Approved</Option>
-                    <Option value="denied">Denied</Option>
-                  </Select>
-
-                  <h5 className="mt-2 font-semibold">Deliverables:</h5>
-                  <ul className="markdown-body">
-                    {job.deliverables.map((deliverable) => (
-                      <li key={deliverable.deliverableDescription} className="mt-2">
-                        <div className="flex flex-col">
-                          <strong>Job for weights description:</strong>
-                          <ReactMarkdown>{deliverable.deliverableDescription}</ReactMarkdown>
-                        </div>
-                        <div className="mt-2 flex flex-col">
-                          <strong>End of month deliverables:</strong>
-                          <ReactMarkdown>{deliverable.description}</ReactMarkdown>
-                        </div>
-                        <div className="mt-2 flex flex-col">
-                          <strong>Weights Requested:</strong>
-                          <span>{deliverable.weightsRequested}</span>
-                        </div>
-                        <div className="mt-2 flex flex-col">
-                          <strong>Minimum Weights Time:</strong>
-                          <span>{deliverable.minimumWeightsTime}</span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <h5 className="mt-2 font-semibold">Comments:</h5>
-                  <ul className="markdown-body">
-                    {job.comments?.map((comment) => (
-                      <li key={comment.id} className="mt-2">
-                        <strong>{comment.user.name}:</strong> {comment.text}
-                        <p className="text-xs text-gray-500">
-                          {new Date(comment.createdAt).toLocaleString()}
-                        </p>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <TextArea
-                    value={jobComments[job.id] || ''}
-                    onChange={(e) =>
-                      setJobComments((prev) => ({ ...prev, [job.id]: e.target.value }))
-                    }
-                    placeholder="Leave a comment on this job..."
-                    rows={3}
-                  />
-                  <Button
-                    type="primary"
-                    className="mt-2"
-                    onClick={() => handleJobCommentSubmit(job.id)}
-                    disabled={updating}
-                  >
-                    Submit Comment
-                  </Button>
-                </div>
-              ))
-            ) : (
-              <p>No jobs have been submitted yet.</p>
-            )}
-          </>
-        )}
-      </Modal>
+      <StandaloneJobModal
+        isVisible={isStandaloneJobModalVisible}
+        onClose={() => {
+          setIsStandaloneJobModalVisible(false);
+          setSelectedStandaloneJob(null);
+        }}
+        job={selectedStandaloneJob}
+        updating={updating}
+        comment={standaloneJobComment}
+        setComment={setStandaloneJobComment}
+        handleCommentSubmit={handleStandaloneJobCommentSubmit}
+        handleUpdateStatus={handleUpdateStandaloneJobStatus}
+      />
     </div>
   );
 }

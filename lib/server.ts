@@ -87,6 +87,7 @@ export async function getNotificationsByUserId(userId: string) {
   return await prisma.notification.findMany({
     where: { userId },
     orderBy: { createdAt: 'desc' },
+    take: 10, // Limit to the last 10 notifications
   });
 }
 

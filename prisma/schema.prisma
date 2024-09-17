@@ -1,7 +1,6 @@
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_DATABASE_URL")
 }
 
 generator client {
@@ -25,6 +24,8 @@ model User {
   proofContributions   ProofContribution[]
   jobFormComments      JobFormComment[]
   proposalComments     ProposalComment[]
+  standaloneJobFormComments   StandaloneJobComment[]
+
   notifications        Notification[]        
 }
 
@@ -83,6 +84,20 @@ model StandaloneJobForm {
   user                  User             @relation(fields: [userId], references: [id])
   categoryId            Int              // Foreign key to link with Category model
   category              Category         @relation(fields: [categoryId], references: [id])
+  comments StandaloneJobComment[]
+
+}
+
+
+
+model StandaloneJobComment {
+  id                 String              @id @default(cuid())
+  text               String
+  createdAt          DateTime            @default(now())
+  userId             String
+  user               User                @relation(fields: [userId], references: [id])
+  standaloneJobFormId String
+  standaloneJobForm  StandaloneJobForm   @relation(fields: [standaloneJobFormId], references: [id])
 }
 
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '../../../lib/prisma'; // Adjust the path as needed
 import { auth } from '@/auth';
 import { notifyProofOfContributionCreation } from '@/utils/notifications';
+import { appendToSheet } from '@/utils/googlesheets';
 
 export async function POST(request: NextRequest) {
   const session = await auth();
@@ -46,7 +47,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Save the contribution data to the database
     const contribution = await prisma.proofContribution.create({
       data: {
         githubUsername,
@@ -60,6 +60,38 @@ export async function POST(request: NextRequest) {
         category: { connect: { id: parseInt(mriNumber, 10) } },
       },
     });
+
+    // Create headers and row data
+    const headers = [
+      'GitHub Username',
+      'Email',
+      'MRI Number',
+      'Links to Proof',
+      'Weights Agreed',
+      'Description',
+      'Wallet Address',
+      'Timestamp',
+    ];
+
+    const rowData = [
+      githubUsername,
+      email,
+      mriNumber,
+      linksToProof,
+      weightsAgreed,
+      description,
+      walletAddress,
+      new Date().toISOString(), // Add timestamp or any other relevant data
+    ];
+
+    // Append the headers and data to the Google Sheet
+    try {
+      // Append the data
+      await appendToSheet(rowData);
+      console.log('Data appended to Google Sheet successfully.');
+    } catch (error) {
+      console.error('Error appending data to Google Sheet:', error);
+    }
 
     const maintainers = await prisma.maintainer.findMany({
       where: {

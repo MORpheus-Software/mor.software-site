@@ -19,13 +19,13 @@ const authenticateGoogle = async () => {
 
 const googleSheets = google.sheets("v4");
 
-export const appendToSheet = async (rowData: any) => {
+export const appendToSheet = async (rowData: any, sheetName: string = "ProofOfContributions") => {
   const authClient = await authenticateGoogle();
 
-  const spreadsheetId = "1-CzYIvlkTJVa35oHbHDk4HX-Ks7d76fa2rmHaphV0ic";
-  const range = "Sheet1!A:I";
+  const spreadsheetId = "1dz14KBusTpaa14UqT7WrT-OZAfqfxgrl8IPNg95g1lo";
+  const range = `${sheetName}!A:I`; // Use the provided sheet name
 
-  googleSheets.spreadsheets.values.append({
+  await googleSheets.spreadsheets.values.append({
     //@ts-ignore
     auth: authClient,
     spreadsheetId,

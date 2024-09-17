@@ -78,14 +78,14 @@ export async function createNotification({
     const isMaintainer = user.wallets.some((wallet) => wallet.maintainers.length > 0);
 
     // Send SMS only if the user is a maintainer
-    if (isMaintainer && user.phoneNumber && isValidPhoneNumber(user.phoneNumber)) {
-      await sendSMS(user.phoneNumber, message);
-    }
+    // if (isMaintainer && user.phoneNumber && isValidPhoneNumber(user.phoneNumber)) {
+    //   await sendSMS(user.phoneNumber, message);
+    // }
 
-    // Send email regardless of whether the user is a maintainer
-    if (user.email) {
-      await sendEmail(user.email, `${notificationDescriptions[type]}`, message);
-    }
+    // // Send email regardless of whether the user is a maintainer
+    // if (user.email) {
+    //   await sendEmail(user.email, `${notificationDescriptions[type]}`, message);
+    // }
   }
 }
 
