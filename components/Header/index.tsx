@@ -118,9 +118,11 @@ const Header: React.FC<any> = ({ uid, initialNotifications }) => {
           </Link>
           {isMobile ? (
             <>
-              <Dropdown overlay={menu} trigger={['click']}>
-                <Button className="bg-morGreen-700" type="text" icon={<MenuOutlined />} />
-              </Dropdown>
+              {user && (
+                <Dropdown overlay={menu} trigger={['click']}>
+                  <Button className="bg-morGreen-700" type="text" icon={<MenuOutlined />} />
+                </Dropdown>
+              )}
             </>
           ) : (
             <>
