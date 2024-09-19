@@ -68,15 +68,71 @@ export interface StandaloneJobForm {
   comments?: StandaloneJobComment[];
 }
 
+// export interface ProofContribution {
+//   id: string;
+//   githubUsername: string;
+//   email: string;
+//   walletAddress: string;
+//   description: string;
+//   weightsAgreed: string;
+//   linksToProof: string;
+// }
+
+// export interface ProofContribution {
+//   id: string;
+//   githubUsername: string;
+//   email: string;
+//   walletAddress: string;
+//   description: string;
+//   weightsAgreed: string;
+//   linksToProof: string;
+//   status: string;
+//   comments?: ProofContributionComment[];
+// }
+
+// export interface ProofContributionComment {
+//   id: string;
+//   text: string;
+//   createdAt: string;
+//   user: {
+//     name: string;
+//   };
+// }
+// types.ts
 export interface ProofContribution {
   id: string;
   githubUsername: string;
-  email: string;
   walletAddress: string;
-  description: string;
-  weightsAgreed: string;
+  email: string;
+  mriNumber: string;
   linksToProof: string;
+  weightsAgreed: string;
+  description: string;
+  createdAt: string;
+  userId: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  categoryId: number;
+  category: {
+    id: number;
+    name: string;
+  };
+  status: string;
+  comments?: ProofContributionComment[];
 }
+
+export interface ProofContributionComment {
+  id: string;
+  text: string;
+  createdAt: string;
+  user: {
+    name: string;
+  };
+}
+
 
 export interface Category {
   id: number;

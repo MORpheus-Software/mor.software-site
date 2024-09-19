@@ -15,10 +15,12 @@ import {
   Proposal,
   JobForm,
   ProposalComment,
+  ProofContribution,
   JobFormComment,
   StandaloneJobForm,
 } from './types'; // Adjust the import path as necessary
 import StandaloneJobModal from './StandaloneJobModal';
+import ProofContributionModal from './ProofContributionModal';
 
 export default function MaintainerPage() {
   const { address, isConnected } = useAccount();
@@ -81,6 +83,27 @@ export default function MaintainerPage() {
     }
   };
 
+  const [selectedProofContribution, setSelectedProofContribution] = useState<ProofContribution | null>(null);
+  const [isProofContributionModalVisible, setIsProofContributionModalVisible] = useState<boolean>(false);
+
+  const fetchProofContributionDetails = async (proofId: string) => {
+    try {
+      const response = await fetch(`/api/proofForm/${proofId}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        setSelectedProofContribution(data.proofContribution);
+        setIsProofContributionModalVisible(true);
+      } else {
+        toast.error('Failed to fetch proof contribution details.');
+      }
+    } catch (error) {
+      console.error('Error fetching proof contribution details:', error);
+      toast.error('Failed to fetch proof contribution details.');
+    }
+  };
+
+
   // Fetch proposal details including job forms
   const fetchProposalDetails = async (proposalId: number) => {
     try {
@@ -129,6 +152,37 @@ export default function MaintainerPage() {
       toast.error('Error exporting data.');
     }
   };
+
+  const handleUpdateProofContributionStatus = async (proofId: string, status: string) => {
+    setUpdating(true);
+    try {
+      const response = await fetch('/api/proofForm', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: proofId,
+          status,
+          walletAddress: address,
+        }),
+      });
+  
+      if (response.ok) {
+        fetchCategories(); // Refresh the categories list after update
+        toast.success('Proof Contribution status updated successfully!');
+      } else {
+        toast.error('Failed to update Proof Contribution status.');
+      }
+    } catch (error) {
+      console.error('Error updating Proof Contribution status:', error);
+      toast.error('Failed to update Proof Contribution status.');
+    } finally {
+      fetchProofContributionDetails(proofId);
+      setUpdating(false);
+    }
+  };
+  
 
   const handleUpdateStandaloneJobStatus = async (jobId: string, status: string) => {
     setUpdating(true);
@@ -286,6 +340,38 @@ export default function MaintainerPage() {
     }
   };
 
+  const [proofContributionComment, setProofContributionComment] = useState<string>('');
+
+const handleProofContributionCommentSubmit = async () => {
+  if (!selectedProofContribution) return;
+
+  try {
+    const response = await fetch('/api/proofForm/comments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        proofContributionId: selectedProofContribution.id,
+        text: proofContributionComment,
+        walletAddress: address,
+      }),
+    });
+
+    if (response.ok) {
+      toast.success('Comment added to Proof Contribution successfully!');
+      setProofContributionComment('');
+      fetchProofContributionDetails(selectedProofContribution.id);
+    } else {
+      toast.error('Failed to add comment to Proof Contribution.');
+    }
+  } catch (error) {
+    console.error('Error adding comment to Proof Contribution:', error);
+    toast.error('Failed to add comment to Proof Contribution.');
+  }
+};
+
+
   // Submit a comment on a job form
   const handleJobCommentSubmit = async (jobFormId: number) => {
     try {
@@ -351,9 +437,7 @@ export default function MaintainerPage() {
               category={category}
               fetchStandaloneJobDetails={fetchStandaloneJobDetails}
               fetchProposalDetails={fetchProposalDetails}
-              fetchProofContributionDetails={function (proofId: string): void {
-                throw new Error('Function not implemented.');
-              }}
+              fetchProofContributionDetails={fetchProofContributionDetails}
             />
           ))
         ) : (
@@ -390,6 +474,22 @@ export default function MaintainerPage() {
         handleCommentSubmit={handleStandaloneJobCommentSubmit}
         handleUpdateStatus={handleUpdateStandaloneJobStatus}
       />
+
+
+<ProofContributionModal
+        isVisible={isProofContributionModalVisible}
+        onClose={() => {
+          setIsProofContributionModalVisible(false);
+          setSelectedProofContribution(null);
+        }}
+        proof={selectedProofContribution}
+        updating={updating}
+        comment={proofContributionComment}
+        setComment={setProofContributionComment}
+        handleCommentSubmit={handleProofContributionCommentSubmit}
+        handleUpdateStatus={handleUpdateProofContributionStatus}
+      />
+      
     </div>
   );
 }

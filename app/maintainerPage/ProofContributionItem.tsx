@@ -3,12 +3,15 @@ import { ProofContribution } from './types'; // Adjust the import path as necess
 
 interface ProofContributionItemProps {
   proof: ProofContribution;
+  onClick: () => void;
+
 }
 
-const ProofContributionItem: React.FC<ProofContributionItemProps> = ({ proof }) => {
+const ProofContributionItem: React.FC<ProofContributionItemProps> = ({ proof ,onClick}) => {
   return (
     <div
       key={proof.id}
+      onClick={onClick}
       className="proof-item my-3 rounded border border-neutral-600 bg-gray-800 p-4"
     >
       <p>Author: {proof.githubUsername}</p>

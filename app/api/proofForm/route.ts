@@ -135,3 +135,63 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to submit the form' }, { status: 500 });
   }
 }
+
+
+export async function PUT(req: NextRequest) {
+  try {
+    const { id, status, walletAddress } = await req.json();
+
+    // Validate required fields
+    if (!id || !status || !walletAddress) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    // Fetch the wallet associated with the wallet address
+    const wallet = await prisma.wallet.findUnique({
+      where: { address: walletAddress },
+      include: {
+        maintainers: {
+          include: {
+            categories: true, // Include categories managed by the maintainer
+          },
+        },
+      },
+    });
+
+    if (!wallet || wallet.maintainers.length === 0) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
+    // Fetch the proof contribution
+    const proofContribution = await prisma.proofContribution.findUnique({
+      where: { id },
+      include: {
+        category: true,
+      },
+    });
+
+    if (!proofContribution) {
+      return NextResponse.json({ error: 'Proof Contribution not found' }, { status: 404 });
+    }
+
+    // Check if the maintainer is authorized to update this proof contribution
+    const maintainerCategories = wallet.maintainers.flatMap((maintainer) =>
+      maintainer.categories.map((mc) => mc.categoryId)
+    );
+
+    if (!maintainerCategories.includes(proofContribution.categoryId)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
+    // Update the status of the proof contribution
+    const updatedProofContribution = await prisma.proofContribution.update({
+      where: { id },
+      data: { status },
+    });
+
+    return NextResponse.json({ updatedProofContribution }, { status: 200 });
+  } catch (error) {
+    console.error('Error updating Proof Contribution status:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}

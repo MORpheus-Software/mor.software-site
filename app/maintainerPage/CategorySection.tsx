@@ -16,7 +16,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   category,
   fetchProposalDetails,
   fetchStandaloneJobDetails,
-  // fetchProofContributionDetails,
+  fetchProofContributionDetails,
 }) => {
   return (
     <div className="category-section my-6">
@@ -57,7 +57,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
           <ProofContributionItem
             key={proof.id}
             proof={proof}
-            // onClick={() => fetchProofContributionDetails(proof.id)}
+            onClick={() => fetchProofContributionDetails(proof.id)}
           />
         ))
       ) : (

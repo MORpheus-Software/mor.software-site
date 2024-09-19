@@ -25,7 +25,7 @@ model User {
   jobFormComments      JobFormComment[]
   proposalComments     ProposalComment[]
   standaloneJobFormComments   StandaloneJobComment[]
-
+  proofOfContributionFormComments   ProofContributionComment[]
   notifications        Notification[]        
 }
 
@@ -100,6 +100,16 @@ model StandaloneJobComment {
   standaloneJobForm  StandaloneJobForm   @relation(fields: [standaloneJobFormId], references: [id])
 }
 
+model ProofContributionComment {
+  id                  String             @id @default(cuid())
+  text                String
+  createdAt           DateTime           @default(now())
+  userId              String
+  user                User               @relation(fields: [userId], references: [id])
+  proofContributionId String
+  proofContribution   ProofContribution  @relation(fields: [proofContributionId], references: [id])
+}
+
 
 
 model JobForm {
@@ -136,6 +146,7 @@ model ProofContribution {
   walletAddress      String
   email              String
   mriNumber          String
+  status                String           @default("pending")
   linksToProof       String
   weightsAgreed      String
   description        String
@@ -144,7 +155,10 @@ model ProofContribution {
   user               User     @relation(fields: [userId], references: [id])
   categoryId            Int              // Foreign key to link with Category model
   category              Category         @relation(fields: [categoryId], references: [id])
+  comments ProofContributionComment[]
 }
+
+
 
 model Proposal {
   id          Int              @id @default(autoincrement())
