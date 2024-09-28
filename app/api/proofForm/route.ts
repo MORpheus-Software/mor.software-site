@@ -136,7 +136,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-
 export async function PUT(req: NextRequest) {
   try {
     const { id, status, walletAddress } = await req.json();
@@ -176,7 +175,7 @@ export async function PUT(req: NextRequest) {
 
     // Check if the maintainer is authorized to update this proof contribution
     const maintainerCategories = wallet.maintainers.flatMap((maintainer) =>
-      maintainer.categories.map((mc) => mc.categoryId)
+      maintainer.categories.map((mc) => mc.categoryId),
     );
 
     if (!maintainerCategories.includes(proofContribution.categoryId)) {

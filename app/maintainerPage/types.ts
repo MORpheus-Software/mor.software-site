@@ -1,4 +1,7 @@
 export interface Proposal {
+  user: any;
+  githubUsername: string;
+  createdAt: string | number | Date;
   id: number;
   title: string;
   description: string;
@@ -57,6 +60,7 @@ export interface StandaloneJobComment {
 }
 
 export interface StandaloneJobForm {
+  createdAt: string;
   id: string;
   githubUsername: string;
   email: string;
@@ -132,7 +136,6 @@ export interface ProofContributionComment {
     name: string;
   };
 }
-
 
 export interface Category {
   id: number;

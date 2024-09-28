@@ -1,24 +1,30 @@
 import React from 'react';
 import { ProofContribution } from './types'; // Adjust the import path as necessary
+import { Button } from 'antd';
 
 interface ProofContributionItemProps {
   proof: ProofContribution;
   onClick: () => void;
-
 }
 
-const ProofContributionItem: React.FC<ProofContributionItemProps> = ({ proof ,onClick}) => {
+const ProofContributionItem: React.FC<ProofContributionItemProps> = ({ proof, onClick }) => {
   return (
     <div
       key={proof.id}
-      onClick={onClick}
-      className="proof-item my-3 rounded border border-neutral-600 bg-gray-800 p-4"
+      className="proposal-item my-3 flex flex-col gap-1 rounded border border-neutral-600 bg-black p-5 hover:bg-neutral-900"
     >
-      <p>Author: {proof.githubUsername}</p>
-      <p>Email: {proof.email}</p>
-      <p>Description: {proof.description}</p>
-      <p>Weights Agreed: {proof.weightsAgreed}</p>
-      <p>Link to Proof: {proof.linksToProof}</p>
+      <div className="flex flex-row items-center justify-between">
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-row items-center gap-4">
+            <h4 className="mb-0 text-xl font-bold">By {proof.githubUsername}</h4>
+            <p> Status: {proof.status}</p>
+          </div>
+          <p>Created: {new Date(proof.createdAt).toLocaleString()}</p>
+        </div>
+        <Button type="link" className="text-blue-500 underline" onClick={onClick}>
+          Manage Proof of Contribution
+        </Button>
+      </div>
     </div>
   );
 };

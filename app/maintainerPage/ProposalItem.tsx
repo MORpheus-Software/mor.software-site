@@ -16,10 +16,10 @@ const ProposalItem: React.FC<ProposalItemProps> = ({ proposal, fetchProposalDeta
       <div className="flex flex-row items-center justify-between">
         <div className="flex flex-col gap-2">
           <div className="flex flex-row items-center gap-4">
-            <h4 className="mb-0 text-xl font-bold">{proposal.title}</h4>
-            <p>{proposal.status}</p>
+            <h4 className="mb-0 text-xl font-bold">By {proposal.githubUsername}</h4>
+            <p>Status: {proposal.status}</p>
           </div>
-          <p>Category: {proposal.mri}</p>
+          <p>Created: {new Date(proposal.createdAt).toLocaleString()}</p>
         </div>
         <Button
           type="link"

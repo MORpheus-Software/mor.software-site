@@ -25,6 +25,7 @@ export async function submitProposal(formData: FormData) {
     // Create a new proposal with associated deliverables and category
     const createdProposal = await prisma.proposal.create({
       data: {
+        githubUsername: session.user.name,
         title,
         description,
         mri,

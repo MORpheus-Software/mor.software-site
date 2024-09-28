@@ -83,8 +83,10 @@ export default function MaintainerPage() {
     }
   };
 
-  const [selectedProofContribution, setSelectedProofContribution] = useState<ProofContribution | null>(null);
-  const [isProofContributionModalVisible, setIsProofContributionModalVisible] = useState<boolean>(false);
+  const [selectedProofContribution, setSelectedProofContribution] =
+    useState<ProofContribution | null>(null);
+  const [isProofContributionModalVisible, setIsProofContributionModalVisible] =
+    useState<boolean>(false);
 
   const fetchProofContributionDetails = async (proofId: string) => {
     try {
@@ -102,7 +104,6 @@ export default function MaintainerPage() {
       toast.error('Failed to fetch proof contribution details.');
     }
   };
-
 
   // Fetch proposal details including job forms
   const fetchProposalDetails = async (proposalId: number) => {
@@ -167,7 +168,7 @@ export default function MaintainerPage() {
           walletAddress: address,
         }),
       });
-  
+
       if (response.ok) {
         fetchCategories(); // Refresh the categories list after update
         toast.success('Proof Contribution status updated successfully!');
@@ -182,7 +183,6 @@ export default function MaintainerPage() {
       setUpdating(false);
     }
   };
-  
 
   const handleUpdateStandaloneJobStatus = async (jobId: string, status: string) => {
     setUpdating(true);
@@ -342,35 +342,34 @@ export default function MaintainerPage() {
 
   const [proofContributionComment, setProofContributionComment] = useState<string>('');
 
-const handleProofContributionCommentSubmit = async () => {
-  if (!selectedProofContribution) return;
+  const handleProofContributionCommentSubmit = async () => {
+    if (!selectedProofContribution) return;
 
-  try {
-    const response = await fetch('/api/proofForm/comments', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        proofContributionId: selectedProofContribution.id,
-        text: proofContributionComment,
-        walletAddress: address,
-      }),
-    });
+    try {
+      const response = await fetch('/api/proofForm/comments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          proofContributionId: selectedProofContribution.id,
+          text: proofContributionComment,
+          walletAddress: address,
+        }),
+      });
 
-    if (response.ok) {
-      toast.success('Comment added to Proof Contribution successfully!');
-      setProofContributionComment('');
-      fetchProofContributionDetails(selectedProofContribution.id);
-    } else {
+      if (response.ok) {
+        toast.success('Comment added to Proof Contribution successfully!');
+        setProofContributionComment('');
+        fetchProofContributionDetails(selectedProofContribution.id);
+      } else {
+        toast.error('Failed to add comment to Proof Contribution.');
+      }
+    } catch (error) {
+      console.error('Error adding comment to Proof Contribution:', error);
       toast.error('Failed to add comment to Proof Contribution.');
     }
-  } catch (error) {
-    console.error('Error adding comment to Proof Contribution:', error);
-    toast.error('Failed to add comment to Proof Contribution.');
-  }
-};
-
+  };
 
   // Submit a comment on a job form
   const handleJobCommentSubmit = async (jobFormId: number) => {
@@ -475,8 +474,7 @@ const handleProofContributionCommentSubmit = async () => {
         handleUpdateStatus={handleUpdateStandaloneJobStatus}
       />
 
-
-<ProofContributionModal
+      <ProofContributionModal
         isVisible={isProofContributionModalVisible}
         onClose={() => {
           setIsProofContributionModalVisible(false);
@@ -489,7 +487,6 @@ const handleProofContributionCommentSubmit = async () => {
         handleCommentSubmit={handleProofContributionCommentSubmit}
         handleUpdateStatus={handleUpdateProofContributionStatus}
       />
-      
     </div>
   );
 }

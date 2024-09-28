@@ -97,6 +97,11 @@ export async function POST(req: NextRequest) {
         userId: user.userId,
         jobFormId,
       },
+      include: {
+        user: {
+          select: { name: true }, // Include the name of the user in the response
+        },
+      },
     });
 
     return NextResponse.json(comment, { status: 201 });

@@ -13,6 +13,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   try {
     const proposal = await prisma.proposal.findUnique({
       where: { id: parseInt(id) },
+
       include: {
         deliverables: true,
         comments: {

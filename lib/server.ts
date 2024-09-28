@@ -167,3 +167,16 @@ function convertToCSV(data: any[]): string {
   const rows = data.map((row) => Object.values(row).join(','));
   return [headers, ...rows].join('\n');
 }
+
+// export async function getParentProposalFromJob(commentId: string) {
+//   const comment = await prisma.proposalComment.findUnique({
+//     where: {
+//       id: 'cm1gpstgf0008zjn13qu60umu', // Your comment ID
+//     },
+//   });
+
+//   console.log(comment); // Check if this returns the comment
+
+//   // Return the ID of the parent StandaloneJobForm, if it exists
+//   return null
+// }

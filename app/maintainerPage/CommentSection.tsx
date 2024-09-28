@@ -21,12 +21,13 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   updating,
   placeholder = 'Leave a comment...',
 }) => {
+  console.log(comments, 'asd');
   return (
     <>
       <h5 className="mt-2 font-semibold">Comments:</h5>
       <ul className="markdown-body">
         {comments?.map((comment) => (
-          <li key={comment.id} className="mt-2">
+          <li key={comment.id} className="my-2">
             <strong>{comment.user.name}:</strong> {comment.text}
             <p className="text-xs text-gray-500">{new Date(comment.createdAt).toLocaleString()}</p>
           </li>

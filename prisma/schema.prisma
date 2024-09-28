@@ -1,38 +1,36 @@
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
-  engineType = "library"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id                   String                @id @default(cuid())
-  email                String                @unique
-  name                 String?
-  image                String?
-  emailVerified        DateTime?
-  phoneNumber          String?             
-  accounts             Account[]
-  wallets              Wallet[]
-  stakings             Stake[]
-  jobform              JobForm[]
-  standaloneJobForm    StandaloneJobForm[]
-  proposal             Proposal[]
-  proofContributions   ProofContribution[]
-  jobFormComments      JobFormComment[]
-  proposalComments     ProposalComment[]
-  standaloneJobFormComments   StandaloneJobComment[]
-  proofOfContributionFormComments   ProofContributionComment[]
-  notifications        Notification[]        
+  id                              String                     @id @default(cuid())
+  email                           String                     @unique
+  name                            String?
+  image                           String?
+  emailVerified                   DateTime?
+  phoneNumber                     String?
+  accounts                        Account[]
+  jobform                         JobForm[]
+  jobFormComments                 JobFormComment[]
+  notifications                   Notification[]
+  proofContributions              ProofContribution[]
+  proofOfContributionFormComments ProofContributionComment[]
+  proposal                        Proposal[]
+  proposalComments                ProposalComment[]
+  stakings                        Stake[]
+  standaloneJobFormComments       StandaloneJobComment[]
+  standaloneJobForm               StandaloneJobForm[]
+  wallets                         Wallet[]
 }
 
-
-
 model Account {
-  id                String   @id @default(cuid())
+  id                String  @id @default(cuid())
   userId            String
   provider          String
   providerAccountId String
@@ -40,7 +38,7 @@ model Account {
   access_token      String?
   token_type        String?
   scope             String?
-  user              User     @relation(fields: [userId], references: [id])
+  user              User    @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
 }
@@ -49,201 +47,189 @@ model Wallet {
   id          String       @id @default(cuid())
   address     String       @unique
   userId      String
-  user        User         @relation(fields: [userId], references: [id])
-  stakings    Stake[]
   name        String?
   createdAt   DateTime     @default(now())
   maintainers Maintainer[]
+  stakings    Stake[]
+  user        User         @relation(fields: [userId], references: [id])
 }
 
 model Stake {
-  id            String   @id @default(cuid())
-  duration      Int
-  stakedDate    DateTime @default(now())
-  lockEndDate   DateTime
-  walletId      String
-  wallet        Wallet   @relation(fields: [walletId], references: [id])
-  userId        String
-  user          User     @relation(fields: [userId], references: [id])
+  id          String   @id @default(cuid())
+  duration    Int
+  stakedDate  DateTime @default(now())
+  lockEndDate DateTime
+  walletId    String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  wallet      Wallet   @relation(fields: [walletId], references: [id])
 }
-
 
 model StandaloneJobForm {
-  id                    String           @id @default(cuid())
-  githubUsername        String
-  email                 String
-  description           String
-  deliverables          String
-  weightsRequested      String
-  walletAddress         String
-  minimumWeightsTime    Int
-  status                String           @default("pending")
-  createdAt             DateTime         @default(now())
-  updatedAt             DateTime         @updatedAt
-  userId                String           // Foreign key to link with User model
-  user                  User             @relation(fields: [userId], references: [id])
-  categoryId            Int              // Foreign key to link with Category model
-  category              Category         @relation(fields: [categoryId], references: [id])
-  comments StandaloneJobComment[]
-
+  id                 String                 @id @default(cuid())
+  githubUsername     String
+  email              String
+  description        String
+  deliverables       String
+  weightsRequested   String
+  walletAddress      String
+  minimumWeightsTime Int
+  status             String                 @default("pending")
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  userId             String
+  categoryId         Int
+  comments           StandaloneJobComment[]
+  category           Category               @relation(fields: [categoryId], references: [id])
+  user               User                   @relation(fields: [userId], references: [id])
 }
 
-
-
 model StandaloneJobComment {
-  id                 String              @id @default(cuid())
-  text               String
-  createdAt          DateTime            @default(now())
-  userId             String
-  user               User                @relation(fields: [userId], references: [id])
+  id                  String            @id @default(cuid())
+  text                String
+  createdAt           DateTime          @default(now())
+  userId              String
   standaloneJobFormId String
-  standaloneJobForm  StandaloneJobForm   @relation(fields: [standaloneJobFormId], references: [id])
+  standaloneJobForm   StandaloneJobForm @relation(fields: [standaloneJobFormId], references: [id])
+  user                User              @relation(fields: [userId], references: [id])
 }
 
 model ProofContributionComment {
-  id                  String             @id @default(cuid())
+  id                  String            @id @default(cuid())
   text                String
-  createdAt           DateTime           @default(now())
+  createdAt           DateTime          @default(now())
   userId              String
-  user                User               @relation(fields: [userId], references: [id])
   proofContributionId String
-  proofContribution   ProofContribution  @relation(fields: [proofContributionId], references: [id])
+  proofContribution   ProofContribution @relation(fields: [proofContributionId], references: [id])
+  user                User              @relation(fields: [userId], references: [id])
 }
 
-
-
 model JobForm {
-  id                  String           @id @default(cuid())
-  githubUsername      String
-  email               String
-  mriNumber           String
-  deliverables        JobFormDeliverable[]
-  walletAddress       String
-  createdAt           DateTime         @default(now())
-  userId              String
-  status              String           @default("pending")
-  user                User             @relation(fields: [userId], references: [id])
-  comments            JobFormComment[]
-  notifications Notification[] 
-
+  id             String               @id @default(cuid())
+  githubUsername String
+  email          String
+  mriNumber      String
+  walletAddress  String
+  createdAt      DateTime             @default(now())
+  userId         String
+  status         String               @default("pending")
+  user           User                 @relation(fields: [userId], references: [id])
+  comments       JobFormComment[]
+  deliverables   JobFormDeliverable[]
+  notifications  Notification[]
 }
 
 model JobFormDeliverable {
-  id                    String         @id @default(cuid())
-  jobFormId             String
-  jobForm               JobForm        @relation(fields: [jobFormId], references: [id])
-  deliverableId         Int
-  deliverable           Deliverable    @relation(fields: [deliverableId], references: [id])
-  weightsRequested      String
-  deliverableDescription String 
-  minimumWeightsTime    String    
-  description           String    
+  id                     String      @id @default(cuid())
+  jobFormId              String
+  deliverableId          Int
+  weightsRequested       String
+  deliverableDescription String
+  minimumWeightsTime     String
+  description            String
+  deliverable            Deliverable @relation(fields: [deliverableId], references: [id])
+  jobForm                JobForm     @relation(fields: [jobFormId], references: [id])
 }
 
 model ProofContribution {
-  id                 String   @id @default(cuid())
-  githubUsername     String
-  walletAddress      String
-  email              String
-  mriNumber          String
-  status                String           @default("pending")
-  linksToProof       String
-  weightsAgreed      String
-  description        String
-  createdAt          DateTime @default(now())
-  userId             String
-  user               User     @relation(fields: [userId], references: [id])
-  categoryId            Int              // Foreign key to link with Category model
-  category              Category         @relation(fields: [categoryId], references: [id])
-  comments ProofContributionComment[]
+  id             String                     @id @default(cuid())
+  githubUsername String
+  walletAddress  String
+  email          String
+  mriNumber      String
+  status         String                     @default("pending")
+  linksToProof   String
+  weightsAgreed  String
+  description    String
+  createdAt      DateTime                   @default(now())
+  userId         String
+  categoryId     Int
+  category       Category                   @relation(fields: [categoryId], references: [id])
+  user           User                       @relation(fields: [userId], references: [id])
+  comments       ProofContributionComment[]
 }
 
-
-
 model Proposal {
-  id          Int              @id @default(autoincrement())
-  title       String
-  description String
-  mri         String           // Keep this as a readable string for legacy purposes
-  categoryId  Int
-  category    Category         @relation(fields: [categoryId], references: [id])
-  deliverables Deliverable[]
-  status      String           @default("closed")
-  createdAt   DateTime         @default(now())
-  userId      String
-  user        User             @relation(fields: [userId], references: [id])
-  comments    ProposalComment[]
-  notifications Notification[] 
+  id             Int               @id @default(autoincrement())
+  title          String
+  githubUsername String?
+  description    String
+  mri            String
+  categoryId     Int
+  status         String            @default("closed")
+  createdAt      DateTime          @default(now())
+  userId         String
+  deliverables   Deliverable[]
+  notifications  Notification[]
+  category       Category          @relation(fields: [categoryId], references: [id])
+  user           User              @relation(fields: [userId], references: [id])
+  comments       ProposalComment[]
 }
 
 model Deliverable {
-  id          Int                @id @default(autoincrement())
-  description String
-  proposalId  Int
-  proposal    Proposal           @relation(fields: [proposalId], references: [id])
+  id                  Int                  @id @default(autoincrement())
+  description         String
+  proposalId          Int
+  proposal            Proposal             @relation(fields: [proposalId], references: [id])
   jobFormDeliverables JobFormDeliverable[]
 }
 
 model Category {
-  id           Int                @id @default(autoincrement())
-  name         String             @unique
-  description  String?
-  proposals    Proposal[]
-  standaloneJobForm StandaloneJobForm[]
+  id                Int                  @id @default(autoincrement())
+  name              String               @unique
+  description       String?
+  maintainers       MaintainerCategory[]
   proofContribution ProofContribution[]
-
-  maintainers  MaintainerCategory[]
+  proposals         Proposal[]
+  standaloneJobForm StandaloneJobForm[]
 }
 
 model Maintainer {
-  id              String               @id @default(cuid())
-  walletId        String
-  wallet          Wallet               @relation(fields: [walletId], references: [id])
-  categories      MaintainerCategory[]
+  id         String               @id @default(cuid())
+  walletId   String
+  wallet     Wallet               @relation(fields: [walletId], references: [id])
+  categories MaintainerCategory[]
 }
 
 model MaintainerCategory {
-  maintainerId  String
-  maintainer    Maintainer  @relation(fields: [maintainerId], references: [id])
-  categoryId    Int
-  category      Category    @relation(fields: [categoryId], references: [id])
+  maintainerId String
+  categoryId   Int
+  category     Category   @relation(fields: [categoryId], references: [id])
+  maintainer   Maintainer @relation(fields: [maintainerId], references: [id])
 
   @@id([maintainerId, categoryId])
 }
 
 model JobFormComment {
-  id          String   @id @default(cuid())
-  text        String
-  createdAt   DateTime @default(now())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  jobFormId   String
-  jobForm     JobForm  @relation(fields: [jobFormId], references: [id])
+  id        String   @id @default(cuid())
+  text      String
+  createdAt DateTime @default(now())
+  userId    String
+  jobFormId String
+  jobForm   JobForm  @relation(fields: [jobFormId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model ProposalComment {
-  id          String   @id @default(cuid())
-  text        String
-  createdAt   DateTime @default(now())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  proposalId  Int
-  proposal    Proposal @relation(fields: [proposalId], references: [id])
+  id         String   @id @default(cuid())
+  text       String
+  createdAt  DateTime @default(now())
+  userId     String
+  proposalId Int
+  proposal   Proposal @relation(fields: [proposalId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
 }
-
-
 
 model Notification {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  proposalId  Int?     // Optional field for proposal-related notifications
-  proposal    Proposal? @relation(fields: [proposalId], references: [id])
-  jobFormId   String?  // Optional field for job form-related notifications
-  jobForm     JobForm? @relation(fields: [jobFormId], references: [id])
-  message     String
-  isRead      Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  type        String?   // Notification type
+  id         String    @id @default(cuid())
+  userId     String
+  proposalId Int?
+  jobFormId  String?
+  message    String
+  isRead     Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  type       String?
+  jobForm    JobForm?  @relation(fields: [jobFormId], references: [id])
+  proposal   Proposal? @relation(fields: [proposalId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
 }
-

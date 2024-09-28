@@ -48,7 +48,7 @@ export default async function ProposalDetailPage({ params }: { params: { id: str
         </Link>
       </div>
 
-      <div className="mx col-span-12 flex max-w-3xl flex-col justify-center rounded-2xl border border-borderTr bg-morBg p-4 shadow sm:mx-auto sm:p-6">
+      <div className="mx col-span-12 flex max-w-3xl flex-col justify-center rounded-2xl border border-borderTr bg-black p-4 shadow sm:mx-auto sm:p-6">
         <div className="flex flex-col gap-2">
           <div className="flex flex-col">
             <h1 className="mt-0 text-2xl font-bold">{proposal.title}</h1>

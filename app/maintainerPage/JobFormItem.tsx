@@ -40,26 +40,29 @@ const JobFormItem: React.FC<JobFormItemProps> = ({
 
       <h5 className="mt-2 font-semibold">Deliverables:</h5>
       <ul className="markdown-body">
-        {job.deliverables.map((deliverable) => (
-          <li key={deliverable.deliverableDescription} className="mt-2">
-            <div className="flex flex-col">
-              <strong>Job for weights description:</strong>
-              <ReactMarkdown>{deliverable.deliverableDescription}</ReactMarkdown>
-            </div>
-            <div className="mt-2 flex flex-col">
-              <strong>End of month deliverables:</strong>
-              <ReactMarkdown>{deliverable.description}</ReactMarkdown>
-            </div>
-            <div className="mt-2 flex flex-col">
-              <strong>Weights Requested:</strong>
-              <span>{deliverable.weightsRequested}</span>
-            </div>
-            <div className="mt-2 flex flex-col">
-              <strong>Minimum Weights Time:</strong>
-              <span>{deliverable.minimumWeightsTime}</span>
-            </div>
-          </li>
-        ))}
+        {job.deliverables
+          .slice()
+          .reverse()
+          .map((deliverable) => (
+            <li key={deliverable.deliverableDescription} className="mt-2">
+              <div className="flex flex-col">
+                <strong>Job for weights description:</strong>
+                <ReactMarkdown>{deliverable.deliverableDescription}</ReactMarkdown>
+              </div>
+              <div className="mt-2 flex flex-col">
+                <strong>End of month deliverables:</strong>
+                <ReactMarkdown>{deliverable.description}</ReactMarkdown>
+              </div>
+              <div className="mt-2 flex flex-col">
+                <strong>Weights Requested:</strong>
+                <span>{deliverable.weightsRequested}</span>
+              </div>
+              <div className="mt-2 flex flex-col">
+                <strong>Minimum Weights Time:</strong>
+                <span>{deliverable.minimumWeightsTime}</span>
+              </div>
+            </li>
+          ))}
       </ul>
 
       <CommentSection
