@@ -12,8 +12,8 @@ model User {
   id                              String                     @id @default(cuid())
   email                           String                     @unique
   name                            String?
-  image                           String?
   emailVerified                   DateTime?
+  image                           String?
   phoneNumber                     String?
   accounts                        Account[]
   jobform                         JobForm[]
@@ -24,7 +24,6 @@ model User {
   proposal                        Proposal[]
   proposalComments                ProposalComment[]
   stakings                        Stake[]
-  standaloneJobFormComments       StandaloneJobComment[]
   standaloneJobForm               StandaloneJobForm[]
   wallets                         Wallet[]
 }
@@ -34,10 +33,10 @@ model Account {
   userId            String
   provider          String
   providerAccountId String
-  type              String
   access_token      String?
-  token_type        String?
   scope             String?
+  token_type        String?
+  type              String
   user              User    @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
@@ -66,7 +65,7 @@ model Stake {
 }
 
 model StandaloneJobForm {
-  id                 String                 @id @default(cuid())
+  id                 String   @id @default(cuid())
   githubUsername     String
   email              String
   description        String
@@ -74,24 +73,21 @@ model StandaloneJobForm {
   weightsRequested   String
   walletAddress      String
   minimumWeightsTime Int
-  status             String                 @default("pending")
-  createdAt          DateTime               @default(now())
-  updatedAt          DateTime               @updatedAt
+  status             String   @default("pending")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
   userId             String
   categoryId         Int
-  comments           StandaloneJobComment[]
-  category           Category               @relation(fields: [categoryId], references: [id])
-  user               User                   @relation(fields: [userId], references: [id])
+  category           Category @relation(fields: [categoryId], references: [id])
+  user               User     @relation(fields: [userId], references: [id])
 }
 
 model StandaloneJobComment {
-  id                  String            @id @default(cuid())
+  id                  String   @id @default(cuid())
   text                String
-  createdAt           DateTime          @default(now())
+  createdAt           DateTime @default(now())
   userId              String
   standaloneJobFormId String
-  standaloneJobForm   StandaloneJobForm @relation(fields: [standaloneJobFormId], references: [id])
-  user                User              @relation(fields: [userId], references: [id])
 }
 
 model ProofContributionComment {
@@ -137,13 +133,13 @@ model ProofContribution {
   walletAddress  String
   email          String
   mriNumber      String
-  status         String                     @default("pending")
   linksToProof   String
   weightsAgreed  String
   description    String
   createdAt      DateTime                   @default(now())
   userId         String
   categoryId     Int
+  status         String                     @default("pending")
   category       Category                   @relation(fields: [categoryId], references: [id])
   user           User                       @relation(fields: [userId], references: [id])
   comments       ProofContributionComment[]
@@ -152,13 +148,13 @@ model ProofContribution {
 model Proposal {
   id             Int               @id @default(autoincrement())
   title          String
-  githubUsername String?
   description    String
   mri            String
-  categoryId     Int
   status         String            @default("closed")
   createdAt      DateTime          @default(now())
+  categoryId     Int
   userId         String
+  githubUsername String?
   deliverables   Deliverable[]
   notifications  Notification[]
   category       Category          @relation(fields: [categoryId], references: [id])
