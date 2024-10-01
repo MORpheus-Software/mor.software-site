@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { notifyJobFormCommentAdded } from '@/utils/notifications';
+import { auth } from '@/auth';
 
 // POST handler to add a comment to a job form
 export async function POST(req: NextRequest) {
@@ -16,16 +17,21 @@ export async function POST(req: NextRequest) {
     }
 
     // Find the user by their wallet address
-    const user = await prisma.wallet.findUnique({
-      where: { address: walletAddress },
-      select: { userId: true },
-    });
+    // const user = await prisma.wallet.findUnique({
+    //   where: { address: walletAddress },
+    //   select: { userId: true },
+    // });
 
-    if (!user) {
-      return NextResponse.json(
-        { message: 'User not found for this wallet address' },
-        { status: 404 },
-      );
+    // if (!user) {
+    //   return NextResponse.json(
+    //     { message: 'User not found for this wallet address' },
+    //     { status: 404 },
+    //   );
+    // }
+
+    const session = await auth();
+    if (!session || !session.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Fetch the job form by ID to get its related proposal's category
@@ -70,23 +76,23 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if the user is a maintainer for the category of the associated proposal
-    const isMaintainer = await prisma.maintainerCategory.findFirst({
-      where: {
-        maintainer: {
-          wallet: {
-            address: walletAddress,
-          },
-        },
-        categoryId: proposal.categoryId,
-      },
-    });
+    // const isMaintainer = await prisma.maintainerCategory.findFirst({
+    //   where: {
+    //     maintainer: {
+    //       wallet: {
+    //         address: walletAddress,
+    //       },
+    //     },
+    //     categoryId: proposal.categoryId,
+    //   },
+    // });
 
-    if (!isMaintainer) {
-      return NextResponse.json(
-        { message: 'Unauthorized: Only category maintainers can leave comments' },
-        { status: 403 },
-      );
-    }
+    // if (!isMaintainer) {
+    //   return NextResponse.json(
+    //     { message: 'Unauthorized: Only category maintainers can leave comments' },
+    //     { status: 403 },
+    //   );
+    // }
 
     notifyJobFormCommentAdded(jobForm.userId, jobFormId);
 
@@ -94,7 +100,7 @@ export async function POST(req: NextRequest) {
     const comment = await prisma.jobFormComment.create({
       data: {
         text,
-        userId: user.userId,
+        userId: session.user?.id,
         jobFormId,
       },
       include: {
@@ -104,7 +110,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(comment, { status: 201 });
+    return NextResponse.json(comment, { status: 200 });
   } catch (error) {
     console.error('Error adding comment to job form:', error);
     return NextResponse.json({ message: 'Failed to add comment to job form.' }, { status: 500 });

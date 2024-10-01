@@ -10,6 +10,7 @@ import { updatePhoneNumber } from '@/lib/server';
 import { useAccount } from 'wagmi';
 import { toast } from 'react-toastify';
 import CommentSection from '../maintainerPage/CommentSection';
+import axios from 'axios';
 
 interface StandaloneJobForm {
   id: string;
@@ -290,20 +291,14 @@ const ProfilePage = () => {
     setUpdating(true);
 
     try {
-      const response = await fetch('/api/proofForm/comments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          proofContributionId: pocId,
-          text: proofContributionComment,
-          walletAddress: address,
-        }),
+      const response = await axios.post('/api/proofForm/comments', {
+        proofContributionId: pocId,
+        text: proofContributionComment,
+        walletAddress: address,
       });
 
       if (isMountedRef.current) {
-        if (response.ok) {
+        if (response.status === 200) {
           toast.success('Comment added to Proof Contribution successfully!');
           setProofContributionComment('');
           await fetchProofContributionDetails(pocId);
@@ -986,7 +981,7 @@ const ProfilePage = () => {
             <p>Weight Agreed: {selectedProofContribution.weightsAgreed}</p>
             <p>Links to the proof: {selectedProofContribution.linksToProof}</p>
             <h3 className="mt-4 text-xl font-semibold">Maintainer Comments:</h3>
-            <ul>
+            {/* <ul>
               {selectedProofContribution.comments.map((comment) => (
                 <li key={comment.id}>
                   <strong>{comment.user.name}:</strong> {comment.text}
@@ -995,7 +990,7 @@ const ProfilePage = () => {
                   </p>
                 </li>
               ))}
-            </ul>
+            </ul> */}
 
             <CommentSection
               comments={selectedProofContribution.comments}

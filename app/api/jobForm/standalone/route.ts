@@ -40,21 +40,21 @@ export async function POST(req: NextRequest) {
           );
         }
         // Find the user by their wallet address
-        const user = await prisma.wallet.findUnique({
-          where: { address: walletAddress },
-          select: { userId: true },
-        });
-        if (!user) {
-          return NextResponse.json(
-            { message: 'User not found for this wallet address' },
-            { status: 404 },
-          );
-        }
+        // const user = await prisma.wallet.findUnique({
+        //   where: { address: walletAddress },
+        //   select: { userId: true },
+        // });
+        // if (!user) {
+        //   return NextResponse.json(
+        //     { message: 'User not found for this wallet address' },
+        //     { status: 404 },
+        //   );
+        // }
         // Add a new comment to the standalone job
         const comment = await prisma.standaloneJobComment.create({
           data: {
             text,
-            userId: user.userId,
+            userId: session.user.id,
             standaloneJobFormId: jobId,
           },
         });
@@ -155,7 +155,7 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      return NextResponse.json(newJobForm, { status: 201 });
+      return NextResponse.json(newJobForm, { status: 200 });
     }
   } catch (error) {
     console.error('Error submitting proposal:', error);

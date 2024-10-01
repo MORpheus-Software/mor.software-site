@@ -5,6 +5,7 @@ import {
   notifyProposalCommentAdded,
   notifyProposalStatusChanged,
 } from '@/utils/notifications';
+import { auth } from '@/auth';
 
 // Get a proposal by ID
 export async function GET(req: NextRequest) {
@@ -103,6 +104,11 @@ export async function PUT(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const { proposalId, text, walletAddress } = await req.json();
+    const session = await auth();
+
+    if (!session || !session.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     if (!proposalId || !text || !walletAddress) {
       return NextResponse.json(
@@ -112,17 +118,17 @@ export async function POST(req: NextRequest) {
     }
 
     // Find the user by their wallet address
-    const user = await prisma.wallet.findUnique({
-      where: { address: walletAddress },
-      select: { userId: true },
-    });
+    // const user = await prisma.wallet.findUnique({
+    //   where: { address: walletAddress },
+    //   select: { userId: true },
+    // });
 
-    if (!user) {
-      return NextResponse.json(
-        { message: 'User not found for this wallet address' },
-        { status: 404 },
-      );
-    }
+    // if (!user) {
+    //   return NextResponse.json(
+    //     { message: 'User not found for this wallet address' },
+    //     { status: 404 },
+    //   );
+    // }
 
     // Fetch the proposal by ID to get its categoryId
     const proposal = await prisma.proposal.findUnique({
@@ -135,29 +141,29 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if the wallet is a maintainer for this category
-    const isMaintainer = await prisma.maintainerCategory.findFirst({
-      where: {
-        maintainer: {
-          wallet: {
-            address: walletAddress,
-          },
-        },
-        categoryId: proposal.categoryId,
-      },
-    });
+    // const isMaintainer = await prisma.maintainerCategory.findFirst({
+    //   where: {
+    //     maintainer: {
+    //       wallet: {
+    //         address: walletAddress,
+    //       },
+    //     },
+    //     categoryId: proposal.categoryId,
+    //   },
+    // });
 
-    if (!isMaintainer) {
-      return NextResponse.json(
-        { message: 'Unauthorized: Only category maintainers can leave comments' },
-        { status: 403 },
-      );
-    }
+    // if (!isMaintainer) {
+    //   return NextResponse.json(
+    //     { message: 'Unauthorized: Only category maintainers can leave comments' },
+    //     { status: 403 },
+    //   );
+    // }
 
     // Add a new comment to the proposal
     const comment = await prisma.proposalComment.create({
       data: {
         text,
-        userId: user.userId,
+        userId: session.user?.id,
         proposalId: Number(proposalId),
       },
     });
