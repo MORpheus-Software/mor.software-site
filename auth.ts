@@ -1,9 +1,9 @@
 // @ts-nocheck
 
-import NextAuth from "next-auth";
-import GitHubProvider from "next-auth/providers/github";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import prisma from "./lib/prisma";
+import NextAuth from 'next-auth';
+import GitHubProvider from 'next-auth/providers/github';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import prisma from './lib/prisma';
 
 export const authOptions = {
   providers: [
@@ -13,7 +13,7 @@ export const authOptions = {
     }),
   ],
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt" },
+  session: { strategy: 'jwt' },
   callbacks: {
     async jwt({ token, account, user }) {
       if (account) {
