@@ -1,4 +1,4 @@
-// /api/proofContributions/comments/route.ts
+// /app/api/proofForm/comments/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 

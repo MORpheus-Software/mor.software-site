@@ -60,8 +60,6 @@ export async function submitProposal(formData: FormData) {
       },
     });
 
-    console.log(maintainers, createdProposal.id, 'asdasdasda');
-
     await Promise.all(
       maintainers.map((maintainer) =>
         notifyNewProposalSubmitted(maintainer.wallet?.user?.id, createdProposal.id, title),

@@ -21,7 +21,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   updating,
   placeholder = 'Leave a comment...',
 }) => {
-  console.log(comments, 'asd');
   return (
     <>
       <h5 className="mt-2 font-semibold">Comments:</h5>
