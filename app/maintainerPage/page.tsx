@@ -51,9 +51,13 @@ export default function MaintainerPage() {
   // Fetch categories associated with the maintainer's wallet address
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`/api/categories?walletAddress=${address}`);
-      const data: Category[] = await response.json();
+      const response = await fetch(`/api/categories?walletAddress=${address}`, {
+        cache: 'no-store',
+      });
+      // const res = await fetch('https://example.com', { cache: 'no-store' });
 
+      const data: Category[] = await response.json();
+      console.log(data, 'dataa');
       if (response.ok && data.length > 0) {
         setCategories(data);
       } else {
@@ -109,7 +113,7 @@ export default function MaintainerPage() {
     try {
       const response = await fetch(`/api/proposals/${proposalId}`);
       const { proposal, jobForms } = await response.json();
-
+      console.log(response, 'ressp');
       if (response.ok) {
         setSelectedProposal(proposal);
         setJobForms(jobForms);
