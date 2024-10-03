@@ -54,10 +54,8 @@ export default function MaintainerPage() {
       const response = await fetch(`/api/categories?walletAddress=${address}`, {
         cache: 'no-store',
       });
-      // const res = await fetch('https://example.com', { cache: 'no-store' });
 
       const data: Category[] = await response.json();
-      console.log(data, 'dataa');
       if (response.ok && data.length > 0) {
         setCategories(data);
       } else {
@@ -71,7 +69,9 @@ export default function MaintainerPage() {
 
   const fetchStandaloneJobDetails = async (jobId: string) => {
     try {
-      const response = await fetch(`/api/jobForm/standalone/${jobId}`);
+      const response = await fetch(`/api/jobForm/standalone/${jobId}`, {
+        cache: 'no-store',
+      });
       const data = await response.json();
 
       if (response.ok) {
@@ -93,7 +93,9 @@ export default function MaintainerPage() {
 
   const fetchProofContributionDetails = async (proofId: string) => {
     try {
-      const response = await fetch(`/api/proofForm/${proofId}`);
+      const response = await fetch(`/api/proofForm/${proofId}`, {
+        cache: 'no-store',
+      });
       const data = await response.json();
 
       if (response.ok) {
@@ -111,7 +113,9 @@ export default function MaintainerPage() {
   // Fetch proposal details including job forms
   const fetchProposalDetails = async (proposalId: number) => {
     try {
-      const response = await fetch(`/api/proposals/${proposalId}`);
+      const response = await fetch(`/api/proposals/${proposalId}`, {
+        cache: 'no-store',
+      });
       const { proposal, jobForms } = await response.json();
       console.log(response, 'ressp');
       if (response.ok) {
@@ -162,6 +166,7 @@ export default function MaintainerPage() {
     try {
       const response = await fetch('/api/proofForm', {
         method: 'PUT',
+        cache: 'no-cache',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -192,6 +197,7 @@ export default function MaintainerPage() {
     try {
       const response = await fetch('/api/jobForm/standalone', {
         method: 'PUT',
+        cache: 'no-cache',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -223,6 +229,7 @@ export default function MaintainerPage() {
     try {
       const response = await fetch('/api/proposals', {
         method: 'PUT',
+        cache: 'no-cache',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -254,6 +261,7 @@ export default function MaintainerPage() {
     try {
       const response = await fetch('/api/jobForm', {
         method: 'PUT',
+        cache: 'no-cache',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -289,6 +297,7 @@ export default function MaintainerPage() {
     try {
       const response = await fetch('/api/jobForm/standalone', {
         method: 'POST',
+        cache: 'no-cache',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -318,6 +327,7 @@ export default function MaintainerPage() {
     try {
       const response = await fetch('/api/proposals', {
         method: 'POST',
+        cache: 'no-cache',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -351,6 +361,7 @@ export default function MaintainerPage() {
     try {
       const response = await fetch('/api/proofForm/comments', {
         method: 'POST',
+        cache: 'no-cache',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -379,6 +390,7 @@ export default function MaintainerPage() {
     try {
       const response = await fetch('/api/jobForm/comments', {
         method: 'POST',
+        cache: 'no-cache',
         headers: {
           'Content-Type': 'application/json',
         },
