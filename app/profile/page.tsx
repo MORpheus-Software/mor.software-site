@@ -383,7 +383,6 @@ const ProfilePage = () => {
       fetch('/api/proofForm/user')
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
           setProofContributions(data.proofContributions || []);
           setLoading(false);
         })
@@ -498,7 +497,6 @@ const ProfilePage = () => {
     try {
       const response = await fetch(`/api/jobForm/standalone/${jobId}`);
       const data = await response.json();
-      console.log(data, 'dataa');
 
       if (response.ok) {
         setSelectedStandaloneJob(data.standaloneJob);

@@ -28,8 +28,6 @@ const StandaloneJobModal: React.FC<StandaloneJobModalProps> = ({
   handleCommentSubmit,
   handleUpdateStatus,
 }) => {
-  console.log(job, 'vss');
-
   return (
     <Modal
       title={job ? `Standalone Job by ${job.githubUsername}` : 'Standalone Job Details'}

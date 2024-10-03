@@ -1,6 +1,6 @@
 // utils/notifications.ts
 import prisma from '@/lib/prisma';
-import { sendSMS,sendEmail } from '@/lib/twilio';
+import { sendSMS, sendEmail } from '@/lib/twilio';
 
 type NotificationType =
   | 'ProposalStatusChanged'
@@ -35,16 +35,11 @@ const notificationDescriptions: Record<NotificationType, string> = {
   JobFormCommentAdded: 'A new comment has been added to your standalone job - Morpheus',
 };
 
-
-
-
 const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/;
 
-function isValidPhoneNumber(phoneNumber:string) {
-    return phoneNumberPattern.test(phoneNumber);
+function isValidPhoneNumber(phoneNumber: string) {
+  return phoneNumberPattern.test(phoneNumber);
 }
-
-
 
 export async function createNotification({
   userId,
@@ -70,8 +65,6 @@ export async function createNotification({
     include: { wallets: { include: { maintainers: true } } },
   });
 
-  console.log(user);
-  
   // If user contact details exist, send notifications
   if (user) {
     // Check if user is a maintainer
@@ -89,9 +82,12 @@ export async function createNotification({
   }
 }
 
-
 // Notify users about proposals
-export async function notifyProposalStatusChanged(userId: string, proposalId: number,title:string) {
+export async function notifyProposalStatusChanged(
+  userId: string,
+  proposalId: number,
+  title: string,
+) {
   await createNotification({
     userId,
     proposalId,
@@ -100,7 +96,11 @@ export async function notifyProposalStatusChanged(userId: string, proposalId: nu
   });
 }
 
-export async function notifyProposalCommentAdded(userId: string, proposalId: number,  title:string) {
+export async function notifyProposalCommentAdded(
+  userId: string,
+  proposalId: number,
+  title: string,
+) {
   await createNotification({
     userId,
     proposalId,
@@ -109,9 +109,12 @@ export async function notifyProposalCommentAdded(userId: string, proposalId: num
   });
 }
 
-
 // Notify maintainers about proposals
-export async function notifyNewProposalSubmitted(maintainerId: string, proposalId: number, title:string) {
+export async function notifyNewProposalSubmitted(
+  maintainerId: string,
+  proposalId: number,
+  title: string,
+) {
   await createNotification({
     userId: maintainerId,
     proposalId,
@@ -129,9 +132,12 @@ export async function notifyNewJobSubmitted(maintainerId: string, jobId: string)
   });
 }
 
-
 // Notify users about job forms
-export async function notifyJobFormStatusChanged(userId: string, jobFormId: string, status:string) {
+export async function notifyJobFormStatusChanged(
+  userId: string,
+  jobFormId: string,
+  status: string,
+) {
   await createNotification({
     userId,
     jobFormId,

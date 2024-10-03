@@ -69,7 +69,6 @@ export default function MaintainerPage() {
     try {
       const response = await fetch(`/api/jobForm/standalone/${jobId}`);
       const data = await response.json();
-      console.log(data, 'dataa');
 
       if (response.ok) {
         setSelectedStandaloneJob(data.standaloneJob);
