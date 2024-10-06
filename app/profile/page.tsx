@@ -13,15 +13,18 @@ import CommentSection from '../maintainerPage/CommentSection';
 import axios from 'axios';
 
 interface StandaloneJobForm {
+  createdAt: string | number | Date;
   id: string;
   githubUsername: string;
   email: string;
-  category: string;
   description: string;
   deliverables: string;
   weightsRequested: string;
   minimumWeightsTime: number;
   status: string;
+  category: {
+    name: string;
+  };
   comments: StandaloneJobComment[];
 }
 
@@ -35,6 +38,8 @@ interface StandaloneJobComment {
 }
 
 interface ProofContribution {
+  createdAt: string | number | Date;
+  categoryId: any;
   id: string;
   githubUsername: string;
   email: string;
@@ -101,6 +106,8 @@ interface JobFormComment {
 }
 
 interface JobForm {
+  createdAt: string | number | Date;
+  mriNumber: any;
   id: string;
   category: string;
   githubUsername: string;
@@ -120,6 +127,7 @@ interface ProposalComment {
 }
 
 interface Proposal {
+  createdAt: string | number | Date;
   id: string;
   title: string;
   description: string;
