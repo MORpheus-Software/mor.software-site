@@ -44,7 +44,7 @@ export default function JobForm({
           description: formData.get('description'),
           walletAddress: formData.get('walletAddress'),
           minimumWeightsTime: formData.get('minimumWeightsTime'),
-          proposalId,
+          categoryId: categoryId,
           deliverables: deliverablesData,
         }),
       });

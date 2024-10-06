@@ -12,13 +12,19 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Fetch the user's standalone jobs
+    // Fetch the user's standalone jobs with the category included
     const standaloneJobs = await prisma.standaloneJobForm.findMany({
       where: { userId: session.user.id },
       include: {
         comments: {
           include: {
             user: { select: { name: true } },
+          },
+        },
+        category: {
+          // Include the category associated with the job
+          select: {
+            name: true, // Select only the category name (you can select more fields if needed)
           },
         },
       },

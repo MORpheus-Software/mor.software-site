@@ -16,6 +16,7 @@ interface StandaloneJobForm {
   id: string;
   githubUsername: string;
   email: string;
+  category: string;
   description: string;
   deliverables: string;
   weightsRequested: string;
@@ -54,6 +55,19 @@ interface ProofContributionComment {
   };
 }
 
+const categoryMap: { [key: number]: string } = {
+  1: 'Smart Contracts on Ethereum or Arbitrum',
+  2: 'Smart Agent Tools and Examples',
+  3: 'Morpheus Local Install Desktop / Mobile',
+  4: 'TCM / MOR20 Token Standard for Fair Launches',
+  5: 'Protection Fund',
+  6: 'Capital Proofs Extended beyond Lido stETH',
+  7: 'Compute Proofs Morpheus / Lumerin',
+  8: 'Code Proofs & Dashboards',
+  9: 'Frontend Proofs & Examples',
+  10: 'Interoperability',
+};
+
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 interface Staking {
@@ -88,6 +102,7 @@ interface JobFormComment {
 
 interface JobForm {
   id: string;
+  category: string;
   githubUsername: string;
   description: string;
   status: string;
@@ -166,7 +181,7 @@ const ProfilePage = () => {
     try {
       const response = await fetch(`/api/proposals/${proposalId}`);
       const { proposal, jobForms } = await response.json();
-
+      console.log(jobForms, 'wfff');
       if (response.ok) {
         setSelectedProposal(proposal);
         setJobForms(jobForms);
@@ -362,6 +377,7 @@ const ProfilePage = () => {
           setJobForms(data.jobForms || []);
           setLoading(false);
         })
+
         .catch((error) => {
           console.error('Error fetching job forms:', error);
           setLoading(false);
@@ -675,22 +691,27 @@ const ProfilePage = () => {
                           className="proposal-item my-3 flex flex-col gap-1 rounded border border-neutral-600 bg-black p-5 hover:bg-neutral-900"
                         >
                           <div className="flex items-center justify-between">
-                            <div className="flex flex-row gap-2">
-                              <strong>{proposal.title}</strong> -{' '}
-                              <span
-                                className={`${
-                                  proposal.status === 'pending'
-                                    ? 'bg-yellow-500 text-white'
-                                    : proposal.status === 'approved'
-                                      ? 'bg-green-500 text-white'
-                                      : proposal.status === 'archived'
-                                        ? 'bg-gray-500 text-white'
-                                        : 'bg-red-500 text-white'
-                                } mr-2 rounded-sm px-2 py-1 text-sm`}
-                              >
-                                {proposal.status}
-                              </span>
+                            <div className="flex flex-col gap-2">
+                              <div className="flex flex-row gap-2">
+                                <strong>{proposal.category.name.slice(4)}</strong>
+                                <strong>{proposal.title}</strong> -{' '}
+                                <span
+                                  className={`${
+                                    proposal.status === 'pending'
+                                      ? 'bg-yellow-500 text-white'
+                                      : proposal.status === 'approved'
+                                        ? 'bg-green-500 text-white'
+                                        : proposal.status === 'archived'
+                                          ? 'bg-gray-500 text-white'
+                                          : 'bg-red-500 text-white'
+                                  } mr-2 rounded-sm px-2 py-1 text-sm`}
+                                >
+                                  {proposal.status}
+                                </span>
+                              </div>
+                              <p>Created: {new Date(proposal.createdAt).toLocaleString()}</p>
                             </div>
+
                             {/* ({proposal.category.name}) */}
                             <Button onClick={() => handleViewProposal(proposal)} className="ml-2">
                               View Details
@@ -717,21 +738,29 @@ const ProfilePage = () => {
                           >
                             <div className="flex w-full flex-row items-center justify-between">
                               <div className="flex flex-row items-center gap-4">
-                                <h2 className="mb-0">{form.githubUsername}</h2>
+                                <div className="flex flex-col gap-2">
+                                  <strong>{categoryMap[form.mriNumber]} </strong>
 
-                                <span
-                                  className={`${
-                                    form.status === 'pending'
-                                      ? 'bg-yellow-500 text-white'
-                                      : form.status === 'approved'
-                                        ? 'bg-green-500 text-white'
-                                        : form.status === 'archived'
-                                          ? 'bg-gray-500 text-white'
-                                          : 'bg-red-500 text-white'
-                                  } rounded-sm px-2 py-1 text-sm`}
-                                >
-                                  {form.status}
-                                </span>
+                                  <div className="flex flex-row gap-2">
+                                    <h2 className="mb-0">{form.githubUsername}</h2>
+
+                                    <span
+                                      className={`${
+                                        form.status === 'pending'
+                                          ? 'bg-yellow-500 text-white'
+                                          : form.status === 'approved'
+                                            ? 'bg-green-500 text-white'
+                                            : form.status === 'archived'
+                                              ? 'bg-gray-500 text-white'
+                                              : 'bg-red-500 text-white'
+                                      } rounded-sm px-2 py-1 text-sm`}
+                                    >
+                                      {form.status}
+                                    </span>
+                                  </div>
+
+                                  <p>Created: {new Date(form.createdAt).toLocaleString()}</p>
+                                </div>
                               </div>
 
                               <Button onClick={() => handleViewJobForm(form)} className="ml-2">
@@ -790,21 +819,25 @@ const ProfilePage = () => {
                         className="my-3 flex flex-col gap-1 rounded border border-neutral-600 bg-black p-5 hover:bg-neutral-900"
                       >
                         <div className="flex items-center justify-between">
-                          <div className="flex flex-row gap-2">
-                            <strong>{job.description}</strong> -{' '}
-                            <span
-                              className={`${
-                                job.status === 'pending'
-                                  ? 'bg-yellow-500 text-white'
-                                  : job.status === 'approved'
-                                    ? 'bg-green-500 text-white'
-                                    : job.status === 'archived'
-                                      ? 'bg-gray-500 text-white'
-                                      : 'bg-red-500 text-white'
-                              } mr-2 rounded-sm px-2 py-1 text-sm`}
-                            >
-                              {job.status}
-                            </span>
+                          <div className="flex flex-col gap-2">
+                            <div className="flex flex-row gap-2">
+                              <strong>{job.category.name.slice(4)}</strong>
+                              <strong>{job.description}</strong> -
+                              <span
+                                className={`${
+                                  job.status === 'pending'
+                                    ? 'bg-yellow-500 text-white'
+                                    : job.status === 'approved'
+                                      ? 'bg-green-500 text-white'
+                                      : job.status === 'archived'
+                                        ? 'bg-gray-500 text-white'
+                                        : 'bg-red-500 text-white'
+                                } mr-2 rounded-sm px-2 py-1 text-sm`}
+                              >
+                                {job.status}
+                              </span>
+                            </div>
+                            <p>Created: {new Date(job.createdAt).toLocaleString()}</p>
                           </div>
 
                           <Button onClick={() => handleViewStandaloneJob(job)} className="ml-2">
@@ -831,22 +864,27 @@ const ProfilePage = () => {
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex flex-row gap-2">
-                            <strong>{proof.description}</strong> -{' '}
-                            <span
-                              className={`${
-                                proof.status === 'pending'
-                                  ? 'bg-yellow-500 text-white'
-                                  : proof.status === 'approved'
-                                    ? 'bg-green-500 text-white'
-                                    : proof.status === 'archived'
-                                      ? 'bg-gray-500 text-white'
-                                      : 'bg-red-500 text-white'
-                              } mr-2 rounded-sm px-2 py-1 text-sm`}
-                            >
-                              {proof.status}
-                            </span>
+                            <div className="flex flex-col gap-2">
+                              <div className="flex flex-row gap-2">
+                                <strong>{categoryMap[proof.categoryId]} </strong>
+                                <strong>{proof.description}</strong> -{' '}
+                                <span
+                                  className={`${
+                                    proof.status === 'pending'
+                                      ? 'bg-yellow-500 text-white'
+                                      : proof.status === 'approved'
+                                        ? 'bg-green-500 text-white'
+                                        : proof.status === 'archived'
+                                          ? 'bg-gray-500 text-white'
+                                          : 'bg-red-500 text-white'
+                                  } mr-2 rounded-sm px-2 py-1 text-sm`}
+                                >
+                                  {proof.status}
+                                </span>
+                              </div>
+                              <p>Created: {new Date(proof.createdAt).toLocaleString()}</p>
+                            </div>
                           </div>
-
                           <Button
                             onClick={() => handleViewProofContribution(proof)}
                             className="ml-2"

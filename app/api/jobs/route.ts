@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     data: {
       githubUsername,
       email,
-      mriNumber: categoryId ?? 'null',
+      mriNumber: categoryId.toString(),
       walletAddress,
       // minimumWeightsTime,
       user: { connect: { id: session.user.id } },
