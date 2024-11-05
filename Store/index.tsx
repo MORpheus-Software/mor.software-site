@@ -1,22 +1,14 @@
-"use client";
+'use client';
 
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from '@reduxjs/toolkit';
 import {
   useDispatch as useAppDispatch,
   useSelector as useAppSelector,
   TypedUseSelectorHook,
-} from "react-redux";
-import {
-  persistStore,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from "redux-persist";
+} from 'react-redux';
+import { persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 
-import reducers from "./Reducers";
+import reducers from './Reducers';
 
 const store = configureStore({
   reducer: reducers,
@@ -30,7 +22,7 @@ const store = configureStore({
           PERSIST,
           PURGE,
           REGISTER,
-          "session/setUserStakingInfo",
+          'session/setUserStakingInfo',
         ],
       },
     }).concat(),

@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type LoadingsReducer = {
   isUserStakingInfoLoading: boolean;
@@ -41,21 +41,21 @@ export type UserInfoType = {
 
 // Initial staking information for a single pool
 const initialProgramUserInfo: ProgramUserInfo = {
-  lastStake: "",
-  deposited: "",
-  rate: "",
-  pendingRewards: "",
-  claimLockStart: "",
-  claimLockEnd: "",
-  virtualDeposited: "",
+  lastStake: '',
+  deposited: '',
+  rate: '',
+  pendingRewards: '',
+  claimLockStart: '',
+  claimLockEnd: '',
+  virtualDeposited: '',
 };
 
 // Initial session state
 const initialState: SessionState = {
-  stethmBalance: "",
-  tokenAmount: "",
-  lockDuration: "",
-  claimableAmount: "",
+  stethmBalance: '',
+  tokenAmount: '',
+  lockDuration: '',
+  claimableAmount: '',
   successTxCount: 0,
   userStakingInfo: {
     pools: [initialProgramUserInfo],
@@ -64,7 +64,7 @@ const initialState: SessionState = {
 
 // Create a slice for session state management
 const sessionSlice = createSlice({
-  name: "session",
+  name: 'session',
   initialState,
   reducers: {
     // Reducer to set stETH balance

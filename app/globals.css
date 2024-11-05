@@ -17,15 +17,15 @@
   }
 
   h1 {
-    @apply font-bold text-2xl mb-3 text-white;
+    @apply mb-3 text-2xl font-bold text-white;
   }
 
   h2 {
-    @apply font-bold text-xl mb-6 text-white;
+    @apply mb-6 text-xl font-bold text-white;
   }
 
   .dot {
-    @apply inline-flex w-3 h-3 rounded-full bg-black mr-2;
+    @apply mr-2 inline-flex h-3 w-3 rounded-full bg-black;
   }
 
   .dot.green {
@@ -37,7 +37,7 @@
   }
 
   pre {
-    @apply bg-zinc-800 p-8 rounded overflow-scroll max-h-72 mb-8;
+    @apply mb-8 max-h-72 overflow-scroll rounded bg-zinc-800 p-8;
   }
 
   code {
@@ -49,26 +49,24 @@
   }
 
   label {
-    @apply flex text-sm text-zinc-400 mb-4;
+    @apply mb-4 flex text-sm text-zinc-400;
   }
 
   textarea,
   input {
-    @apply flex w-full rounded text-zinc-700 p-6 mb-8;
+    @apply mb-8 flex w-full rounded p-6 text-zinc-700;
   }
-
-
 
   input:focus,
   textarea:focus,
   input:focus-visible,
   textarea:focus-visible {
-    @apply border-[#179c65] ring-1 ring-[#179c65] outline-none;
+    @apply border-[#179c65] outline-none ring-1 ring-[#179c65];
   }
 
   button,
-  button[type="submit"] {
-    @apply bg-morGreen-700 text-white h-12 px-12 rounded-sm hover:opacity-90 transition-colors ease-in-out;
+  button[type='submit'] {
+    @apply bg-morGreen-700 h-12 rounded-sm px-12 text-white transition-colors ease-in-out hover:opacity-90;
   }
 
   button:disabled,
@@ -84,13 +82,13 @@
   }
 
   a.button {
-    @apply inline-flex items-center bg-blue-500 text-white h-12 px-12 rounded-full hover:bg-zinc-600 transition-colors ease-in-out;
+    @apply inline-flex h-12 items-center rounded-full bg-blue-500 px-12 text-white transition-colors ease-in-out hover:bg-zinc-600;
   }
 }
 
-
-.ant-select-selector{background: white !important;}
-
+.ant-select-selector {
+  background: white !important;
+}
 
 .input-container-mor {
   padding: 16px;
@@ -120,8 +118,6 @@
   border: 0;
 }
 
-
-
-.ant-picker-input >input{
+.ant-picker-input > input {
   margin-bottom: 0;
 }

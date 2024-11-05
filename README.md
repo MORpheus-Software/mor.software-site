@@ -1,9 +1,6 @@
-
 # MOR.software
 
-
-MOR.Software is the portal for MOR Developers.  Sign in, read up, job on weights, and contribute.
-
+MOR.Software is the portal for MOR Developers. Sign in, read up, job on weights, and contribute.
 
 ## Table of Contents
 
@@ -17,7 +14,7 @@ MOR.Software is the portal for MOR Developers.  Sign in, read up, job on weights
 
 Ensure you have the following installed on your machine:
 
-- [Node.js](https://nodejs.org/) 
+- [Node.js](https://nodejs.org/)
 - [Git](https://git-scm.com/)
 
 ## Installation
@@ -42,21 +39,19 @@ Ensure you have the following installed on your machine:
 
 ## Running Locally
 
-
 2. **Build the site pages:**
 
    ```bash
    npx next build
    ```
 
-
-2. **Start the local server:**
+3. **Start the local server:**
 
    ```bash
    npm start
    ```
 
-3. **Open your browser and visit:**
+4. **Open your browser and visit:**
 
    ```
    http://localhost:3000

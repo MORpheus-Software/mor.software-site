@@ -1,10 +1,10 @@
-import { config } from "./config";
+import { config } from './config';
 
-import { STAKING_TOKEN_ADDRESS } from "@/constants/address";
-import { store } from "@/Store";
-import { setStEthmBalance } from "@/Store/Reducers/session";
+import { STAKING_TOKEN_ADDRESS } from '@/constants/address';
+import { store } from '@/Store';
+import { setStEthmBalance } from '@/Store/Reducers/session';
 
-import { getBalance } from "wagmi/actions";
+import { getBalance } from 'wagmi/actions';
 
 export const fetchBalance = async (walletPubKey: any, token: any) => {
   try {
@@ -18,7 +18,7 @@ export const fetchBalance = async (walletPubKey: any, token: any) => {
 
     store.dispatch(setStEthmBalance(balance.toString()));
   } catch (error) {
-    console.error("Error fetching balance:", error);
+    console.error('Error fetching balance:', error);
   }
 };
 

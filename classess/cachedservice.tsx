@@ -1,13 +1,8 @@
-import { toast, ToastOptions } from "react-toastify";
-import {
-  CheckCheck,
-  CheckIcon,
-  FileWarningIcon,
-  AlertCircleIcon,
-} from "lucide-react";
+import { toast, ToastOptions } from 'react-toastify';
+import { CheckCheck, CheckIcon, FileWarningIcon, AlertCircleIcon } from 'lucide-react';
 
 const commonToastConfig: Partial<ToastOptions> = {
-  position: "top-right",
+  position: 'top-right',
   autoClose: 3000,
   hideProgressBar: true,
   closeOnClick: true,
@@ -23,8 +18,8 @@ class Cache {
     toast.error(text, {
       ...commonToastConfig,
       style: {
-        background: "#000",
-        border: "1px solid #ffffff57",
+        background: '#000',
+        border: '1px solid #ffffff57',
       },
       ...options,
     });
@@ -34,8 +29,8 @@ class Cache {
       ...commonToastConfig,
       // icon: () => <CheckIcon size={24} />, // Adjust size as needed
       style: {
-        background: "#000",
-        border: "1px solid #ffffff57",
+        background: '#000',
+        border: '1px solid #ffffff57',
       },
       autoClose: false,
       ...options,
@@ -46,7 +41,7 @@ class Cache {
       ...commonToastConfig,
       icon: () => <AlertCircleIcon size={24} />, // Adjust size as needed
       style: {
-        background: "#27360d",
+        background: '#27360d',
       },
       ...options,
     });
@@ -56,8 +51,8 @@ class Cache {
       ...commonToastConfig,
       // icon: () => <CheckCheck size={24} />, // Adjust size as needed
       style: {
-        background: "#000",
-        border: "1px solid #ffffff57",
+        background: '#000',
+        border: '1px solid #ffffff57',
       },
       autoClose: false,
       ...options,

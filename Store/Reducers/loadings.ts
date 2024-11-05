@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LoadingsReducer } from "./session";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { LoadingsReducer } from './session';
 
 const initialState: LoadingsReducer = {
   isUserStakingInfoLoading: false,
@@ -7,7 +7,7 @@ const initialState: LoadingsReducer = {
 };
 
 const loadings = createSlice({
-  name: "loadings",
+  name: 'loadings',
   initialState,
   reducers: {
     setIsUserStakingInfoLoading(state, action: PayloadAction<boolean>) {
@@ -21,5 +21,4 @@ const loadings = createSlice({
 
 export default loadings.reducer;
 
-export const { setIsUserStakingInfoLoading, setIsTxInProgress } =
-  loadings.actions;
+export const { setIsUserStakingInfoLoading, setIsTxInProgress } = loadings.actions;
