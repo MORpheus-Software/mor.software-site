@@ -3,6 +3,7 @@
 import prisma from '@/lib/prisma';
 import { auth } from '@/auth';
 import parsePhoneNumberFromString from 'libphonenumber-js';
+import { ProofContribution, StandaloneJobForm } from '@/app/maintainerPage/types';
 
 /**
  * Updates the user's phone number in the database.
@@ -135,6 +136,7 @@ export async function exportData(
           createdAt: { gte: start, lte: end },
         },
       });
+      data = formatProofOfContribution(data);
       break;
     case 'standaloneJobForm':
       data = await prisma.standaloneJobForm.findMany({
@@ -143,40 +145,101 @@ export async function exportData(
           createdAt: { gte: start, lte: end },
         },
       });
+      data = formatStandaloneJobs(data);
       break;
     case 'proposals':
       data = await prisma.proposal.findMany({
+        include: {
+          user: true,
+          deliverables: true,
+        },
         where: {
           categoryId: { in: categoryIds },
           createdAt: { gte: start, lte: end },
         },
       });
+      data = formatMRC(data);
       break;
     default:
       throw new Error('Invalid type');
   }
 
   // Convert data to CSV format
-  return convertToCSV(data);
+  return objectToCsv(data);
 }
 
-// Convert data to CSV format
-function convertToCSV(data: any[]): string {
-  if (!data.length) return '';
-  const headers = Object.keys(data[0]).join(',');
-  const rows = data.map((row) => Object.values(row).join(','));
-  return [headers, ...rows].join('\n');
-}
+const formatMRC = (data: any[]) => {
+  let maxDeliverable = 0;
+  data.forEach((item) => {
+    if (item.deliverables.length > maxDeliverable) {
+      maxDeliverable = item.deliverables.length;
+    }
+  });
+  return data.map((item) => {
+    const toFormat: any = {
+      id: item.id,
+      githubUsername: item.githubUsername,
+      email: item.user.email,
+      title: item.title,
+      MRI: item.mri,
+      status: item.status,
+      description: item.description,
+      createdAt: item.createdAt,
+    };
+    for (let i = 0; i < maxDeliverable; i++) {
+      toFormat[`Deliverable ${i + 1}`] = '';
+    }
+    item.deliverables.forEach((deliverable: { description: any }, index: any) => {
+      toFormat[`Deliverable ${index + 1}`] = deliverable.description;
+    });
+    return toFormat;
+  });
+};
+const formatProofOfContribution = (data: any[]) => {
+  return data.map((item) => ({
+    id: item.id,
+    githubUsername: item.githubUsername,
+    email: item.email,
+    MRINumber: item.mriNumber,
+    linksToProof: item.linksToProof,
+    weightsAgreed: item.weightsAgreed,
+    walletAddress: item.walletAddress,
+    status: item.status,
+    description: item.description,
+    createdAt: item.createdAt,
+  }));
+};
+const formatStandaloneJobs = (data: any[]) => {
+  return data.map((item) => ({
+    id: item.id,
+    userId: item.userId,
+    githubUsername: item.githubUsername,
+    email: item.email,
+    MRINumber: item.categoryId,
+    description: item.description,
+    deliverables: item.deliverables,
+    weightsRequested: item.weightsRequested,
+    walletAddress: item.walletAddress,
+    status: item.status,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+  }));
+};
 
-// export async function getParentProposalFromJob(commentId: string) {
-//   const comment = await prisma.proposalComment.findUnique({
-//     where: {
-//       id: 'cm1gpstgf0008zjn13qu60umu', // Your comment ID
-//     },
-//   });
+const objectToCsv = function (data: any[]) {
+  const csvRows = [];
+  const headers = Object.keys(data[0]);
 
-//   console.log(comment); // Check if this returns the comment
+  csvRows.push(headers.join(','));
 
-//   // Return the ID of the parent StandaloneJobForm, if it exists
-//   return null
-// }
+  for (const row of data) {
+    const values = headers.map((header) => {
+      const val = row[header];
+      return `"${val}"`;
+    });
+
+    csvRows.push(values.join(','));
+  }
+
+  return csvRows.join('\n');
+};
