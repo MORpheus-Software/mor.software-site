@@ -38,7 +38,8 @@ const ExportDataModal: React.FC<ExportDataModalProps> = ({
       <Select value={type} onChange={setType} style={{ width: '100%', marginBottom: 20 }}>
         <Option value="proofContribution">Proof Contributions</Option>
         <Option value="standaloneJobForm">Standalone Job Forms</Option>
-        <Option value="proposals">Proposals</Option>
+        <Option value="proposals">MRC</Option>
+        <Option value="mrcjobs">MRC Jobs</Option>
       </Select>
 
       <RangePicker

@@ -3,7 +3,6 @@
 import prisma from '@/lib/prisma';
 import { auth } from '@/auth';
 import parsePhoneNumberFromString from 'libphonenumber-js';
-import { ProofContribution, StandaloneJobForm } from '@/app/maintainerPage/types';
 
 /**
  * Updates the user's phone number in the database.
@@ -160,6 +159,26 @@ export async function exportData(
       });
       data = formatMRC(data);
       break;
+    case 'mrcjobs':
+      data = await prisma.jobFormDeliverable.findMany({
+        where: {
+          deliverable: {
+            proposal: {
+              categoryId: { in: categoryIds },
+            },
+          },
+        },
+        include: {
+          jobForm: true,
+          deliverable: {
+            include: {
+              proposal: true,
+            },
+          },
+        },
+      });
+      data = formatMRCJobs(data);
+      break;
     default:
       throw new Error('Invalid type');
   }
@@ -168,6 +187,22 @@ export async function exportData(
   return objectToCsv(data);
 }
 
+const formatMRCJobs = (data: any[]) => {
+  return data.map((item) => ({
+    id: item.id,
+    mrcId: item.deliverable.proposalId,
+    githubUsername: item.jobForm.githubUsername,
+    email: item.jobForm.email,
+    description: item.description,
+    requestedDeliverable: item.deliverable.description,
+    deliverableDescription: item.deliverableDescription,
+    weightsRequested: item.weightsRequested,
+    minimumWeightsTime: item.minimumWeightsTime,
+    walletAddress: item.jobForm.walletAddress,
+    status: item.jobForm.status,
+    createdAt: item.jobForm.createdAt,
+  }));
+};
 const formatMRC = (data: any[]) => {
   let maxDeliverable = 0;
   data.forEach((item) => {
