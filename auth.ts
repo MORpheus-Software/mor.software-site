@@ -14,6 +14,18 @@ export const authOptions = {
   ],
   adapter: PrismaAdapter(prisma),
   session: { strategy: 'jwt' },
+  cookies: {
+    pkceCodeVerifier: {
+      name: 'next-auth.pkce.code_verifier',
+      options: {
+        httpOnly: true,
+        sameSite: 'none',
+        path: '/',
+        secure: false,
+      },
+    },
+  },
+  debug: true,
   callbacks: {
     async jwt({ token, account, user }) {
       if (account) {
