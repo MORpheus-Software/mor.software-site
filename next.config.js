@@ -9,6 +9,23 @@ const nextConfig = {
       },
     ];
   },
+  async headers() {
+    return [
+      {
+        source: '/api/(.*)', // Adjust to match your API routes
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*', // Replace with your frontend URL
+          },
+          {
+            key: 'Access-Control-Allow-Credentials',
+            value: 'true',
+          },
+        ],
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
