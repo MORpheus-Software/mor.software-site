@@ -21,7 +21,7 @@
     "@types/react-modal": "^3.16.3",
     "@web3modal/wagmi": "4.0.5",
     "antd": "^5.19.3",
-    "axios": "^1.7.2",
+    "axios": "^1.13.6",
     "bn.js": "^5.2.1",
     "buffer-layout": "^1.2.2",
     "class-variance-authority": "^0.7.0",
